@@ -1,0 +1,16 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    {% if ratingForm is not null %}
+        <div class="row" id="rating">
+            <div class="col-sm-12">
+                {% include 'front/common/order_rating.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+   {% include 'front/common/order_rating_js.html.twig' %}
+{% endblock %}

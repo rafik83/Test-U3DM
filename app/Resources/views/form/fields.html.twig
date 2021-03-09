@@ -1,0 +1,32 @@
+{% block checkbox_row %}
+    <div class="checkbox checkbox-inline">
+        <label>
+            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            <span><!-- fake checkbox --></span>
+            <span class="wrapped-label">{{- label|trans -}}</span>
+        </label>
+    </div>
+{% endblock %}
+
+{%- block radio_widget -%}
+    <div class="radio radio-inline">
+        <label>
+            <input type="radio" name="{{ full_name }}" id="radio_{{ value }}" value="{{ value }}"{% if checked %} checked="checked"{% endif %} />
+            <span><!-- fake radio --></span>
+            <span class="wrapped-label">{{- label|trans -}}</span>
+        </label>
+    </div>
+{%- endblock radio_widget -%}
+
+{% block appbundle_dimensions_widget %}
+    {% spaceless %}
+        {{ form_errors(form) }}
+        {% for child in form %}
+            {#{ dump(child.vars) }#}
+            {%  if 1 < loop.index %}<div class="appbundle_dimensions_form_separator">&nbsp;</div>{% endif %}
+            {{ form_widget(child, { 'attr': { 'class': 'appbundle_dimensions_form_value', 'placeholder': child.vars.label } }) }}
+            {{ form_errors(child) }}
+            <span class="appbundle_dimensions_label_unit">mm</span>
+        {% endfor %}
+    {% endspaceless %}
+{% endblock %}

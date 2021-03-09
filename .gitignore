@@ -1,0 +1,41 @@
+/.web-server-pid
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/vendor/
+/web/bundles/
+/node_modules/
+
+#####################################################
+# Following has been added after Symfony installation
+#####################################################
+
+# Mac files
+.DS_Store
+
+# PhpStorm files
+/.idea/
+# Robot.txt (ne doit pas etre mis a jour car différent entre prod preprod
+/web/robot.txt
+
+# Symfony Collection jQuery plugin files
+/web/assets/front/js/jquery.collection.js
+/app/Resources/views/form/jquery.collection.html.twig
+
+# Built assets
+
+/web/build/*.css
+/web/build/*.js
+/web/build/manifest.json
+/web/media/

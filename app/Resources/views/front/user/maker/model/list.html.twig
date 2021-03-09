@@ -1,0 +1,64 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1 class="col-sm-4">{{ 'Mes Modèles 3D'|trans }}</h1>
+    <div class="text-center col-sm-4">
+        <form method="POST" action="{{ path('user_maker_creations_new') }}">
+            <button class="btn btn-rounded" type="submit">{{ 'Ajouter un Modèle 3D'|trans }}</button>
+        </form>
+    </div>
+    <div class="text-right col-sm-4">
+        <a target="_blank" href="{{ path('model_find_by_maker', {'company': maker.company, 'id': maker.id}) }}">Mes modèles 3D publiés</a>
+    </div>
+    {% if 0 < models|length %}
+        <table id="table-creation-list" class="table table-hover">
+        <thead>
+        <tr>
+            <th>Dernière modification</th>
+            <th>Nom</th>
+            <th><span class="glyphicon glyphicon-download-alt"></th>
+            <th><span class="glyphicon glyphicon-heart"></th>
+            <th>État</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for model in models %}
+            <tr>
+                <td data-order="{{ model.updatedAt|date('YmdHis') }}">{{ model.updatedAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                <td data-order="{{model.name}}" data-search= {{ model.name }}>{{ model.name|length > 30 ? model.name|slice(0, 30)|capitalize ~ '...' : model.name|capitalize  }}</td>
+                <td data-order="{{model.nbDownload}}">{{ model.nbDownload }}</a></td>
+                <td data-order="{{model.love}}">{{ model.love}}</td>
+                <td data-order="{{model.status.name}}">{{ model.status.name }}</td>
+                <td><a href="{{ path('user_maker_model_modify', {'id': model.id}) }}">Modifier</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% else %}
+        <p>Vous n'avez déposé aucun modèle à ce jour.</p>
+    {% endif %}
+    
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+    <script type="text/javascript">
+        // For datatables
+        App.init();
+        App.dataTables();
+    </script>
+
+{% endblock %}

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="text" content="">
+<meta name="author" content="">
+{% block meta %}
+{% endblock %}
+<link rel="shortcut icon" href="{{ asset('favicon.png') }}">
+<title>{% block title %}{{ 'title'|trans }}{% endblock %}</title>
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/plugins.css') }}">{# This is a modified version from the template, to remove some unused plugins #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/type/icons.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/style.min.css') }}">{# This is a modified version from the template, to minify it #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/template.css') }}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/css/bordeaux.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/css/front.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/perfect-scrollbar/css/perfect-scrollbar.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/css/dataTables.bootstrap4.css') }}"/>
+    {# <link rel="stylesheet" type="text/css" href="{{ asset('assets/front/css/zoo-b.css') }}" /> #}
+{% endblock %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+<!-- Crisp -->
+<script type="text/javascript">
+    window.$crisp=[];window.CRISP_WEBSITE_ID="{{crisp_website_id}}";
+    (function(){
+        d=document;s=d.createElement("script");
+        s.src="https://client.crisp.chat/l.js";
+        s.async=1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+    })();
+</script>
+
+<!-- Google Analytics -->
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '{{ ga_tracking_id }}']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })(); 
+</script>
+<!-- Google Tag Manager -->
+<script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','{{gtag_manager_id}}');
+</script>
+<!-- End Google Tag Manager -->
+<!-- Global site tag (gtag.js) - Google Ads: {{gads_id}} -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{gads_id}}"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '{{gads_id}}'); </script>
+<script>
+    gtag('config', '{{gads_id}}');
+    function gtag_report_conversion_subscribe_print()    { var callback = function () { }; gtag('event', 'conversion', { 'send_to': '{{gads_id}}/wNQlCPLGzqABEI6xvegC', 'event_callback': callback }); return false; }
+    function gtag_report_conversion_subscribe_design()   { var callback = function () { }; gtag('event', 'conversion', { 'send_to': '{{gads_id}}/4oZvCNrz1aABEI6xvegC', 'event_callback': callback }); return false; }
+    function gtag_report_conversion_subscribe_prospect() { var callback = function () { }; gtag('event', 'conversion', { 'send_to': '{{gads_id}}/wWJHCPvJzqABEI6xvegC', 'event_callback': callback }); return false; }
+    function gtag_report_event (u,g,e, i=null) {
+        
+        //console.log("user",u)
+        var cType = 'client'
+        if ( u.maker ) {cType = 'maker'  }
+        dataLayer.push({
+            event: 'track_event',
+            event_name: e,
+            event_group: g,
+            event_info:i,
+            user_id:u.id,
+            customer_type:cType
+        })
+        console.log("dataLayer",dataLayer);
+        //console.log(e)
+    }
+    function gtag_report_purchase (p) {
+        console.log(p);
+        dataLayer.push(p)
+    }
+</script>
+<!-- End Global site tag (gtag.js) - Google Ads: 755980430 -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script type="text/javascript">
+    var googleApiKey = "{{google_api_key}}";
+</script>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{gtag_manager_id}}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<div class="content-wrapper">
+    <nav class="navbar">
+        <div class="container">
+            <div class="flex-it">
+                <div class="navbar-header">
+                    <div class="navbar-brand">
+                        <a href="{{ www_base_url }}"><img src="#" srcset="{{ asset('assets/front/images/logo-U3DM.png') }} 1x" alt="logo United 3D Makers   "></a>
+                    </div>
+                    <div class="nav-bars-wrapper">
+                        <div class="nav-bars-inner">
+                            <div class="nav-bars" data-toggle="collapse" data-target=".navbar-collapse"><span></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-collapse collapse"{% if hideMainMenu is defined and hideMainMenu %} style="visibility: hidden;"{% endif %}>
+                    <ul class="nav navbar-nav" data-smartmenus-id="15192163401562625">
+                        <li class="mega-menu"><a href="{{ www_base_url }}/impression-3d/">{{ 'menu.main.print'|trans }}</a></li>
+                        <li class="mega-menu"><a href="{{ www_base_url }}/modelisation-3d-et-impression-3d-en-serie/">{{ 'menu.main.design'|trans }}</a></li>
+                        <li class="mega-menu"><a href="{{ www_base_url }}/modeles-3d/">{{ 'menu.main.model'|trans }}</a></li>
+                        <li class="mega-menu"><a href="{{ www_base_url }}/blog-impression-3d/">{{ 'menu.main.information'|trans }}</a></li>
+
+
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            {% if app.user.maker is null or app.user.maker.company is null %}
+                                <li class="mega-menu"><a href="{{ path('user_maker_setup') }}">{{ 'Je suis un Maker'|trans }}</a></li>
+                            {% endif %}
+                        {% else %}
+                            <li class="mega-menu"><a href="{{ path('prospect_maker') }}">{{ 'Je suis un Maker'|trans }}</a></li>
+                        {% endif %}
+          
+                        <li class="mega-menu" id="dynamicBasket">
+                            <a href="{{ path('model_basket_form') }}">
+                                <searchCategory class="myBasket" style="display: none;">
+                                    Mon panier
+                                </searchCategory>
+                            </a>
+                        </li>
+                        <script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+
+                        <script type="text/javascript">
+                            console.log("debut");
+                            $.ajax({
+                                url:'/fr/api/model/basket',
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+
+                                },
+                                async: true,
+                                success: function (response)
+                                {
+                                    //console.log('basket : ',response)
+                                    var len = response.data.length;
+                                    //console.log(len);
+                                    
+                                    if(len == 0){
+                                        $("#dynamicBasket searchCategory").hide();
+                                        //$("#dynamicBasket searchCategory").append('Mon panier');
+                                    } else {
+                                        $("#dynamicBasket searchCategory").show();
+                                        $("#dynamicBasket searchCategory").empty();
+                                        $("#dynamicBasket searchCategory").append('Mon panier (',len,')');
+                                    }
+                                }
+                            })
+                        </script>
+                        
+                        
+                        <li class="mega-menu"><a href="{{ path('user_dashboard') }}">{{ 'menu.main.login'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container inner">
+        {% block body %}{% endblock %}
+    </div>
+</div>
+<footer class="gray-wrapper">
+    <div class="container inner pt-60 pb-60">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="widget widget_text">
+                    <div class="textwidget">
+                        <p>
+                            <img class="alignnone size-full" src="{{ asset('assets/front/images/logo-U3DM-footer.png') }}" alt="logo United 3d Makers" width="220" height="58">{{ 'footer.about'|trans }}<br>
+                            <a class="text-right pull-left" style="color: #960048;" href="{{ www_base_url }}/a-propos/">{{ 'footer.read_more'|trans }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="top_footer">
+                        <div class="col-sm-3 col-sm-offset-3">
+                            <div class="widget">
+                                <h5 class="widget-title">{{ 'footer.category.societe'|trans }}</h5>
+                                <ul class="list-unstyled">
+                                    <li><a class="nocolor" href="{{ www_base_url }}/a-propos/">{{ 'footer.link.about'|trans }}</a></li>
+                                    <li><a class="nocolor" href="{{ www_base_url }}/lequipe/">{{ 'footer.link.team'|trans }}</a></li>
+                                    <li><a class="nocolor" href="{{ www_base_url }}/mentions-legales/">{{ 'footer.link.legal'|trans }}</a></li>
+                                    <li><a class="nocolor" href="{{ www_base_url }}/kit-de-communication/">{{ 'Kit de communication'|trans }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="widget">
+                                <h5 class="widget-title">{{ 'footer.category.help'|trans }}</h5>
+                                <ul class="list-unstyled">
+                                    <li><a class="nocolor" href="{{ www_base_url }}/contact">{{ 'footer.link.contact'|trans }}</a></li>
+                                    <li><a target="_blank" class="nocolor" href="{{ www_base_url }}/conditions-generales-utilisation-vente/">{{ 'footer.link.cgu'|trans }}</a></li>
+                                    <li><a class="nocolor" href="{{ www_base_url }}/glossaire-impression-3d/">{{ 'Glossaire'|trans }}</a></li>
+                                    <li><a class="nocolor" href="{{ www_base_url }}/faq/">{{ 'footer.link.faq'|trans }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="widget">
+                                <h5 class="widget-title">{{ 'footer.category.connection'|trans }}</h5>
+                                <ul class="list-unstyled">
+                                    <li><a class=" has-tooltip nocolor" href="{{ path('user_dashboard') }}">{{ 'footer.link.account'|trans }}</a></li>
+                                    <li><a class=" has-tooltip nocolor" href="{{ www_base_url }}/impression-3d/">{{ 'footer.link.print'|trans }}</a></li>
+                                    <li><a class=" has-tooltip nocolor" href="{{ www_base_url }}/modelisation-3d-et-impression-3d-en-serie/">{{ 'footer.link.design'|trans }}</a></li>
+                                    <li><a class=" has-tooltip nocolor" href="{{ www_base_url }}/modeles-3d/">{{ 'menu.main.model'|trans }}</a></li>
+                                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                        {% if app.user.maker is null or app.user.maker.company is null %}
+                                            <li><a class=" has-tooltip nocolor" href="{{ path('user_maker_setup') }}">{{ 'Je suis un Maker'|trans }}</a></li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li><a class=" has-tooltip nocolor" href="{{ path('prospect_maker') }}">{{ 'Je suis un Maker'|trans }}</a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom_footer">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div id="wp_mailjet_subscribe_widget-3" class="widget WP_Mailjet_Subscribe_Widget">
+                                <h5 class="widget-title">{{ 'footer.newsletter'|trans }}</h5>
+                                <form id="newsletter-form" class="subscribe-form" data-url="{{ path('newsletter_ajax_subscribe') }}">
+                                    <input id="email" name="email" type="text" placeholder="{{ 'footer.newsletter.placeholder'|trans }}">
+                                    <input name="submit" type="submit" class="mailjet-subscribe" value="{{ 'footer.newsletter.register'|trans }}">
+                                </form>
+                                <div id="newsletter-pending" class="newsletter-message" style="display: none">{{ 'footer.newsletter.pending'|trans }}</div>
+                                <div id="newsletter-success" class="newsletter-message" style="display: none">{{ 'footer.newsletter.success'|trans }}</div>
+                                <div id="newsletter-error" class="newsletter-message" style="display: none">{{ 'footer.newsletter.error'|trans }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container"><hr class="pt-0 mb-0" /></div>
+    <div class="sub-footer">
+        <div class="container inner">
+            <div class="cell text-left">
+                <p>
+                    {{ 'footer.copyright'|trans }}
+                    {{ 'footer.support_by'|trans }} <a href="http://www.bpifrance.fr" target="_blank"><img src="{{ asset('assets/front/images/bpifrance.png') }}" alt="logo     BPI France"></a>
+                </p>
+            </div>
+            <div class="cell text-right">
+                <ul class="social social-bg social-s">
+                    <li><a href="https://www.facebook.com/United3dMakers/" target="_blank"><i class="et-facebook"></i></a></li>
+                    <li><a href="https://twitter.com/united3dmakers" target="_blank"><i class="et-twitter"></i></a></li>
+                    <li><a href="https://fr.linkedin.com/company/united-3dmakers" target="_blank"><i class="et-linkedin"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+{% block javascripts %}
+    {#<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>#}{# Got JS erros when using this CDN version... #}
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/plugins.js') }}"></script>{# TODO remove unused plugins #}
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/scripts-custom.js') }}"></script>{# This is a modified version from the template, to remove some unused plugins #}{# TODO remove other unused plugins #}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/i18n/fr.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/main.js') }}"></script>
+
+    
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% set activeTab = 'ref_design' %}
+{% set activeMenu = 'ref_project_type' %}
+{% set title = 'admin.project_type.add.title' %}
+{% if project_type is defined %}
+    {% set title = 'admin.project_type.edit.title' %}
+{% endif %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ title|trans }}
+                </div>
+                <div class="panel-body pl-sm-5">
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9">
+                                <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.save'|trans }}</button>
+                                <a class="btn btn-space btn-secondary" href="{{ path('admin_project_type_list') }}">{{ 'form.cancel'|trans }}</a>
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

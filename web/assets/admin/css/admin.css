@@ -1,0 +1,205 @@
+.mai-splash-screen .user-message {
+    padding-top: 175px;
+}
+
+.mai-splash-screen .form-message img {
+    margin-bottom: 40px !important;
+}
+
+.mai-top-header {
+    background-color: #ffffff;
+}
+
+.mai-user-nav > .nav-item.dropdown > .nav-link {
+    color: #000000;
+}
+
+.splash-container .user-message,
+.mai-sub-header {
+    background-color: #960048;
+}
+
+.splash-container .form-message {
+    background-color: #ffffff;
+}
+
+.splash-container .form-message .out-links a {
+    color: #000000;
+}
+
+.splash-container .form-message .out-links a:hover, .splash-container .form-message .out-links a:active {
+    color: gray;
+}
+
+::placeholder {
+    color: lightgray !important;
+}
+
+.mai-top-header .navbar-nav>.nav-item.dropdown .dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid lightgray;
+}
+
+.mai-top-header .navbar-nav>.nav-item.dropdown .dropdown-menu>.dropdown-item:hover {
+    background-color: transparent;
+}
+
+.btn-primary {
+    background-color: #960048;
+    border-color: #960048;
+}
+
+.btn-primary:hover, .btn-primary:active {
+    background-color: #c8005f;
+}
+
+a.btn-primary:link, a.btn-primary:visited {
+    color: #ffffff !important;
+}
+
+.splash-container .input-group .input-group-addon .icon,
+a:link, a:visited,
+.nav-item.open > .nav-link,
+.mai-sub-header .navbar-nav > .nav-item.open > a,
+.mai-nav-tabs-sub > .nav-item > .nav-link.active,
+.mai-nav-tabs-sub:hover,
+.indicator-item-icon .icon {
+    color: #960048 !important;
+}
+
+.nav-link:link, .nav-link:visited {
+    color: #000000 !important;
+}
+
+.nav-item.parent > .nav-link:link, .nav-item.parent > .nav-link:visited {
+    color: #ffffff !important;
+}
+
+a:hover, a:active,
+.nav-link:hover, .nav-link:active,
+.mai-top-header .navbar-nav>.nav-item.dropdown .dropdown-menu>.dropdown-item:hover {
+    color: #c8005f !important;
+}
+
+.page-item.active .page-link {
+    border-color: #960048;
+}
+
+.logo-img {
+    background-color: #ffffff;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.mai-sub-header > .container {
+    padding-top: 20px;
+}
+
+.main-content {
+    padding-top: 20px;
+}
+
+.alert-dismissible button span {
+    cursor: pointer;
+}
+
+form button {
+    cursor: pointer;
+}
+
+.table tbody tr.highlight td:first-child {
+    border-left: 3px solid #000000;
+    padding-left: 17px;
+}
+
+.table tbody tr.highlight-green td:first-child {
+    border-left-color: #2cc185;
+}
+
+.table tbody tr.highlight-red td:first-child {
+    border-left-color: #ff0000;
+}
+
+legend {
+    font-size: 1rem;
+}
+
+.form-check-input {
+    margin-left: 0;
+}
+
+.form-check-label {
+    padding-left: 1.5rem;
+}
+
+.panel-heading .tools {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.quotation-lines input{
+  width: 100% !important;
+}
+
+.quotation-lines > div{
+  padding: 0 5px 0 5px;
+  color: #404040;
+}
+
+.hr-quotation {
+  padding: 30px 0 0 !important;
+  margin: 0 0 30px !important;
+}
+
+.longtext {
+    word-wrap: break-word;
+}
+
+#content
+{
+    position:absolute; left: 100px; right: 100px; bottom: 0; top: 220px; 
+}
+
+.correction-model {
+    margin-top : 120%;
+}
+
+.name-model {
+    margin-top : 20px;
+    padding : 0 0;
+}
+
+.bg-red {
+    background-color: #ff00004b;
+    margin-bottom : 0px;
+}
+
+.color-white{
+    color: #000000;
+    font-size: 14px;
+}
+
+.btnCollection {
+    background: #960048;
+    border-radius: 4px;
+    font-size: 150%;
+    padding : 2px 2px;
+    margin-right : 20px;
+}
+
+.color-icon{
+    color: #ffffff;
+    
+    font-weight: bold;
+}
+
+.suggest-list {
+    font-size: 15px;
+    color: rgb(0, 146, 0);
+  }
+  
+  .suggest-wrong {
+    font-size: 15px;
+    color: rgb(211, 0, 0);
+  }

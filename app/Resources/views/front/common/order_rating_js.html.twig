@@ -1,0 +1,77 @@
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var ratingEnabledbox = $('#rating_enabled') ;
+            ratingEnabledbox.change(function() { 
+                lgmessage($(this))
+            });
+            var ratingRatebox = $('#rating_rate') ;
+            ratingRatebox.change(function() { 
+                lginfo($(this))
+            });
+                
+        });
+
+        StarOutUrl=		"{{ asset('assets/front/images/StarOut.png') }}";		//image par défaut
+        StarOverUrl=	"{{ asset('assets/front/images/StarOver.png') }}";		//image d'une étoile sélectionnée
+        StarBaseId=		'Star';			    //id de base des étoiles
+        NbStar=			5;			//nombre d'étoiles
+        ChoiceStop = false ;
+        LgtStarBaseId=StarBaseId.lastIndexOf('');
+       
+        
+        for (i=1;i<NbStar+1;i++) {
+            var img			=document.getElementById('Star'+i); 
+            img.onclick = function() {ClickOnStar();};
+            img.alt			='Donner la note de '+i;
+            //Texte au survol
+            
+            img.src			=StarOutUrl;
+            img.onmouseover	=function() {StarOver(this.id);};
+            img.onmouseout	=function() {StarOut(this.id);};
+        }
+        
+
+
+
+        function StarOver(Star) {
+           
+            ChoiceStop = false
+            StarNb=Name2Nb(Star);
+            $('#rating_rate').val(StarNb)
+            for (i=1;i<(StarNb*1)+1;i++) {
+                document.getElementById('Star'+i).src=StarOverUrl;
+            }
+
+            for (i=(StarNb*1)+1;i<6;i++) {
+                document.getElementById('Star'+i).src=StarOutUrl;
+            }
+
+        }
+
+        function StarOut(Star) {
+           
+            if (ChoiceStop == false ){
+                StarNb=Name2Nb(Star);
+                if (StarNb == 1 ) {
+                    document.getElementById('Star1').src=StarOutUrl;
+                    $('#rating_rate').val(0)
+                }
+
+            }
+        }
+        function ClickOnStar() {
+            ChoiceStop = true;
+
+        }
+
+        function Name2Nb(Star) {
+            //Le survol d'une étoile ne nous permet pas de connaître directement son numéro
+            //Cette fonction extrait donc ce numéro à partir de l'Id
+            StarNb=Star.slice(LgtStarBaseId);
+            return(StarNb);
+        }
+
+
+
+    </script>

@@ -1,0 +1,95 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block checkbox_widget %}
+    {# TODO factorize code with form/fields.html.twig #}
+    <div class="checkbox checkbox-inline">
+        <label>
+            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            <span><!-- fake checkbox --></span>
+            <span class="wrapped-label">{{- label|trans -}}</span>
+        </label>
+    </div>
+{% endblock %}
+
+{%- block money_widget -%}
+    {% set attr = attr|merge({'class':'form-control'}) %}
+    <div class="input-group">
+        <input type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        <span class="input-group-addon">{% if attr.unit is defined %}{{ attr.unit|trans }}{% else %}€ HT{% endif %}</span>
+    </div>
+{%- endblock money_widget -%}
+
+{% block appbundle_printer_product_widget %}
+    <div class="row printer-product">
+        <div class="col-sm-12">
+            {{ form_widget(form.available) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_label(form.material) }}
+            {{ form_errors(form.material) }}
+            {{ form_widget(form.material) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_label(form.layer) }}
+            {{ form_errors(form.layer) }}
+            {{ form_widget(form.layer) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_label(form.colors) }}
+            {{ form_errors(form.colors) }}
+            {{ form_widget(form.colors) }}
+        </div>
+        {% if form.price25 is defined %}
+            <div class="col-sm-4">
+                {{ form_label(form.price25) }}
+                {{ form_errors(form.price25) }}
+                {{ form_widget(form.price25) }}
+            </div>
+        {% endif %}
+        {% if form.price50 is defined %}
+            <div class="col-sm-4">
+                {{ form_label(form.price50) }}
+                {{ form_errors(form.price50) }}
+                {{ form_widget(form.price50) }}
+            </div>
+        {% endif %}
+        <div class="col-sm-4">
+            {{ form_label(form.price100) }}
+            {{ form_errors(form.price100) }}
+            {{ form_widget(form.price100) }}
+        </div>
+        <div class="col-sm-12">
+            {{ form_label(form.finishings) }}
+            {{ form_errors(form.finishings) }}
+            {{ form_widget(form.finishings) }}
+        </div>
+        <div class="col-sm-8">
+            <div class="actions">
+                <a href="#" class="product-duplicate">{{ 'printer_product.form.action.duplicate'|trans }}</a> | <a href="#" class="product-remove">{{ 'printer_product.form.action.delete'|trans }}</a>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="actions text-right">
+                <a href="{{ path('user_printer_ref_request') }}" target="_blank">Demander un ajout dans le référentiel</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block app_printer_product_finishing_widget %}
+    <div class="row printer-product-finishing">
+        <div class="col-sm-4">
+            {{ form_errors(form.finishing) }}
+            {{ form_widget(form.finishing) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_errors(form.price) }}
+            {{ form_widget(form.price) }}
+        </div>
+        <div class="col-sm-4">
+            <a href="#" class="finishing-remove btn btn-rounded"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+            <a href="#" class="finishing-add btn btn-rounded"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+        </div>
+    </div>
+{% endblock %}
+

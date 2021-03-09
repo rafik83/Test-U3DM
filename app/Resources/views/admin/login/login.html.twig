@@ -1,0 +1,46 @@
+{% extends 'admin/layout-not-logged.html.twig' %}
+
+{% block body %}
+    <div class="mai-wrapper mai-login">
+        <div class="main-content container">
+            <div class="splash-container row">
+                <div class="col-md-6 user-message">
+                    <span class="splash-message text-right">{{ 'admin.login.title'|trans }}</span>
+                </div>
+                <div class="col-md-6 form-message">
+                    <img src="{{ asset('assets/admin/images/logo.png') }}" alt="logo" width="165" height="65" class="logo-img mb-4">
+                    {% if error %}
+                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>{# TODO theme #}
+                    {% endif %}
+                    <form action="{{ path('admin_login') }}" method="post">
+                        <div class="form-group">
+                            <div class="input-group"><span class="input-group-addon"><i class="icon s7-user"></i></span>
+                                <input name="_username" value="{{ last_username }}" id="username" type="text" placeholder="{{ 'admin.login.form.field.email.label'|trans }}" autocomplete="off" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group"><span class="input-group-addon"><i class="icon s7-lock"></i></span>
+                                <input name="_password" id="password" type="password" placeholder="{{ 'admin.login.form.field.password.label'|trans }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group login-submit">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            <button data-dismiss="modal" type="submit" class="btn btn-lg btn-primary btn-block">{{ 'admin.login.form.button.login.label'|trans }}</button>
+                        </div>
+                        {#<div class="form-group row login-tools">
+                            <div class="col-sm-6 login-remember">
+                                <label class="custom-control custom-checkbox mt-2">
+                                    <input type="checkbox" class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">{{ 'Remember me'|trans }}</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-6 pt-2 text-sm-right login-forgot-password"><a href="#">{{ 'Forgot Password?'|trans }}</a></div>
+                        </div>#}
+                    </form>
+                    <div class="out-links"><a href="{{ www_base_url }}" target="_blank">{{ 'admin.copyright'|trans }}</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

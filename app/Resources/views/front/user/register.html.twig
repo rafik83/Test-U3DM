@@ -1,0 +1,108 @@
+{% extends 'front/base.html.twig' %}
+{% block meta %}
+<meta title="title" content="Enregistrez-vous sur United 3D Makers" />
+<meta property="description" content="Inscrivez-vous et demarrer gratuitement votre expérience d'impression 3D gratuitement." />
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if form is defined and form is not null %}
+                        <script type="text/javascript">
+                            gtag_report_event(this.user3dm,'registration','account_registration.info.success');
+                        </script>
+
+                    {{ form_start(form) }}
+                        {{ form_row(form.firstname) }}
+                        {{ form_row(form.lastname) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.plainPassword) }}
+                        <div class="form-group" style="margin-top: -15px;">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span style="color: green;">Le mot de passe doit être de 8 caractères minimum et contenir au moins 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial. Exemple : @Mi12Lg09#</span>
+                            </div>
+                        </div>
+                        {{ form_row(form.defaultBillingAddress) }}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                {{ form_row(form.newsletter) }}
+                            </div>
+                        </div>
+                        <button type="submit" id="register_submit_button" class="btn btn-rounded">{{ 'form.register'|trans }}</button>
+                    {{ form_end(form) }}
+                    
+                {% else %}
+                        <script type="text/javascript">
+                            gtag_report_event(this.user3dm,'registration','account_registration.details.success');
+                        </script>
+                    <h1>{{ 'Merci !'|trans }}</h1>
+                    <p>{{ 'Un e-mail de confirmation vous a été envoyé, il contient un lien pour activer votre compte.'|trans }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        var f= true
+        function gtagInteraction (){gtag_report_event(this.user3dm,'registration','account_registration.details.started');}
+        
+
+
+        $('#user_registration_firstname').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_lastname').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_email').change(function() {if (f) {gtagInteraction(); f=false;}});
+
+
+        $('#user_registration_plainPassword').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_company').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_street1').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_street2').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_zipcode').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_city').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_country').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_defaultBillingAddress_telephone').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#user_registration_newsletter').change(function() {if (f) {gtagInteraction(); f=false;}});
+
+        if ($('#user_registration_firstname').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_lastname').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_email').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_plainPassword').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_company').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_street1').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_street2').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_zipcode').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_city').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_country').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+        if ($('#user_registration_defaultBillingAddress_telephone').length == 1){
+            gtag_report_event(this.user3dm,'account','field_error');
+        }
+
+        $('#register_submit_button').click(function() {
+            gtag_report_event(this.user3dm,'registration','account_registration.details.attempt');
+            gtag_report_event(this.user3dm,'account','field_error');
+        });
+
+    </script>
+{% endblock %}

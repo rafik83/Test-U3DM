@@ -1,0 +1,122 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% set title = 'Mes informations Designer' %}
+
+{% form_theme form _self %}
+
+{% block checkbox_row %}
+    <span class="infosbull positionForInfosbull">
+        <div class="btn-checkbox btn btn-sm{% if not checked %} btn-form-off{% endif %}">
+            {{- label|trans -}}
+            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        </div>
+        <div></div>
+    </span>
+{% endblock %}
+
+{% block user_content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>{{ title|trans }}</h1>
+        </div>
+        <div class="col-sm-6">
+            <div class="text-right"><a href="mailto:contact@united-3dmakers.fr?subject=Paramètres%20Designer%20:%20Ajout%20de%20référence">Demander l'ajout de nouvelle référence</a></div>
+        </div>
+    </div>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="form-group">
+            <div class="col-sm-3 control-label required"><label>{{ 'designer.form.field.project.type'|trans }}</label></div>
+            <div class="col-sm-9">
+                {% for project in form.designProjectTypes %}
+                    <div>
+                        {{ form_row(project) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-3 control-label required"><label>{{ 'designer.form.field.project.skills'|trans }}</label></div>
+            <div class="col-sm-9">
+                {% for skill in form.designSkills %}
+                    <div>
+                        {{ form_row(skill) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-3 control-label required"><label>{{ 'designer.form.field.project.software'|trans }}</label></div>
+            <div class="col-sm-9">
+                {% for software in form.designSoftwares %}
+                    <div>
+                        {{ form_row(software) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>        
+        <div class="form-submit text-right">
+            <input type="hidden" id="current_user" value="{{ maker.user.firstname }}" />
+            <button type="submit" id="btn_submit" class="btn btn-rounded">{{ 'designer.form.submit.save'|trans }}</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        var submitted = false;
+
+        var needToConfirm = false;
+
+        $(document).ready(function () {
+            $('.btn-checkbox').click(function(e) {
+                needToConfirm = true;
+            });
+            window.onbeforeunload = function (e) {
+                if (!submitted && needToConfirm == true) {
+                    var message = "You have not saved your changes.", e = e || window.event;
+                    if (e) {
+                        e.returnValue = message;
+                    }
+                    return message;
+                }
+            }
+            $("form").submit(function() {
+                submitted = true;
+
+            });
+
+        });
+
+        $('.btn-checkbox').click(function() {
+            $(this).toggleClass('btn-form-off');
+            var checkbox = $(this).children('input[type="checkbox"]').first();
+            checkbox.prop('checked', !checkbox.prop('checked'));
+        });
+
+        $('.infosbull').each(function(index) {
+            var checkbox = $(this).find('input[type="checkbox"]').first();
+            var description = checkbox.data('description');
+            var editorialLink = checkbox.data('editorial');
+            var tooltipContent = '';
+            if (undefined !== description && '' !== description) {
+                tooltipContent += description;
+            }
+            if (undefined !== editorialLink && '' !== editorialLink) {
+                if ('' !== tooltipContent) {
+                    tooltipContent += '<br>';
+                }
+                tooltipContent += '<a href="'+editorialLink+'" target="_blank">+ Plus d\'infos</a>';
+            }
+            if ('' !== tooltipContent) {
+                $(this).children().last().html(tooltipContent);
+            } else {
+                $(this).children().last().css('display', 'none');
+            }
+        });
+
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+{% endblock %}

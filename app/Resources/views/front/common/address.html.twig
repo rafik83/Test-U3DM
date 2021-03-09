@@ -1,0 +1,11 @@
+{% if address is defined and address is not null %}
+    <p>
+        {{ address.lastname|upper }} {{ address.firstname }}<br>
+        {% if address.company is not null %}{{ address.company }}<br>{% endif %}
+        {{ address.street1 }}<br>
+        {% if address.street2 is not null %}{{ address.street2 }}<br>{% endif %}
+        {{ address.zipcode }} {{ address.city }}, {{ address.country }}
+    </p>
+{% else %}
+    <p>n/a</p>
+{% endif %}

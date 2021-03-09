@@ -1,0 +1,57 @@
+{% extends 'front/user/base.html.twig' %}
+{% block user_content %}
+    <h1>{{ 'Mes commandes'|trans }}</h1>
+    {% if 0 < orders|length %}
+        <table id="table-command-list" class="table table-hover">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Référence de la commande</th>
+            <th>Type</th>
+            <th>État</th>
+            <th>Maker</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td data-order="{{ order.createdAt|date('YmdHis') }}">{{ order.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}">{{ order.reference }}</a></td>
+                <td>{{ order.readableType }}</td>
+                <td>{{ order.customerReadableStatus }}</td>
+                <td>{{ order.maker.fullname }}</td>
+                <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}">consulter</a>
+                {% if  order.status == constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED') %}  
+                    <a href="{{ path('order_customer_rate', {'reference': order.reference}) }}">noter</a>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% else %}
+        <p>Vous n'avez passé aucune commande à ce jour.</p>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+    <script type="text/javascript">
+        // For datatables
+        App.init();
+        App.dataTables();
+    </script>
+
+{% endblock %}

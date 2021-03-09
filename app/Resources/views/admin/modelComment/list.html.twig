@@ -1,0 +1,55 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'comment_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'Liste des commentaires de modèles à modérer'|trans }}
+                    <span class="panel-subtitle">{{ 'Liste des commentaires par les clients'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-comment-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.rating.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.rating.list.column.date'|trans }}</th>
+                            <th>{{ 'admin.rating.list.column.customer'|trans }}</th>
+                            <th>Modèle</th>
+                            <th>{{ 'admin.rating.list.column.comment'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for comment in comments %}
+                            <tr>
+                                <td>{{ comment.id }}</td>
+                                <td data-order="{{ comment.createdAt|date('YmdHis') }}">
+                                    {{ comment.createdAt|date('d/m/Y', app.user.timezone) }}
+                                </td>
+                                <td>{{ comment.customer.fullname }}</td>
+                                <td>{{ comment.model.name }}</td>
+                                <td>{{ comment.description }}</td>
+                                <td class="actions">
+                                    <a href="{{ path('admin_comment_enabled', { 'comment': comment.id }) }}" class="icon" style="margin-right:5px;" title="{{ 'admin.rating.action.validate'|trans }}">
+                                        <i class="s7-check"></i>
+                                    </a>
+                                    <a href="{{ path('admin_comment_delete', { 'comment': comment.id }) }}" class="icon" style="margin-right:5px;" title="{{ 'admin.rating.action.delete'|trans }}" onclick="return confirm(' Êtes-vous sur de vouloir supprimer cet avis ?')">
+                                        <i class="s7-trash"></i>
+                                    </a>
+                                    <a href="{{ path('admin_comment_edit', { 'comment': comment.id }) }}" title="{{ 'admin.rating.action.edit'|trans }}" class="icon">
+                                        <i class="s7-note"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

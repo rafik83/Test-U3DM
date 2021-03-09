@@ -1,0 +1,121 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% if form.products is defined %}
+    {# we do not want to use the bootstrap theme for the products nested forms #}
+    {% form_theme form.products with ['form/printer-product.html.twig', 'form/fields.html.twig', 'form/jquery.collection.html.twig'] only %}
+{% endif %}
+
+{% set title = 'Ajouter une imprimante' %}
+{% if printer is defined %}
+    {% set title = 'Modifier une imprimante' %}
+{% endif %}
+
+{% block user_content %}
+    <h1>{{ title|trans }}</h1>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.available) }}
+            </div>
+        </div>
+        {{ form_row(form.technology) }}
+        {% if form.products is not defined %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href="{{ path('user_printer_ref_request') }}" target="_blank">Demander un ajout dans le référentiel</a>
+                </div>
+            </div>
+        {% endif %}
+        {{ form_row(form.model) }}
+        {{ form_row(form.setupPrice) }}
+        {{ form_row(form.maxDimensions) }}
+        {% if form.volumeMethode is defined %} {{ form_row(form.volumeMethode) }} {% endif %}
+        {{ form_row(form.minVolume) }}
+        {% if form.products is defined %}
+            <h2 class="printer-products-title">{{ 'printer.form.field.products'|trans }}</h2>
+            {{ form_widget(form.products) }}
+        {% endif %}
+        <div class="form-submit text-right">
+            <input type="hidden" id="curent_user" value="{{ maker.user.firstname }}" />
+            <button type="submit" id="btn_submit" class="btn btn-rounded">{% if printer is defined %}{{ 'printer.form.submit.update'|trans }}{% else %}{{ 'printer.form.submit.add'|trans }}{% endif %}</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var product_add_button_label = "{{ 'printer_product.form.action.add'|trans }}";
+
+        var submitted = false;
+
+        var needToConfirm = false;
+
+        $(document).bind('DOMSubtreeModified', function () {
+            $("select,input,textarea").change(function() {
+                needToConfirm = true;
+                //console.log("change");
+            });
+            $('.printer_products-product-rescue-add').on("click",function(){
+                needToConfirm = true;
+            });
+            $('.finishing-remove').on('click',function(){
+                needToConfirm = true;
+            });
+        });
+
+        $(document).ready(function () {
+
+
+            $("#btn_submit").click(function(e){
+
+                var currentUser = $("#curent_user").val();
+                if ($('#printer_model').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#printer_setupPrice').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#printer_maxDimensions_x').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#printer_maxDimensions_y').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#printer_maxDimensions_z').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#printer_minVolume').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+
+            });
+            $('.product-remove').on("click",function(){
+                needToConfirm = true;
+                //console.log('action');
+            });
+
+            $('.product-duplicate').on("click",function(){
+                needToConfirm = true;
+                //console.log('action');
+            });
+            window.onbeforeunload = function (e) {
+                if (!submitted && needToConfirm == true) {
+                    var message = "You have not saved your changes.", e = e || window.event;
+                    if (e) {
+                        e.returnValue = message;
+                    }
+                    return message;
+                }
+            }
+            $("form").submit(function() {
+                submitted = true;
+            });
+
+        });
+
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/printer.js') }}"></script>
+{% endblock %}

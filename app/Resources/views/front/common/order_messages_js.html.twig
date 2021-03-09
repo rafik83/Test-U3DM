@@ -1,0 +1,8 @@
+<script type="text/javascript">
+    $('form[name="appbundle_message"] button[type="submit"]').click(function(event) {
+        if ($('#appbundle_message_text').val()) {
+            $(this).prop('disabled', true).html('Envoi en cours...');
+            $('form[name="appbundle_message"]').submit();
+        }
+    });
+</script>

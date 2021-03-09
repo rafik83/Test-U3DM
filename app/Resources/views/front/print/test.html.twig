@@ -1,0 +1,345 @@
+{% extends 'front/base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Test de l'API de recherche des prix</h2>
+                <form id="test_print" method="post">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <p>
+                                Dimensions (mm)<br>
+                                X : <input type="text" name="dimensions_x" value="10">
+                                Y : <input type="text" name="dimensions_y" value="15">
+                                Z : <input type="text" name="dimensions_z" value="20">
+                            </p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p>
+                                Volume (mm3)<br>
+                                <input type="text" name="volume" value="5000">
+                            </p>
+                        </div>
+                        <div class="col-sm-2">
+                            <p>
+                                Quantité<br>
+                                <input type="text" name="quantity" value="1">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_print" style="display: none;"></pre>
+
+                <h2>Test de l'API de récupération des frais de port</h2>
+                <form id="test_shipping" method="post">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>
+                                Maker id<br>
+                                <input type="text" name="makerId" value="1">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_shipping" style="display: none;"></pre>
+
+                <h2>Test de l'API de récupération des points relais</h2>
+                <form id="test_shipping_relays" method="post">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <p>
+                                Rue<br>
+                                <input type="text" name="relay_street" value="78 rue du Sergent Bobillot">
+                            </p>
+                        </div>
+                        <div class="col-sm-4">
+                            <p>
+                                Code postal<br>
+                                <input type="text" name="relay_zipcode" value="93100">
+                            </p>
+                        </div>
+                        <div class="col-sm-4">
+                            <p>
+                                Ville<br>
+                                <input type="text" name="relay_city" value="Montreuil">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_shipping_relays" style="display: none;"></pre>
+
+                <h2>Test de l'API de récupération des frais de service</h2>
+                <form id="test_fee" method="post">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>
+                                Montant de commande en centimes (hors frais de port)<br>
+                                <input type="text" name="amount" value="5000">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_fee" style="display: none;"></pre>
+
+                <h2>Test de l'API de création de commande impression</h2>
+                <form id="test_order_print" method="post">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Contenu de la requête en dur dans le code twig</p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_order_print" style="display: none;"></pre>
+
+                <h2>Test de l'API de paiement</h2>
+                <form id="test_payment" method="post">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p>
+                                Order ID<br>
+                                <input type="text" name="payment_order_id" value="">
+                            </p>
+                        </div>
+                        <div class="col-sm-3">
+                            <p>
+                                Token<br>
+                                <input type="text" name="payment_token" value="">
+                            </p>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button type="submit" class="btn btn-default btn-rounded">Envoyer</button>
+                    </p>
+                </form>
+                <pre id="result_payment" style="display: none;"></pre>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form#test_print').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_print').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_print_ajax') }}';
+                var postData = {
+                    "dimensions": {
+                        "x": $('input[name="dimensions_x"]').val(), // object dimensions in mm
+                        "y": $('input[name="dimensions_y"]').val(),
+                        "z": $('input[name="dimensions_z"]').val(),
+                    },
+                    "volume": $('input[name="volume"]').val(),      // object volume in mm3
+                    "quantity": $('input[name="quantity"]').val(),  // object quantity
+                    "makers": []                                    // list of allowed makers id (useful for multi-files handling) ; leave empty if all are allowed
+                    //"makers": ["1", "2", "3"]
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_print').html(data);
+                    },
+                    error: function() {
+                        $('#result_print').html('Error');
+                    }
+                });
+            });
+
+            $('form#test_shipping').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_shipping').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_shipping_ajax') }}';
+                var postData = {
+                    "makerId": $('input[name="makerId"]').val(), // maker id
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_shipping').html(data).show();
+                    },
+                    error: function() {
+                        $('#result_shipping').html('Error');
+                    }
+                });
+            });
+
+            $('form#test_shipping_relays').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_shipping_relays').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_shipping_relays_ajax') }}';
+                var postData = {
+                    "street": $('input[name="relay_street"]').val(),
+                    "zipcode": $('input[name="relay_zipcode"]').val(),
+                    "city": $('input[name="relay_city"]').val()
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_shipping_relays').html(data);
+                    },
+                    error: function() {
+                        $('#result_shipping_relays').html('Error');
+                    }
+                });
+            });
+
+            $('form#test_fee').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_fee').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_fee_ajax') }}';
+                var postData = {
+                    "amount": $('input[name="amount"]').val(), // amount
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_fee').html(data).show();
+                    },
+                    error: function() {
+                        $('#result_fee').html('Error');
+                    }
+                });
+            });
+
+            $('form#test_order_print').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_order_print').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_place_order_print_ajax') }}';
+                var postData = {
+                    "customer_id": 1, // id user
+                    "maker_id": 2,    // id maker
+                    "billing_address": {
+                        "lastname":  "Acheteur",
+                        "firstname": "Prénom",
+                        "company":   "Ma société",// optionnel
+                        "street1":   "10 rue de la paix",
+                        "zipcode":   "75001",
+                        "city":      "Paris",
+                        "country":   "FR",
+                        "telephone": "0100112233"
+                    },
+                    "shipping_address": {
+                        "lastname":  "Acheteur",
+                        "firstname": "Prénom",
+                        "street1":   "10 rue de la paix",
+                        "street2":   "1er étage", // optionnel
+                        "zipcode":   "75001",
+                        "city":      "Paris",
+                        "country":   "FR",
+                        "telephone": "0100112233"
+                    },
+                    "shipping_type": "{{ constant('\\AppBundle\\Entity\\Shipping::TYPE_HOME_STANDARD') }}", // valeur retournée dans l'api shipping
+                    "shipping_relay_identifier": "7707P", // optionnel
+                    "instructions": "Livrer entre midi et deux.", // optionnel
+                    "amounts": {
+                        "total_amount_tax_incl": 12000,      // montant total de la commande en entier (centimes)
+                        "total_amount_tax_excl": 10000,
+                        "production_amount_tax_incl": 12000, // montant de la production (objets et finitions)
+                        "production_amount_tax_excl": 10000,
+                        "shipping_amount_tax_incl": 12000,   // montant des frais de port
+                        "shipping_amount_tax_excl": 10000,
+                        "fee_amount_tax_incl": 12000,        // montant des frais de service
+                        "fee_amount_tax_excl": 10000
+                    },
+                    "items": [
+                        {
+                            "file_id": 1, // id entity PrintFile
+                            "amount_tax_incl": 12000, // montant total pour cet objet (= unitaire * quantité + setup), sans les finitions
+                            "amount_tax_excl": 10000,
+                            "quantity": 1,
+                            "dimensions": {
+                                "x": 10.0, // dimension en float (mm)
+                                "y": 20.0,
+                                "z": 30.0
+                            },
+                            "volume": 6000.0, // volume en float (mm3)
+                            "technology": 1,  // id technology
+                            "material": 1,    // id material
+                            "layer": 1,       // id layer
+                            "color": 1,       // id color
+                            "fillingRate": 0, // id filling rate : 0, 1, 2 ou 3
+                            "finishings": [ // cette liste peut être vide
+                                {
+                                    "finishing": 1, // id finishing
+                                    "amount_tax_incl": 120, // montant total pour cette finition (= unitaire * quantité)
+                                    "amount_tax_excl": 100
+                                }
+                            ]
+                        }
+                    ]
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_order_print').html('Code 200 : ' + data).show();
+                    },
+                    error: function(response) {
+                        $('#result_order_print').html('Code ' + response.status + ' : ' + response.responseJSON).show();
+                    }
+                });
+            });
+
+            $('form#test_payment').submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                $('#result_payment').html('Envoi de la requête...').show();
+                var postUrl = '{{ path('api_payment_ajax') }}';
+                var postData = {
+                    "order_id": $('input[name="payment_order_id"]').val(), // order_id
+                    "token": $('input[name="payment_token"]').val(), // token
+                    "type": '{{ constant('\\AppBundle\\Entity\\Payment::TYPE_CARD') }}', // type (Payment::TYPE_CARD or Payment::TYPE_SEPA)
+                };
+                $.ajax({
+                    url: postUrl,
+                    type: 'post',
+                    data: JSON.stringify(postData),
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#result_payment').html('Code 200 : ' + data).show();
+                    },
+                    error: function(response) {
+                        $('#result_payment').html('Code ' + response.status + ' : ' + response.responseJSON).show();
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

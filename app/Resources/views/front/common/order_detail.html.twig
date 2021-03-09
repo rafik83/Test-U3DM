@@ -1,0 +1,115 @@
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        
+        {% if models != null %}
+            <th width="50%">Objet</th>
+            <th style="text-align: center;">Maker</th>
+            <th style="text-align: center;">Télécharger</th>
+        {% else %}
+            <th width="66%">Objet</th>
+            <th style="text-align: center;">Quantité</th>
+            <th style="text-align: center;">Prix Unitaire</th>
+        {% endif %}
+        <th style="text-align: right;">Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if models != null %}
+        {% for model in models %}
+            <tr>
+                <td>{{ model.name }} ({{ model.getAttachmentOriginalName }})</td>
+                <td style="text-align: center;">{{ model.maker.company }}</td>
+                <td style="text-align: center;">
+                    {% if order.status != constant('\\AppBundle\\Entity\\Order::STATUS_CANCELED') and order.status != constant('\\AppBundle\\Entity\\Order::STATUS_REFUNDED') %}
+                        <a href="{{ path('user_maker_download', {'id': model.id, 'name': model.name, 'order_id': order.id}) }}">
+                            Télécharger
+                        </a>
+                    {% endif %}
+                </td>
+                <td style="text-align: right;">{{ (model.priceTaxExcl / 100)|number_format(2) }} € HT</td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    {# loop through the items but ignore items relative to an OrderItemPrint (such as OrderItemPrintFinishing), we will add them inside the loop directly #}
+    {% for item in order.items if item.printItem is not defined %}
+        <tr>
+            <td>{% if item.printFile is defined %}
+                    {% if app.user is not null and app.user.maker is defined and app.user.maker is not null and app.user.maker is same as(order.maker) 
+                        and (order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_CANCELED')) or order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_REFUNDED'))) %}
+            
+                        <a href="javascript:alert('La commande a été annulée.')">
+                    {% else %}
+                        <a href="{{ path('print_file_download', {'name': item.printFile.name}) }}" class="printfile-download">
+                    {% endif %}
+                    {% if item.printFile.originalName is not null %} {{ item.printFile.originalName }}
+                    {% else %}{{ item.printFile.name }}
+                    {% endif %}
+                    </a> : {{ item.descriptionConfiguration }}
+                {% else %}
+                    {{ item.description }}
+                {% endif %}</td>
+            <td style="text-align: center;">{{ item.quantity }}</td>
+            <td style="text-align: right;">{{ (item.unitAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+            <td style="text-align: right;">{{ (item.quantity * item.unitAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+        </tr>
+        {% if item.itemFinishings is defined %}
+            {% for itemFinishing in item.itemFinishings %}
+                <tr>
+                    <td>{{ itemFinishing.description }}</td>
+                    <td style="text-align: center;">{{ itemFinishing.quantity }}</td>
+                    <td style="text-align: right;">{{ (itemFinishing.unitAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+                    <td style="text-align: right;">{{ (itemFinishing.quantity * itemFinishing.unitAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% set colspan = 3 %}
+    {% if isMaker is not defined or isMaker is same as(false) %}
+        {# display order full details #}
+        <tr>
+            <td colspan="{{ colspan }}" style="text-align: right;">Frais de service</td>
+            <td style="text-align: right;">{{ (order.feeAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+        </tr>
+        {% if order.coupon is not null %}
+            <tr>
+                <td colspan="{{ colspan }}" style="text-align: right;">{{ order.coupon.label }}</td>
+                <td style="text-align: right;">- {{ (order.discountAmountTaxExcl / 100)|number_format(2) }} € HT</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td colspan="{{ colspan }}" style="text-align: right;">TVA</td>
+            <td style="text-align: right;">{{ (order.totalTaxAmount / 100)|number_format(2) }} €</td>
+        </tr>
+        <tr>
+            <td colspan="{{ colspan }}" style="text-align: right;">Frais de port</td>
+            <td style="text-align: right;">{{ (order.shippingAmountTaxExcl / 100)|number_format(2) }} €</td>
+        </tr>
+        <tr>
+            <td colspan="{{ colspan }}" style="text-align: right; font-weight: bold;">TOTAL</td>
+            <td style="text-align: right; font-weight: bold;">{{ (order.totalAmountTaxIncl / 100)|number_format(2) }} € TTC</td>
+        </tr>
+    {% elseif isMaker is same as(true) %}
+        {# for a maker: only display production-related order details and coupon if any #}
+        {% if order.coupon is not null and order.discountAmountForMakerTaxExcl is not same as(0) %}
+            <tr>
+                <td colspan="{{ colspan }}" style="text-align: right;">{{ order.coupon.label }}</td>
+                <td style="text-align: right;">- {{ (order.discountAmountForMakerTaxExcl / 100)|number_format(2) }} € HT</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td colspan="{{ colspan }}" style="text-align: right;">TVA</td>
+            <td style="text-align: right;">{{ ((order.productionTaxAmount - (order.discountAmountForMakerTaxIncl - order.discountAmountForMakerTaxExcl)) / 100)|number_format(2) }} €</td>
+        </tr>
+        <tr>
+            {% if models != null %}
+                <td colspan="{{ colspan }}" style="text-align: right; font-weight: bold;">TOTAL</td>
+            {% else %}
+                <td colspan="{{ colspan }}" style="text-align: right; font-weight: bold;">TOTAL PRODUCTION</td>
+            {% endif %}
+            
+            <td style="text-align: right; font-weight: bold;">{{ (order.totalAmountForMakerTaxIncl / 100)|number_format(2) }} € TTC</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

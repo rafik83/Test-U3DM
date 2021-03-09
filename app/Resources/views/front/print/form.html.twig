@@ -1,0 +1,72 @@
+{% extends 'front/base.html.twig' %}
+
+{% block body %}
+    <div id="big-form">
+        <div id="how-it-work" class="col-sm-12 bg-white pad-15">
+            <h2 class="toggle mrg-0">{# <span class="rounded">0</span>  #}Comment ça marche ?</h2>
+            <div class="flex mrg-0">
+                <div class="text-center pad-0-15">
+                    <i class="far fa-file-alt fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Déposer un ou plusieurs fichiers (.stl ou .obj)</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-wrench fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Sélectionner les options d'impression</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="far fa-user-circle fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Sélectionner un maker</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-shipping-fast fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Choisir le mode de livraison</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="far fa-credit-card fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Paiement sécurisé</h3>
+                </div>
+            </div>
+        </div>
+        <div id="app-init" class="col-sm-12" 
+                url-api-pricing="{{ path('api_print_ajax') }}" 
+                url-api-shipping="{{ path('api_shipping_ajax') }}" 
+                url-api-fees="{{ path('api_fee_ajax') }}" 
+                url-api-user-create="{{ path('api_user_register') }}" 
+                url-api-user-login="{{ path('api_user_login') }}"
+                url-api-user-logout="{{ path('api_user_logout') }}" 
+                url-api-user-connected="{{ path('api_user_connected') }}" 
+                stripe-public-key="{{ stripe_public_key }}" 
+                url-api-upload="{{ oneup_uploader_endpoint('gallery') }}" 
+                url-api-chronopost="{{ path('api_shipping_relays_ajax') }}"
+                url-api-order="{{ path('api_place_order_ajax') }}"
+                url-api-payment="{{ path('api_payment_ajax') }}"
+                url-api-third-d-secure="{{ path('api_third_d_secure_ajax') }}"
+                url-api-coupon="{{ path('api_coupon_apply_ajax') }}"
+                email-contact="{{ email_contact }}"
+                >
+            
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+
+
+
+    <script type="text/javascript">
+        const tagSpecial = "PRINT";
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jsc3d.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jsc3d.console.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.ui.widget.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.iframe-transport.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.fileupload.js') }}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/main.js') }}"></script>
+    {# App VueJS #}
+    <script src="{{ asset('build/app.js') }}"></script>
+    {# End App VueJS #}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}

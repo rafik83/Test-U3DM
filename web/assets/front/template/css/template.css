@@ -1,0 +1,192 @@
+.inverse-text .navbar-nav > li:not(.active) > a:not(.highlighted){
+	color: #960048!important;
+}
+body{
+	font-family : oswald!important;
+}
+.navbar .navbar-nav > li > a{
+	color: #960048;
+	text-transform : uppercase;
+	font-family : oswald;
+}
+.home .navbar.transparent.absolute .navbar-nav > li > a{
+		color: #fff;
+}
+.home .navbar.transparent.fixed.absolute .navbar-nav > li > a{
+	color : #960048;
+}
+.home .navbar.transparent.fixed.absolute .navbar-nav > li > a:hover{
+	color : #c8005f!important;
+}
+.home .navbar.transparent:not(.fixed) .navbar-nav > li > a:hover{
+	color : #c8005f!important;
+}
+
+.btn:hover, .btn:focus, .btn:active, .btn.active{
+	background : #960048!important;
+}
+.navbar .navbar-nav > li > a,
+.box.bg-opacity, .navbar.bg-opacity, .navbar.opacity.bg-opacity {
+   /* background: none;
+    box-shadow: none;*/
+}
+.banner--stick{
+   /* background: #fff!important;*/
+}
+.home .opacity.banner--clone.navbar .navbar-nav > li > a{
+	color : #960048;
+}
+.opacity.banner--clone.navbar .nav > li > a:hover, .opacity.banner--clone.navbar .nav > li.active > a{
+	color : #c8005f;
+}
+.section-title{
+	color : #960048;
+	font-weight : 400;
+}
+.sidebar .widget-title{
+	color : #960048;
+	text-transform : uppercase;
+}
+.subscribe-form input{
+	float : left;
+	width:80%;
+}
+.subscribe-form input.mailjet-subscribe {
+	width: auto;
+    padding: 6px 12px;
+    background: #8c054a;
+    border: 1px solid #8c054a;
+    color: #fff;
+    border-radius: 4px;
+}
+.subscribe-form .response{
+	float: left;
+    color: #F44336;
+}
+.slick-nav-container .slick-nav{display:none;}
+.post-title a{color: #960048;}
+.post-title a:hover{color: #c8005f;}
+footer .widget-title{color:#960048;text-transform:uppercase;}
+.countdownbox .color-yellow, .list-yellow > li:before, .list-yellow i {
+	color : #df739b !important;
+}
+.countdownbox .color-pink, .list-pink > li:before, .list-pink i{
+	color : #f1bd69 !important;
+}
+.box.bg-white{
+	font-size : 16px;
+	
+}
+.lequipes p{
+	text-align : justify;
+}
+.sidebar .subscribe-form #email{
+	width : 70%;
+	float:left;
+}
+.breadfk{
+position: relative; left: -191.5px;width: 135%;padding-top: 0;padding-bottom: 43px;top: -4px;
+}
+@media (max-width:991px) {
+	.breadfk{
+    left: -93.5px;
+    width: 125%;
+    top: 30px;
+	}
+}
+@media (max-width:767px) {
+	.breadfk{
+    left: 0;
+    width: 100%;
+    top: 16px;
+	}
+}
+.home .navbar>.container .navbar-brand{
+	background : #fff;
+	   border-radius: 10px;
+}
+.home .navbar.banner--stick>.container .navbar-brand{
+	background : transparent;
+	border-radius: none;
+}
+.text-muted, .meta, a.more, .meta span:after, .meta *, .meta.breadcrumbs a, .meta.price .quantity, .meta.price del{
+	color : #000!important;
+}
+.meta.breadcrumbs a:hover{
+	color : #960048!important;
+}
+.meta.breadcrumbs{
+	text-transform : none;
+	font-size : 16px;
+	font-weight : 400;
+}
+.meta span:after, .contact-info span:after{
+	font-size : 15px;
+	padding : 0 2px 0 5px;
+}
+.btn.share-linkedin{
+	background : #0077B5;
+}
+.bottom_footer{
+	float : left;
+	width : 100%;
+	margin-top : 20px;
+}
+#categories-5 ul{
+	padding : 0;
+	list-style : none;
+}
+span.IN-widget:after{content:none;}
+@media (min-width : 1200px){
+.post .meta{
+	width:75%;
+	margin : auto;
+}
+	
+	
+}
+.post-content .meta{
+	width:100%;
+	
+}
+.inner{
+	padding-bottom : 45px;
+    padding-top: 45px;
+}
+.lequipes  .icon {display:none;}
+.WP_Mailjet_Subscribe_Widget .response{float:left;}
+.top_footer .categories li a,.top_footer ul li a{
+  color: inherit;
+}
+.top_footer ul li a:hover{
+    color: #960048;
+}
+.form-horizontal .control-label{text-align: left;}
+.nav-tabs > li{    
+    float: left;
+    margin: 5px;
+    width: 165px;
+    text-align: center;
+    background: #960048;
+    border-radius: 5px;
+    color: #fff;
+}
+.nav-tabs > li > a{
+    color: white;
+    background: #960048;
+    padding: 10px;
+    border-radius: 5px;
+    display: block;
+}
+.nav-tabs > li.active > a,.nav-tabs > li.active > a:hover,.nav-tabs > li > a:hover,.nav-tabs > li > a:focus,.nav-tabs > li.active,.nav-tabs > li.active:focus,.nav-tabs > li.active:hover{
+    background: #c8005f;
+    color: white;
+}
+.nav-tabs{
+    border: 0;
+    margin: auto;
+    width: 350px;
+}
+.lead{
+    margin-bottom: 40px;
+}

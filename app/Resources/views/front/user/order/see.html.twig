@@ -1,0 +1,154 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1>Ma commande {{ order.reference }} du {{ order.createdAt|date('d/m/Y', 'Europe/Paris') }} - <span class= "status"> {{ order.customerReadableStatus }}</span> </h1>
+    <p>
+        <a href="{{ path('order_customer_list') }}">Retour à mes commandes</a>
+        {% if order.type == constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')%}
+         | <a href="{{ path('design_form', {'reference': order.quotation.project.reference}) }}">Voir le projet</a>
+        {% endif %}
+    </p>
+    <div class="row">
+        <div class="col-sm-4">
+            <h4>Livraison</h4>
+                {% if order.type == constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')%}
+                    {% if order.quotation.project.type.isfile %} Téléchargement fichier(s) à valider <br>{% endif %}
+                    {% if order.quotation.project.type.isshippingChoice %}{{ order.readableShippingType }}<br>  {% endif %} 
+                    {% if order.quotation.project.type.isshipping %}Selon le devis <br> {% endif %}
+                {% else %}
+                    {{ order.readableShippingType }}<br>
+                {% endif %}
+                {% if order.expectedDeliveryDate is not null %}
+                    {% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') %}Retrait possible à partir du{% else %}Livraison prévue le{% endif %}
+                    {{ order.expectedDeliveryDate|date('d/m/Y', 'Europe/Paris') }}
+                    {% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') %} (le Maker vous avertira quand la commande sera disponible){% endif %}
+                    <br>
+                {% endif %}
+                {% if showShipment %}
+                    {% for shipment in order.shipments %}
+                        {% if  order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT')) or ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shippingChoice ) %}
+                            {{ shipment.readableType }} n°{{ shipment.parcelNumber }}
+                        {% else %}
+                            Colis n°: {{ shipment.parcelNumber }}
+                        {% endif %}
+                        {% if shipment.trackingUrl is not null %} <a href="{{ shipment.trackingUrl }}" target="_blank">SUIVRE</a>{% endif %}
+                        <br>
+                    {% endfor %}
+                {% endif %}
+             {% if  order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT')) or ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shippingChoice ) %}
+                <b> Adresse : </b><br>
+                {% include 'front/common/address.html.twig' with { address: order.shippingAddress } %}
+            {% endif %}
+ 
+            {% if order.instructions is not null %}
+                <p>Instructions complémentaires : {{ order.instructions|nl2br }}</p>
+            {% endif %}
+        </div>
+        <div class="col-sm-4">
+            <h4>Facturation</h4>
+            {% include 'front/common/address.html.twig' with { address: order.billingAddress } %}
+            <p>
+                {% if order.status != constant('\\AppBundle\\Entity\\Order::STATUS_MODEL_PAID') %}
+                    Mode de paiement : {% for payment in order.payments %}{{ payment.readableType }}{% endfor %}
+                {% endif %}
+                {% if showInvoice %}
+                    <br><a href="{{ path('order_invoice_download', { 'reference': order.reference }) }}">Télécharger la facture</a>
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <h4>Maker sélectionné</h4>
+            <p>{{ order.maker.fullname }}</p>
+        </div>
+    </div>
+
+    {% if order.file is not null %}
+        <div class="row">
+            <div class="col-sm-12">
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_AVAILABLE') or 
+                      order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_DOWNLOADED') %}
+                    <h4>Télécharger et valider le livrable correspondant à votre commande : 
+                {% else %}
+                    <h4>Votre livrable :                 
+                {% endif %}
+                {% if order.file.urlDownload is null %}
+                    <strong>{{ order.file.originalName }}| <a href="{{ path('order_file_download', {'id': order.file.id}) }}">Télécharger</a>
+                {% else %}
+                    <a href="{{ path('order_url_download', {'id': order.file.id}) }}" target="download">accèder au lien de téléchargement</a>
+                {% endif %}
+                </h4>
+
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_AVAILABLE') or 
+                      order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_DOWNLOADED') %}
+                        {# <a href="#" class="btn btn-rounded" id="action-reject-file">Refuser le fichier</a> #}
+                        <b> En l'absence de réponse, le livrable est validé sous 2 jours ouvrés<b><br>
+                        <b> En cas de refus, veuillez préciser les motifs justifiant ce refus.</b>
+
+                        {{ form_start(rejectForm) }}
+                        {{ form_errors(rejectForm) }}
+                        {{ form_widget(rejectForm.text) }}
+                        <div class="text-right">
+                        
+                            {# <a href="{{ path('order_file_accept', {'id':  order.file.id }) }}" class="btn btn-rounded">Valider le livrable</a> #}
+                            {{ form_widget(rejectForm.validate) }}
+                            <button type="submit" class="btn btn-rounded">Refuser le livrable</button>
+
+                        </div>
+                        {{ form_end(rejectForm) }}
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if ratingForm is not null %}
+        <div class="row" id="rating">
+            <div class="col-sm-12">
+                {% include 'front/common/order_rating.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h4>Détail de la commande </h4>
+            <p>
+                Commande passée le {{ order.createdAt|date('d/m/Y à H:i', 'Europe/Paris') }}.<br>
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_NEW') %}(la commande n'a pas encore été prise en charge par le Maker ; il est possible de l'<a href="{{ path('order_customer_cancel', {'reference': order.reference}) }}">annuler</a>){% endif %}
+            </p>
+            {% include 'front/common/order_detail.html.twig' %}
+        </div>
+    </div>
+
+ 
+   
+    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_AVAILABLE') or 
+        order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_DOWNLOADED') or
+        order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_MODERATE_REJECTED') %}
+        {% set formSendMessHide = true %}
+    {% else %}
+        {% set formSendMessHide = false %}
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12">
+            <p>&nbsp;</p>
+            <h4>Communication avec le Maker</h4>
+            {% include 'front/common/order_messages.html.twig' with { 'isMaker': false, 'formSendMessHide' : formSendMessHide} %}
+        </div>
+    </div>
+    <p><a href="{{ path('order_customer_list') }}">Retour à mes commandes</a></p>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $('form[name="appbundle_message_order_file_reject"]').show();
+        $('a#action-reject-file').click(function(event) {
+            $(this).hide();
+            $('form[name="appbundle_message_order_file_reject"]').show();
+            event.preventDefault();
+            event.stopPropagation();
+        });
+    </script>
+    {% include 'front/common/order_messages_js.html.twig' %}
+    {% include 'front/common/order_rating_js.html.twig' %}
+{% endblock %}

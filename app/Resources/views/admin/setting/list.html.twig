@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'setting' %}
+{% set activeMenu = 'setting_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.setting.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.setting.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-setting-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.setting.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.setting.list.column.name'|trans }}</th>
+                            <th>{{ 'admin.setting.list.column.value'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for setting in settings %}
+                            <tr>
+                                <td>{{ setting.id }}</td>
+                                <td><a href="{{ path('admin_setting_edit', { 'id': setting.id }) }}">{{ setting.name }}</a></td>
+                                <td>{% if constant('\\AppBundle\\Entity\\Setting::TYPE_MONEY') == setting.type %}{{ setting.value / 100 }}{% else %}{{ setting.value }}{% endif %}{% if constant('\\AppBundle\\Entity\\Setting::TYPE_MONEY') == setting.type %} euros{% elseif constant('\\AppBundle\\Entity\\Setting::TYPE_PERCENT') == setting.type %} %{% endif %}</td>
+                                <td class="actions"><a href="{{ path('admin_setting_edit', { 'id': setting.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

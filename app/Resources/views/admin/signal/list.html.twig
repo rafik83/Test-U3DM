@@ -1,0 +1,55 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'dashboard' %}
+{% set activeMenu = 'signal' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    Liste des modèles
+                    <span class="panel-subtitle">Liste de tous les signalements fais sur des modèles</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-signal-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Modèle</th>
+                            <th>Description</th>
+                            <th>Email</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for signal in signals %}
+                            <tr>
+                                <td>{{ signal.id }}</td>
+                                <td data-order="{{ signal.createdAt|date('YmdHis') }}">
+                                    {{ signal.createdAt|date('d/m/Y', app.user.timezone) }}
+                                </td>
+                                <td>{{ signal.model.name }}</td>
+                                <td>{{ signal.description }}</td>
+                                <td>{{ signal.email }}</td>
+                                <td class="actions">
+                                    <a href="{{ path('admin_signal_enabled', { 'signal': signal.id }) }}" class="icon" style="margin-right:5px;" title="{{ 'admin.rating.action.validate'|trans }}">
+                                        <i class="s7-check"></i>
+                                    </a>
+                                    <a href="{{ path('admin_signal_delete', { 'signal': signal.id }) }}" class="icon" style="margin-right:5px;" title="{{ 'admin.rating.action.delete'|trans }}" onclick="return confirm(' Êtes-vous sur de vouloir supprimer ce signalement ?')">
+                                        <i class="s7-trash"></i>
+                                    </a>
+                                    <a href="{{ path('admin_signal_edit', { 'signal': signal.id }) }}" title="{{ 'admin.rating.action.edit'|trans }}" class="icon">
+                                        <i class="s7-note"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

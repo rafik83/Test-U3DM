@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="{{ asset('favicon.png') }}">
+<title>{{ 'admin.title'|trans }}</title>
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/stroke-7/style.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/perfect-scrollbar/css/perfect-scrollbar.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/css/dataTables.bootstrap4.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/css/app.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/css/admin.css') }}"/>
+{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark mai-top-header">
+    <div class="container">
+        <img src="{{ asset('assets/admin/images/logo.png') }}" class="logo-img">
+        {#<ul class="nav navbar-nav mai-top-nav">
+            <li class="nav-item"><a href="{{ path('homepage') }}" class="nav-link" target="_blank">{{ 'Voir le site'|trans }}</a></li>
+        </ul>#}
+        {#
+        <ul class="navbar-nav float-lg-right mai-icons-nav">
+            <li class="dropdown nav-item mai-notifications">
+                <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="nav-link dropdown-toggle"><span class="icon s7-bell"></span><span class="indicator"></span></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <div class="title">{{ 'Notifications'|trans }}</div>
+                        <div class="mai-scroller">
+                            <div class="content">
+                                <ul>
+                                    <li>
+                                        <a href="#">
+                                            <div class="icon"><span class="s7-check"></span></div>
+                                            <div class="content"><span class="desc">This is a new message for my dear friend <strong>Rob</strong>.</span><span class="date">10 minutes ago</span></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="icon"><span class="s7-add-user"></span></div>
+                                            <div class="content"><span class="desc">You have a new fiend request pending from <strong>John Doe</strong>.</span><span class="date">2 days ago</span></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="icon"><span class="s7-graph1"></span></div>
+                                            <div class="content"><span class="desc">Your site visits have increased <strong>15.5%</strong> more since the last week.</span><span class="date">2 hours ago</span></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="icon"><span class="s7-check"></span></div>
+                                            <div class="content"><span class="desc">This is a new message for my dear friend <strong>Rob</strong>.</span><span class="date">10 minutes ago</span></div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="footer"> <a href="#">{{ 'View all notifications'|trans }}</a></div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        #}
+        <ul class="nav navbar-nav float-lg-right mai-user-nav">
+            <li class="dropdown nav-item">
+                <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle nav-link">{#<img src="{{ asset('<image>') }}">#}<span class="user-name">{{ app.user.fullname }}</span><span class="angle-down s7-angle-down"></span></a>
+                <div role="menu" class="dropdown-menu">
+                    {#<a href="#" class="dropdown-item"><span class="icon s7-user"></span> {{ 'admin.menu.user.profile'|trans }}</a>#}
+                    <a href="{{ path('admin_logout') }}" class="dropdown-item"><span class="icon s7-power"></span> {{ 'admin.menu.user.logout'|trans }}</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="mai-wrapper">
+    <nav class="navbar navbar-expand-lg mai-sub-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-md">
+                <button type="button" data-toggle="collapse" data-target="#mai-navbar-collapse" aria-controls="#mai-navbar-collapse" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler hidden-md-up collapsed">
+                    <div class="icon-bar"><span></span><span></span><span></span></div>
+                </button>
+                <div id="mai-navbar-collapse" class="navbar-collapse collapse mai-nav-tabs">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item parent{% if activeTab is defined and 'dashboard' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_dashboard') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-home"></span><span>{{ 'admin.menu.tab.home'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_dashboard') }}" class="nav-link{% if activeMenu is defined and 'dashboard' == activeMenu %} active{% endif %}"><span class="icon s7-monitor"></span> <span class="name">{{ 'admin.menu.item.dashboard'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_suggest') }}" class="nav-link{% if activeMenu is defined and 'suggest' == activeMenu %} active{% endif %}"><span class="icon s7-monitor"></span> <span class="name">Suggestion</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_signal_list') }}" class="nav-link{% if activeMenu is defined and 'signal' == activeMenu %} active{% endif %}"><span class="icon s7-monitor"></span> <span class="name">Signalement</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_message_list') }}" class="nav-link{% if activeMenu is defined and 'message' == activeMenu %} active{% endif %}"><span class="icon s7-monitor"></span> <span class="name">Messages</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'order' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_order_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-note2"></span><span>{{ 'admin.menu.tab.order'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_order_list') }}" class="nav-link{% if activeMenu is defined and 'order_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span>
+                                        <span class="name">{{ 'admin.menu.item.order.list'|trans }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_rating_list') }}" class="nav-link{% if activeMenu is defined and 'rating_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span> 
+                                        <span class="name">{{ 'admin.menu.item.rating.list'|trans }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_project_list') }}" class="nav-link{% if activeMenu is defined and 'project_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span> 
+                                        <span class="name">{{ 'admin.menu.item.project.list'|trans }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_quotation_list') }}" class="nav-link{% if activeMenu is defined and 'quotation_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span> 
+                                        <span class="name">{{ 'admin.menu.item.quotation.list'|trans }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_model_list') }}" class="nav-link{% if activeMenu is defined and 'model_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span> 
+                                        <span class="name">Modèles</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_comment_list') }}" class="nav-link{% if activeMenu is defined and 'comment_list' == activeMenu %} active{% endif %}">
+                                        <span class="icon s7-note2"></span> 
+                                        <span class="name">Commentaires de Modèles</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'user' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_user_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-users"></span><span>{{ 'admin.menu.tab.user'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_user_list') }}" class="nav-link{% if activeMenu is defined and 'user_list' == activeMenu %} active{% endif %}"><span class="icon s7-users"></span> <span class="name">{{ 'admin.menu.item.user.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_maker_list') }}" class="nav-link{% if activeMenu is defined and 'maker_list' == activeMenu %} active{% endif %}"><span class="icon s7-users"></span> <span class="name">{{ 'admin.menu.item.maker.list'|trans }}</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'prospect' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_prospect_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-users"></span><span>{{ 'admin.menu.tab.prospect'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_prospect_list') }}" class="nav-link{% if activeMenu is defined and 'prospect_list' == activeMenu %} active{% endif %}"><span class="icon s7-users"></span> <span class="name">{{ 'admin.menu.item.prospect.list'|trans }}</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'ref' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_technology_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-albums"></span><span>{{ 'admin.menu.tab.ref'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_technology_list') }}" class="nav-link{% if activeMenu is defined and 'ref_technology' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.technology.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_material_list') }}" class="nav-link{% if activeMenu is defined and 'ref_material' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.material.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_color_list') }}" class="nav-link{% if activeMenu is defined and 'ref_color' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.color.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_finishing_list') }}" class="nav-link{% if activeMenu is defined and 'ref_finishing' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.finishing.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_layer_list') }}" class="nav-link{% if activeMenu is defined and 'ref_layer' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.layer.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_tag_list') }}" class="nav-link{% if activeMenu is defined and 'ref_tag' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.tag.list'|trans }}</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'ref_design' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_project_type_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-albums"></span><span>{{ 'admin.menu.tab.ref_design'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_project_type_list') }}" class="nav-link{% if activeMenu is defined and 'ref_project_type' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.project_type.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_technology_scanner_list') }}" class="nav-link{% if activeMenu is defined and 'ref_technology_scanner' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.technology_scanner.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_precision_list') }}" class="nav-link{% if activeMenu is defined and 'ref_precision' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.precision.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_resolution_list') }}" class="nav-link{% if activeMenu is defined and 'ref_resolution' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.resolution.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_field_list') }}" class="nav-link{% if activeMenu is defined and 'ref_field' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.field.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_skill_list') }}" class="nav-link{% if activeMenu is defined and 'ref_skill' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.skill.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_software_list') }}" class="nav-link{% if activeMenu is defined and 'ref_software' == activeMenu %} active{% endif %}"><span class="icon s7-albums"></span> <span class="name">{{ 'admin.menu.item.software.list'|trans }}</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item parent{% if activeTab is defined and 'setting' == activeTab %} open{% endif %}">
+                            <a href="{{ path('admin_setting_list') }}" role="button" aria-expanded="false" class="nav-link"><span class="icon s7-settings"></span><span>{{ 'admin.menu.tab.setting'|trans }}</span></a>
+                            <ul class="mai-nav-tabs-sub mai-sub-nav nav">
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_setting_list') }}" class="nav-link{% if activeMenu is defined and 'setting_list' == activeMenu %} active{% endif %}"><span class="icon s7-settings"></span> <span class="name">{{ 'admin.menu.item.setting.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_coupon_list') }}" class="nav-link{% if activeMenu is defined and 'coupon_list' == activeMenu %} active{% endif %}"><span class="icon s7-wallet"></span> <span class="name">{{ 'admin.menu.item.coupon.list'|trans }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ path('admin_moderation_rule_list') }}" class="nav-link{% if activeMenu is defined and 'moderation_rule_list' == activeMenu %} active{% endif %}"><span class="icon s7-wallet"></span> <span class="name">{{ 'admin.menu.item.moderation.rule.list'|trans }}</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </nav>
+    <div class="main-content container">
+        {% for label, messages in app.flashes %}
+            {% if 'success' == label %}
+                {% set icon = 's7-check' %}
+            {% elseif 'warning' == label %}
+                {% set icon = 's7-attention' %}
+            {% elseif 'danger' == label %}
+                {% set icon = 's7-close' %}
+            {% else %}
+                {% set icon = 's7-info' %}
+            {% endif %}
+            {% for message in messages %}
+                <div role="alert" class="alert alert-{{ label }} alert-dismissible">
+                    <button type="button" data-dismiss="alert" aria-label="{{ 'flash.close'|trans }}" class="close"><span aria-hidden="true" class="s7-close"></span></button>
+                    <div class="icon"><span class="{{ icon }}"></span></div>
+                    <div class="message">{{ message|trans }}</div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}{% endblock %}
+    </div>
+</div>
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/jquery/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+<script>
+    {# bypass template main menu navigation logic to avoid tab change as coded in app.min.js #}
+    $(document).ready(function() {
+        $('li.nav-item.parent > a.nav-link').click(function(event) {
+            window.location($(this).attr('href'));
+            event.stopPropagation();
+        });
+    });
+</script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/main.js') }}"></script>
+{% endblock %}
+</body>
+</html>

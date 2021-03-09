@@ -1,0 +1,43 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1>Mes coordonnées bancaires</h1>
+    {% if not app.user.maker.enabled %}
+        <i>Saisissez votre IBAN pour activer votre compte Maker</i>
+    {% endif %}
+    {% if iban_bank != false %}
+        <div>
+            <h2>IBAN actuel :</h2>
+            <p>FR** **** **** **** **** ***{{iban_last4}} - {{iban_bank}}</p>
+        </div>
+    {% endif %}
+    <div class="space-15"></div>
+    {# {% if iban_ready == false %} #}
+    <div class="form-group mrg-0">
+        <h2>Mettre à jour mon IBAN : </h2>
+
+            {{ form_start(form) }}
+            
+            {{ form_row(form.birthDate) }}
+        
+            {{ form_row(form.identityPaperFile) }}
+            {# <p>{{ form.identityPaperFile.attr.help_block }}</p> #}
+            <div class="form-group form-helper">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-10">
+                    Le passeport ou la carte d'identité (Recto/Verso) est accepté <br>
+                    Le fichier doit être au format JPG ou PNG <br>
+                    La taille du fichier doit être inférieure à 5 Mo
+                </div>
+            </div>
+
+            {{ form_row(form.iban) }}
+        
+        <div class="text-right">
+            <button type="submit" class="btn btn-rounded">{{ 'form.save'|trans }}</button>    
+        </div>
+        {{ form_end(form) }}
+    </div>
+    {# {% endif %} #}
+          
+{% endblock %}

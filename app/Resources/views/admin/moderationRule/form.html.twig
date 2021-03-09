@@ -1,0 +1,41 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+{% set activeTab = 'setting' %}
+{% set activeMenu = 'moderation_rule_list' %}
+{% set title = 'admin.moderation.rule.add.title' %}
+{% if moderationRule is defined %}
+    {% set title = 'admin.moderation.rule.edit.title' %}
+{% endif %}
+
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ title|trans }}
+                    <br>
+                     <h6>
+                    <a href="https://openclassrooms.com/fr/courses/918836-concevez-votre-site-web-avec-php-et-mysql/916990-les-expressions-regulieres-partie-1-2" target="aide">aide sur les expressions régulière</a>
+                    </h6>
+                </div>
+                <div class="panel-body pl-sm-5">
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9">
+                                <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.save'|trans }}</button>
+                                <a class="btn btn-space btn-secondary" href="{{ path('admin_moderation_rule_list') }}">{{ 'form.cancel'|trans }}</a>
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

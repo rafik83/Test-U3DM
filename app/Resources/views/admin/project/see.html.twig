@@ -1,0 +1,509 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'project_list' %}
+
+{% block body %}
+    <div class="row">
+        {# LINE 1 - END#}        
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.project.see.management'|trans({'%ref%': project.reference, '%date%': project.createdAt|date('d/m/Y à H:i', app.user.timezone) }) }}
+                </div>
+                <div class="panel-body">
+                    <p>
+                        {{ 'admin.project.see.customer'|trans }} : 
+                        <a href="{{ path('admin_user_see', { id: project.customer.id }) }}">
+                            {{ project.customer.fullname }}
+                        </a> 
+                            -
+                        <a href="mailto:{{ project.customer.email }}">
+                            {{ project.customer.email }}
+                        </a>  
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.project.list.column.closedat'|trans }} : {{ project.closedAt|date('d/m/Y à H:i', app.user.timezone)}}
+                </div>
+                <div class="panel-body">
+                    <p>
+                        {{ 'admin.project.list.column.status'|trans }} : {{ project.adminReadableStatus }}
+                        {% if project.order is not null %} | <a href="{{ path('admin_order_see', { 'reference': project.order.reference }) }}">Voir la commande</a>{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {# LINE 1 - END #}
+        {# LINE 2 #}
+        <div class="col-sm-7">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.project.see.project.info'|trans }}
+                </div>
+                <div class="panel-body">
+                    {{ form_start(formProject) }}
+                        {# {{ form_widget(formProject) }} #}
+                        {{ form_row(formProject.name)}}
+                        {{ form_row(formProject.description)}}
+                        {{ form_row(formProject.type)}}
+                        {{ form_row(formProject.fields)}}
+                        {{ form_row(formProject.deliveryTime)}}
+                        
+                            {{ form_row(formProject.scanAddress)}}
+                        <div id="scan-required">
+                            {{ form_row(formProject.dimensions)}}
+                            {#{ form_row(formProject.scanOnSite)}#}
+                        </div>
+                        {{ form_row(formProject.softwares)}}
+                        {{ form_row(formProject.skills)}}
+
+                        {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT') %}
+                            <div class="form-group">
+                                <div class="col-lg-offset-3 col-lg-9">
+                                    <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.update'|trans }}</button>
+                                    <a class="btn btn-space btn-secondary" href="{{ path('admin_project_see', { 'reference': project.reference }) }}">{{ 'form.cancel'|trans }}</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {{ form_end(formProject) }}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.project.see.attachment.file'|trans }}
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                    {% if project.files|length > 0 %} 
+                        {% for file in project.files %}
+                            <li><strong>{{ file.name|e }}</strong> | <a href="{{ path('project_file_download', { 'name': file.name }) }}">Download</a> | <i>{{ file.originalName}}</i></li>
+                        {% endfor %}
+                    {% else %} 
+                        <p>Aucun fichier</p>
+                    {% endif %}   
+                    </div>  
+                </div>
+            </div>
+            {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT') or (project.status == constant('\\AppBundle\\Entity\\Project::STATUS_CREATED') and project.returnReason is not null) %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        Renvoyer le projet pour modification par le client
+                    </div>
+                    <div class="panel-body">
+                        {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT') %}
+                            {{ form_start(returnForm) }}
+                            <div class="form-group">
+                                <div class="text-left col-sm-10">Raison du renvoi pour modification (sera visible par le client)</div>
+                            </div>
+                            {{ form_widget(returnForm) }}
+                            <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> Renvoyer le projet</button>
+                            {{ form_end(returnForm) }}
+                        {% else %}
+                            <p><strong>Raison du renvoi</strong><br>{{ project.returnReason|nl2br }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Supprimer le projet
+                </div>
+                <div class="panel-body">
+                    {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_CREATED') or project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT') %}
+                        {{ form_start(deletionForm) }}
+                        <div class="form-group">
+                            <div class="text-left col-sm-10">Raison de la suppression du projet (sera visible par le client)</div>
+                        </div>
+                        {{ form_widget(deletionForm) }}
+                        <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-trash"></i> {{ 'admin.project.form.button.delete'|trans }}</button>
+                        {{ form_end(deletionForm) }}
+                    {% elseif project.status == constant('\\AppBundle\\Entity\\Project::STATUS_DELETED') %}
+                        <p><strong>Raison de la suppression</strong><br>{{ project.deletionReason|nl2br }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            {% if project.status != constant('\\AppBundle\\Entity\\Project::STATUS_DELETED') and project.status != constant('\\AppBundle\\Entity\\Project::STATUS_ORDERED') and project.status != constant('\\AppBundle\\Entity\\Project::STATUS_CANCEL')  %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        {{ 'admin.project.see.update.closedat'|trans }}
+                    </div>
+                    <div class="panel-body">
+                        {{ form_start(formClosedAt) }}
+                        {{ form_widget(formClosedAt) }}
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9">
+                                <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.update'|trans }}</button>
+                                <a class="btn btn-space btn-secondary" href="{{ path('admin_project_see', { 'reference': project.reference }) }}">{{ 'form.cancel'|trans }}</a>
+                            </div>
+                        </div>
+                        {{ form_end(formClosedAt) }}
+                    <div class="text-center col-sm-6">
+                         <a class="btn btn-space btn-primary" href="{{ path('admin_project_cancel', { 'reference': project.reference }) }}"><i class="s7-diskette"></i> {{ 'admin.project.see.cancel'|trans }}</a>
+                    </div>
+
+
+
+                    </div>
+                </div>
+            {% endif %}
+            {% if project.status != constant('\\AppBundle\\Entity\\Project::STATUS_DELETED') and project.status != constant('\\AppBundle\\Entity\\Project::STATUS_CLOSED') and project.status != constant('\\AppBundle\\Entity\\Project::STATUS_ORDERED') %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        {{ 'admin.project.see.project.search.maker'|trans }}
+                    </div>
+                    <div class="panel-body">
+                        {{ form_start(formSearch) }}
+                            {{ form_widget(formSearch) }}
+                            <div class="form-group">
+                                <div class="col-lg-offset-3 col-lg-9">
+                                    <button type="submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.search'|trans }}</button>
+                                </div>
+                            </div>
+                        {{ form_end(formSearch) }}
+                    </div>
+                </div>
+                {% if resultSearch|length > 0 %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        {{ 'admin.project.see.project.result.search.maker'|trans({'%keyword%': keyword}) }}
+                    </div>
+                    <div class="panel-body">
+                        {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT')  %}
+                            <form id="form-search-maker">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th><strong>Maker</strong></th>
+                                        </tr>
+                                        <tbody>
+                                            {% for maker in resultSearch %}
+                                            <tr id="tr-{{maker.id}}">
+                                                <td><input type="checkbox" class="type-maker" id="maker-{{maker.id}}" name="maker-{{maker.id}}" value="{{maker.id}}"></td>
+                                                <td>
+                                                    <label for="maker-{{maker.id}}">
+                                                    {% if maker.company is defined and maker.company is not null %}
+                                                        <strong>{{maker.company}} - </strong>
+                                                    {% endif %}
+                                                    {{maker.user.fullname}} 
+                                                    {% if maker.address.zipcode is defined %}
+                                                        - <i>{{ maker.address.zipcode }}</i>
+                                                    {% endif %}
+                                                    {% if maker.getUser().isEnabled() != 1  %}
+                                                        <i><strong>({{'admin.project.see.project.maker.prospect'|trans}})</strong></i>
+                                                    {% else %}
+                                                        {% if maker.isEnabled() != 1  %}
+                                                            <i><strong>({{'admin.project.see.project.maker.no.stripe'|trans}})</strong></i>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </thead>
+                                </table>
+                                <p class="center">
+                                    <button type="submit" class="btn btn-space btn-primary" id="button-dispatch">
+                                        <i class="s7-diskette"></i> {{ 'admin.project.form.button.add.to.selection'|trans }}
+                                    </button>
+                                </p>
+                            </form>
+                        {% else %}
+                            <form id="form-selected-maker" method="post" action="{{ path('admin_project_dispatch', { 'reference': project.reference }) }}">
+                            <table class="table table-bordered table-striped" id="table-makers">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th><strong>Maker</strong></th>
+                                    </tr>
+                                    <tbody>
+                                        {% for maker in resultSearch %}
+
+                                        <tr>
+                                            <td><input type="checkbox" class="type-maker" id="maker-{{maker.id}}" name="maker-{{maker.id}}" value="{{maker.id}}"></td>
+                                            <td>
+                                                <label for="maker-{{maker.id}}">
+                                                {% if maker.company is defined and maker.company is not null %}
+                                                    <strong>{{maker.company}} - </strong>
+                                                {% endif %}
+                                                {{maker.user.fullname}} 
+                                                {% if maker.address.zipcode is defined %}
+                                                    - <i>{{ maker.address.zipcode }} </i>
+                                                {% endif %}
+                                                {% if maker.getUser().isEnabled() != 1  %}
+                                                    <i><strong>({{'admin.project.see.project.maker.prospect'|trans}})</strong></i>
+                                                {% else %}
+                                                    {% if maker.isEnabled() != 1  %}
+                                                        <i><strong>({{'admin.project.see.project.maker.no.stripe'|trans}})</strong></i>
+                                                    {% endif %}
+                                                {% endif %}
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </thead>
+                            </table>
+                            <p class="center">
+                                {% if date(project.closedAt) > date() %}
+                                    <button type="submit" class="btn btn-space btn-primary" id="button-dispatch">
+                                        <i class="s7-diskette"></i> {{ 'admin.project.form.button.dispatch'|trans }}
+                                    </button>
+                                {% endif %}
+                            </p>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.project.see.project.selected.maker'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% if project.status == constant('\\AppBundle\\Entity\\Project::STATUS_SENT')  %}
+                        <form id="form-selected-maker" method="post" action="{{ path('admin_project_dispatch', { 'reference': project.reference }) }}">
+                            <table class="table table-bordered table-striped" id="table-makers">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th><strong>Maker</strong></th>
+                                        <th></th>
+                                    </tr>
+                                    <tbody>
+                                        {% for maker in makers %}
+
+                                        <tr id="tr-selected-maker-{{maker.id}}">
+                                            <td><input type="checkbox" class="type-maker" id="maker-{{maker.id}}" name="maker-{{maker.id}}" value="{{maker.id}}"></td>
+                                            <td>
+                                                <label for="maker-{{maker.id}}">
+                                                {% if maker.company is defined and maker.company is not null %}
+                                                    <strong>{{maker.company}} - </strong>
+                                                {% endif %}
+                                                {{maker.user.fullname}} 
+                                                {% if maker.address.zipcode is defined %}
+                                                    - <i>{{ maker.address.zipcode }}</i>
+                                                {% endif %}
+                                                {% if maker.getUser().isEnabled() != 1  %}
+                                                    <i><strong>({{'admin.project.see.project.maker.prospect'|trans}})</strong></i>
+                                                {% else %}
+                                                    {% if maker.isEnabled() != 1  %}
+                                                        <i><strong>({{'admin.project.see.project.maker.no.stripe'|trans}})</strong></i>
+                                                    {% endif %}
+                                                {% endif %}
+                                                </label>
+                                            </td>
+                                            <td><i class="s7-trash" onclick="deleteTmpMaker({{maker.id}})"></i></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </thead>
+                            </table>
+                            <p class="center">
+                                {% if date(project.closedAt) > date() %}
+                                    <button type="submit" class="btn btn-space btn-primary" id="button-dispatch">
+                                        <i class="s7-diskette"></i> {{ 'admin.project.form.button.dispatch'|trans }}
+                                    </button>
+                                {% endif %}
+                            </p>
+                        </form>
+                    {% endif %}
+                    {% if project.status != constant('\\AppBundle\\Entity\\Project::STATUS_SENT')%}
+                        <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Maker</strong></th>
+                                        <th><strong>Status</strong></th>
+                                        <th class="text-right"><strong>Prix € HT</strong></th>
+                                        <th></th>
+                                        {# <th></th> #}
+                                    </tr>
+                                    <tbody>
+                                        {% for quotation in quotations %}
+
+                                        <tr id="maker-tr-{{ quotation.maker.id }}">
+                                            <td>
+                                                <a href="{{ path('admin_quotation_see', { 'reference': quotation.reference }) }}">
+                                                    {% if quotation.maker.company is defined and quotation.maker.company is not null %}
+                                                        <strong>{{quotation.maker.company}} - </strong>
+                                                    {% endif %}
+                                                    {{quotation.maker.user.fullname}} 
+                                                    {% if quotation.maker.address.zipcode is defined %}
+                                                        - <i>{{ quotation.maker.address.zipcode }}</i>
+                                                    {% endif %}
+                                                    {% if quotation.maker.getUser().isEnabled() != 1  %}
+                                                        <i><strong>({{'admin.project.see.project.maker.prospect'|trans}})</strong></i>
+                                                    {% else %}
+                                                        {% if quotation.maker.isEnabled() != 1  %}
+                                                            <i><strong>({{'admin.project.see.project.maker.no.stripe'|trans}})</strong></i>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                            <td>{{ quotation.getAdminReadableStatus }}</td>
+                                            <td class="text-right">{{ (quotation.getTotalPrice/100)|number_format(2, ',', '') }}</td>
+                                            <td>
+                                                <a href="{{ path('admin_quotation_see', { 'reference': quotation.reference }) }}">
+                                                    <i class="s7-note2"></i>
+                                                </a>
+                                            </td>
+                                            {# <td>
+                                                <a href="{{ path('admin_project_quotation_delete', { 'reference': project.reference, 'id':quotation.id }) }}">
+                                                    <i class="s7-trash"></i>
+                                                </a>
+                                            </td> #}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </thead>
+                            </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {# LINE 2 - END #}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        var submitted = false;
+
+        $(document).ready(function () {
+
+            //Project type with scanner
+            var projectList = [];
+            {% for projectType in projetTypeRequiredScan %}
+
+                projectList.push('{{ projectType.id }}');
+
+            {% endfor %}
+
+            //Project type with scanner
+            var searchResult = [];
+            {% if resultSearch|length > 0 %}
+            {% for result in resultSearch %}
+
+                searchResult[ {{result.id}} ] = "<strong>{{ result.company }}</strong> - {{ result.user.fullname }} - {% if result.address.zipcode is defined %}{{ result.address.zipcode }}{% endif %}{% if result.getuser().isEnabled() != 1%}<i><strong>({{'admin.project.see.project.maker.prospect'|trans}})</strong></i>{% else %}{% if result.isEnabled() != 1%}<i><strong>({{'admin.project.see.project.maker.no.stripe'|trans}})</strong></i>{% endif %}{% endif %}";
+
+            {% endfor %}
+            {% endif %}
+
+            var scannerRequired = false;
+
+            if(projectList.indexOf('{{formProject.type.vars.value}}') >= 0){
+
+                scannerRequired = true;
+
+            }
+
+            /*window.onbeforeunload = function (e) {
+                if (!submitted) {
+                    var message = "You have not saved your changes.", e = e || window.event;
+                    if (e) {
+                        e.returnValue = message;
+                    }
+                    return message;
+                }
+            }
+
+            $("form").submit(function() {
+                submitted = true;
+            });*/
+
+            //Display or not block depending scannerrequired
+            if(scannerRequired == true){
+                $('#scan-required').show();
+            } else {
+                $('#scan-required').hide();
+            }
+
+            // Manage hide and show for block linked with project type
+            $('#{{ formProject.type.vars.id }}').change(function(){
+
+                console.log(projectList.indexOf($(this).find("option:selected").attr('value')));
+                console.log(projectList);
+
+                if(projectList.indexOf($(this).find("option:selected").attr('value')) != -1){
+                    $('#scan-required').show();
+                } else {
+                    $('#scan-required').hide();
+                }
+
+            });
+
+            $("#form-selected-maker").submit(function(e){
+
+                var selectedMaker = [];
+
+                $.each($(".type-maker:checked"), function(){            
+                    selectedMaker.push($(this).val());
+                });
+
+                if(selectedMaker.length <= 0){
+                    alert("{{ 'admin.project.alert.please.select.maker' |trans}}");
+                    e.preventDefault(e);
+                } 
+
+            });
+
+            $("#form-search-maker").submit(function(e){
+
+                var selectedMaker = [];
+
+                $.each($(".type-maker:checked"), function(){            
+                    selectedMaker.push($(this).val());
+                });
+
+                if(selectedMaker.length <= 0){
+
+                    alert("{{ 'admin.project.alert.please.select.maker' |trans}}");
+                    e.preventDefault(e);
+
+                } else {
+
+                    $.each($(".type-maker:checked"), function(){            
+                    
+                        var value = $(this).val();
+
+                        // Condition not add 2x same user
+                        if($('#tr-selected-maker-'+value).length == 0 ){
+
+                            // Add maker in selected table
+                            $('#table-makers > tbody:last-child').append('<tr id="tr-selected-maker-'+value+'"><td><input type="checkbox" class="type-maker" id="maker-'+value+'" name="maker-'+value+'" value="'+value+'"></td><td>'+ searchResult[value] +'</td><td><i class="s7-trash" onclick="deleteTmpMaker('+value+')"></i></td></tr>');
+
+                        }
+
+                        // Remove line selected
+                        $('#tr-'+value).remove();
+
+                    });
+
+                    e.preventDefault(e);
+
+                }
+
+            });
+
+            deleteTmpMaker = function(id){
+
+                $('#tr-selected-maker-'+id).remove();
+
+            }
+
+
+        });
+
+     </script>
+    
+{% endblock %}

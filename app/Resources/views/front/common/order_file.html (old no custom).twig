@@ -1,0 +1,27 @@
+<style>
+    .file-order p { padding-bottom: 20px; border-bottom: 1px solid #cccccc; }
+    .file-order em { font-size: 13px; }
+</style>
+
+<div class="file-order">
+    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING') or 
+       order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_REJECTED')  %}
+        {% if fileForm is defined %}
+            {% if fileForm is not null %}
+                <p>transmettre le fichier livrable <br> au format .ZIP ou .TAR</p>
+                {{ form_start(fileForm) }}
+                    {{ form_errors(fileForm) }}
+                    {{ form_row(fileForm.file) }}
+                    <div class="text-right">
+                       <br> <button type="submit" class="btn btn-rounded">{{ 'form.send'|trans }}</button>
+                    </div>
+                {{ form_end(fileForm) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {% if order.file is not null %}
+        <p>
+            Fichier : <strong>{{ order.file.originalName }}</strong> | <a href="{{ path('order_file_download', {'id': order.file.id}) }}">Télécharger</a>
+        </p>
+    {% endif %}
+</div>

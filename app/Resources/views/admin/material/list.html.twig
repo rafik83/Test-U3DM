@@ -1,0 +1,40 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'ref' %}
+{% set activeMenu = 'ref_material' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="tools"><a href="{{ path('admin_material_add') }}"><span class="icon s7-magic-wand"></span> {{ 'admin.material.add.title'|trans }}</a></div>
+                    {{ 'admin.material.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.material.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-material-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.material.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.material.list.column.name'|trans }}</th>
+                            <th>{{ 'admin.material.list.column.technologies'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for material in refs %}
+                            <tr{% if not material.enabled %} class="highlight highlight-red"{% endif %}>
+                                <td>{{ material.id }}</td>
+                                <td><a href="{{ path('admin_material_edit', { 'id': material.id }) }}">{{ material.name }}</a></td>
+                                <td>{% if 0 == material.technologies|length %}-{% else %}{% for technology in material.technologies %}{{ technology.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</td>
+                                <td class="actions"><a href="{{ path('admin_material_edit', { 'id': material.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

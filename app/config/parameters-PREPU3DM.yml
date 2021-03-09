@@ -1,0 +1,30 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 81.249.160.72
+    database_port: null
+    database_name: PREP_U3DM
+    database_user: Ludo
+    database_password: Ludo
+    mailer_transport: smtp
+    mailer_host: smtp.free.fr
+    mailer_user: gourdon.ludovic
+    mailer_password: owrycjuo
+    secret: ThisTokenIsNotSoSecretChangeIt
+    mailer_port: 465
+    email_from_address: beta-test@united-3dmakers.com
+    email_from_name: 'United 3D Makers - Modeles 3D'
+    admin_notification_email_address: null
+    www_base_url: null
+    ga_tracking_id: null
+    stripe_public_key: pk_test_D9Nn9lKMF8UeVGlbCB0McXiA
+    stripe_secret_key: sk_test_B9HaUgTtTj5tiUnxnFpBhlmG
+    payment:
+        currency: EUR
+        decimal: true
+    colissimo_contract_number: null
+    colissimo_password: null
+    chronopost_account_number: 19869502
+    chronopost_password: 255562
+    snappy_lib_path: /usr/bin/wkhtmltopdf
+    google_api_key: xxxxxxxxxxxxxx
+    sendinblue_api_key: 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

@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'ref_design' %}
+{% set activeMenu = 'ref_precision' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="tools"><a href="{{ path('admin_precision_add') }}"><span class="icon s7-magic-wand"></span> {{ 'admin.precision.add.title'|trans }}</a></div>
+                    {{ 'admin.precision.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.precision.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-ref-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.precision.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.precision.list.column.name'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for precision in refs %}
+                            <tr{% if not precision.enabled %} class="highlight highlight-red"{% endif %}>
+                                <td>{{ precision.id }}</td>
+                                <td><a href="{{ path('admin_precision_edit', { 'id': precision.id }) }}">{{ precision.name }}</a></td>
+                                <td class="actions"><a href="{{ path('admin_precision_edit', { 'id': precision.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

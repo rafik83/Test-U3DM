@@ -1,0 +1,57 @@
+{% extends 'front/base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% include 'front/common/flash.html.twig' %}
+            <div class="col-sm-3">
+                <div class="bg-white pad-15">
+                    <h1>{{ app.user.fullname }}</h1>
+                    <ul>
+                        <li class="pad-2">
+                            <strong>{{ 'user.dashboard.menu.profile.customer'|trans }}</strong>
+                            <ul>
+                                <li class="pad-2"><a href="{{ path('order_customer_list') }}">{{ 'Mes commandes'|trans }}</a></li>
+                                <li class="pad-2"><a href="{{ path('project_customer_list') }}">{{ 'Mes projets'|trans }}</a></li>
+                                <li class="pad-2"><a href="{{ path('user_profile') }}">{{ 'Mon profil client'|trans }}</a></li>
+                            </ul>
+                            <div class="space-15"></div>
+                        </li>
+                        <li class="pad-2">
+                            <strong>{{ 'user.dashboard.menu.profile.maker'|trans }}</strong>
+                            <ul>
+                                {% if app.user.maker is not null and app.user.maker.id is not null %}
+                                    <li class="pad-2"><a href="{{ path('order_maker_list') }}">{{ 'Gestion des commandes'|trans }}</a></li>
+                                    <li class="pad-2"><a href="{{ path('quotation_maker_list') }}">{{ 'Gestion des devis'|trans }}</a></li>
+                                    <li class="pad-2"><a href="{{ path('user_maker_setup') }}">{{ 'user.dashboard.menu.profile.maker.edit'|trans }}</a></li>
+                                    <li class="pad-2"><a href="{{ path('user_maker_details_edit') }}">{% if app.user.maker.bio is not null %}{{ 'user.dashboard.menu.profile.maker.details.edit'|trans }}{% else %}Compléter mes infos commerciales{% endif %}</a></li>
+                                    {% if app.user.maker.printer %}
+                                        <li class="pad-2"><a href="{{ path('user_printer_list') }}">Mes imprimantes</a></li>
+                                    {% endif %}
+                                    {% if app.user.maker.designer %}
+                                        <li class="pad-2"><a href="{{ path('user_scanner_parameters') }}">Mes informations Designer</a></li>
+                                        {% if app.user.maker.shouldScanner == true %}
+                                            <li class="pad-2"><a href="{{ path('user_scanner_list') }}">Mes scanners</a></li>
+                                        {% endif %}
+                                    {% endif %}
+                                    <li class="pad-2"><a href="{{ path('user_maker_creations') }}">{{ 'Mes modèles 3D'|trans }}</a></li>
+                                {% else %}
+                                    <li class="pad-2"><a href="{{ path('user_maker_setup') }}">{{ 'user.dashboard.menu.profile.maker.create'|trans }}</a></li>
+                                {% endif %}
+                            </ul>
+                            <div class="space-10"></div>
+                        </li>
+                        <li class="pad-2"><a href="{{ path('user_password_profile') }}">{{ 'user.dashboard.menu.profile.password'|trans }}</a></li>
+                        <li class="pad-2"><a href="{{ path('user_logout') }}">{{ 'user.dashboard.menu.logout'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-9 ">
+                <div class="bg-white pad-15-20">
+                    {% block user_content %}{% endblock %}
+                </div>
+                {% block definition %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

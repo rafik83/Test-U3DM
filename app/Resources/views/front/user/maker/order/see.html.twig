@@ -1,0 +1,358 @@
+{% extends 'front/user/base.html.twig' %}
+
+
+{% block user_content %}
+<style>
+    .blockInfo p { padding-bottom: 1px; border-bottom: 2px solid #cccccc; }
+</style>
+    <div class="row">
+        <div class="col-sm-8">
+            {#<h4>Livraison</h4>#}
+            <h1>Commande {{ order.reference }} du {{ order.createdAt|date('d/m/Y à H:i', 'Europe/Paris') }} </h1>
+            <p>
+                <a href="{{ path('order_maker_list') }}">Retour à mes commandes</a>
+                {% if order.type == constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')%}
+                | <a href="{{ path('quotation_maker_see', {'reference': order.quotation.reference}) }}">Voir le devis</a>
+                {% endif %}
+            </p>
+            {#{% include 'front/common/address.html.twig' with { address: order.shippingAddress } %} #}
+
+        </div>
+        
+       
+        <div class="col-sm-4">
+            <h4 align="left"> <span id="order-status" class="order-status status"  data-status="{{ order.status }}">{{ order.makerReadableStatus }}</span></h4>  
+
+
+            </p>
+            {% if order.instructions is not null %}
+                <p>Instructions complémentaires : {{ order.instructions|nl2br }}</p>
+            {% endif %}
+
+
+
+                {% if order.file is not null %}
+                        Fichier transmis au client le {{ order.getFileAvailableAt()|date('d/m/Y à H:i', 'Europe/Paris') }}
+                        {% if order.file.urlDownload is null %}
+                            <a href="{{ path('order_file_download', {'id': order.file.id}) }}">Télécharger le fichier envoyé</a>
+                        {% else %}
+                            <a href="{{ path('order_file_download', {'id': order.file.id}) }}" target="download">lien de téléchargement</a>  
+                        {% endif %}
+                        {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_REJECTED') %}
+                            <br>Fichier refusé le {{ order.getFileRejectedAt()|date('d/m/Y à H:i', 'Europe/Paris') }}
+                        {% else %}
+                            {% if order.getFileAcceptedAt() is not null %}
+                                <br>Fichier accepté le {{ order.getFileAcceptedAt()|date('d/m/Y à H:i', 'Europe/Paris') }}
+                            {% endif %}
+                        {% endif %}
+                {% endif %}
+
+
+            </p>
+        </div>
+    </div>
+    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_TRANSIT') or 
+            order.status == constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED')  or 
+            order.status == constant('\\AppBundle\\Entity\\Order::STATUS_CLOSED') %}
+        <br>
+        <br>
+        <div class="blockInfo">
+            <div class="row">
+                <div class="col-sm-12">
+                <h4> Commande terminée</h4>
+                <p></p>
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_TRANSIT') %}
+                    Le colis est en cours de livraison.<br>
+                    {% for shipment in order.shipments %}  
+                        {% if order.quotation.project.type.shippingChoice %}
+                            {{ shipment.readableType }} n°{{ shipment.parcelNumber }}
+                        {% else %}
+                            Colis n°: {{ shipment.parcelNumber }}
+                        {% endif %}
+                        {% if shipment.trackingUrl is not null %} <a href="{{ shipment.trackingUrl }}" target="_blank">SUIVRE</a>{% endif %}<br>
+                    {% endfor %}
+                {% endif %}
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED') %}
+                     {% if 0 < order.shipments|length  or order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') or order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_MAKER_SHIP')%} 
+                        Le colis est livré.  <br>
+                    {% else %}
+                        {% if  ( order.quotation is not null and order.quotation.project.type.file ) == true %}    
+                            Le fichier est validé. <br> 
+                        {% else %}
+                            {# Cas of donation no Delevery and no file to validate#}
+                            Projet terminé. <br> 
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_PND') %}
+                    Problème de livraison - colis non délivré.<br>
+                {% endif %}
+
+                {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_CLOSED')  and order.rating is not null and order.rating.enabled %}
+                Le client a noté la commande.
+                <div class="rating" align="center">
+                    {% if order.rating.rate >=1 %} <img id="Star1" src="{{ asset('assets/front/images/StarOver.png') }}" /> {% else %} <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" /> {% endif %}
+                    {% if order.rating.rate >=2 %} <img id="Star1" src="{{ asset('assets/front/images/StarOver.png') }}" /> {% else %} <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" /> {% endif %}
+                    {% if order.rating.rate >=3 %} <img id="Star1" src="{{ asset('assets/front/images/StarOver.png') }}" /> {% else %} <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" /> {% endif %}
+                    {% if order.rating.rate >=4 %} <img id="Star1" src="{{ asset('assets/front/images/StarOver.png') }}" /> {% else %} <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" /> {% endif %}
+                    {% if order.rating.rate >=5 %} <img id="Star1" src="{{ asset('assets/front/images/StarOver.png') }}" /> {% else %} <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" /> {% endif %}
+                </div>
+
+                    {{ order.rating.comment}}
+                {% else %}
+                En attente de la notation de la commande par le client.
+                {% endif %}
+    {% else %}
+        <br>
+        <br>
+        <div class="blockInfo">
+            <div class="row">
+                <div class="col-sm-12">
+                <h4> Ma prochaine étape</h4>
+                <p></p>
+                    {% if  order.status == constant('\\AppBundle\\Entity\\Order::STATUS_NEW')  and order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) %}
+                        <a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING')}) }}">je prends en charge la commande</a>
+                    {% endif %}
+                    {% if  order.status == constant('\\AppBundle\\Entity\\Order::STATUS_NEW')  and order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT')) %}
+                    
+                        <div id="action-new">
+                            Je télécharge {% if nbItems > 1 %} les fichiers {% else %} le fichier {% endif %} dans le détail de la commande (ci-dessous) et je lance l'impression 3D.
+                        </div>
+                    {% endif %}
+
+
+                    <div id="action-processing">
+                    {# {% if  (order.status == constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING')) %} #}
+                        {# A l'Etape Prise en charge #}                    
+                        
+                        {% if  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.file ) == false %}
+                            {# Si pas de validation numérique nécessaire #}
+                            <span id="order-action-print" class="order-action-print"></span>
+
+                            J'informe le client de l'avancement de la commande, et je lui envoie des photos de l'objet avant l'expédition.
+                            <br>Ma commande est prête pour l'expédition : 
+                            {% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP')  %}
+                                {# si le choix  de livraison est a Emporté  #}
+
+                                <br><a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_READY_FOR_PICKUP')}) }}">J'informe le client que sa commande est disponible pour le retrait</a>
+                            
+                            {% else %} {# Si pas de retrait sur place#}
+
+                                {% if  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT'))  or  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shippingChoice )) %}
+                                    {# mais que la commande est du print / ou que la commande est du design avec livraison par la plateforme  ==> Alors la livraison est assuré par la plateforme et donc génération etiquette #}
+
+                                    <a class="maker-action" href="{{ path('order_generate_label', {'reference': order.reference}) }}">je génère l'étiquette de transport</a>
+                                
+                                {% else %} {# sinon la livraison est assurée par le maker (si l'option a été cohé sur le projet) #}
+                                    {% if  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shipping ) %}
+                                        <a class="maker-action" href="{{ path('order_delivery_slip_download', {'reference': order.reference}) }}">J'imprime le bon de livraison</a><br>
+                                        <br><b>Et selon le mode de livraison défini dans la commande,</b>
+
+
+                                        <div class="row">
+                                            <div class="col-sm-7">
+                                                <b>Livraison par transporteur</b>
+                                                <br>Je renseigne la reférence du colis et lien web du suivi
+                                                {% include 'front/common/order_shipment.html.twig' %}
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <b>Retrait sur place</b>
+                                                <br><a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_READY_FOR_PICKUP')}) }}">J'informe le client que sa commande est disponible</a>
+                                        
+                                            </div>
+
+                                        </div>
+                                    {% else %} {# sinon pas de livraison maker non U3DM (ni numérique  avec validation) - cas tres particulier de don au maker !! #}
+                                        <a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED')}) }}">J'informe le client que sa commande est terminée</a>
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                    {# {% endif %} #}
+                    </div>
+
+                    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_LABELED') %}
+
+                        {% if  order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT')) or ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shippingChoice ) %}
+                            {# The delivery is done witby the maker #}
+                            {% for shipment in order.shipments %}
+                                <a class="maker-action" href="{{ shipment.labelPdfUrl }}" target="_blank">Je télécharge l'étiquette de transport </a>  {{ shipment.readableType }} n°{{ shipment.parcelNumber }} <br>
+                            {% endfor %}
+
+                        {% else %}
+                            {% for shipment in order.shipments %}
+                                Colis n°: {{ shipment.parcelNumber }} : <br>
+                            {% endfor %}
+                        
+
+                        {% endif %}
+                        <a class="maker-action" href="{{ path('order_delivery_slip_download', {'reference': order.reference}) }}">Je télécharge le bon de livraison</a>
+                            , l'imprime, le dépose dans le colis. <br>
+                            Je remets le colis au transporteur. 
+
+                    {% endif %}
+                    
+                    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_READY_FOR_PICKUP') %}
+                        <a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED')}) }}"><b>JE CONFIRME LE RETRAIT DE LA COMMANDE</b></a>
+                    {% endif %}
+
+
+                    {% if order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and 
+                            order.quotation is not null and order.quotation.project.type.file and 
+                            order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING')) %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                J'informe le client de l'avancement du projet avec le module de communication.<br>
+                                Lorsque la modélisation est terminée : <br>
+                                
+                                <ul>
+                                - Je compresse mes fichiers dans un dossier (.zip, .rar, .7z),<br>
+                                - J'envoie le fichier compressé pour validation du client.
+                                </ul>
+                            </div>
+                            <div class="col-sm-4">
+                                {% include 'front/common/order_file.html.twig' %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and 
+                            order.quotation is not null and order.quotation.project.type.file and 
+                                order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_FILE_REJECTED')) %}
+                        
+                        <div class="row">
+                            <div class="col-sm-8">
+                                Fichier refusé, consultez les échanges ci dessous pour connaitre le motif.<br>
+                                Je renvoie une nouvelle version pour validation.
+                            </div>
+                            <div class="col-sm-4">
+                                {% include 'front/common/order_file.html.twig' %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if  (order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_AVAILABLE') or order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_DOWNLOADED') or order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_MODERATE_REJECTED')  ) %}
+                        En attente de la validation du client.
+
+                    {% endif %}
+
+                    {% if  (order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_VALIDATED')) %}
+                        {# A l'Etape Fichier validé par le client #}                   
+                            {% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') %}
+                                {# si le choix  de livraison est a Emporté  #}
+
+                                <a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_READY_FOR_PICKUP')}) }}">J'informe le client que sa commande est disponible au retrait</a>
+                            
+                            {% else %} {# Si pas de retrait sur place#}
+
+                                    {% if  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_PRINT'))  or  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shippingChoice )) %}
+                                        {# mais que la commande est du print / ou que la commande est du design avec livraison par la plateforme  ==> Alors la livraison est assuré par la plateforme et donc génération etiquette #}
+                                    
+                                        <a class="maker-action" href="{{ path('order_generate_label', {'reference': order.reference}) }}">Je génère l'étiquette de transport</a>
+                                    
+                                    {% else %} {# sinon la livraison est assurée par le maker (si l'option a été cohé sur le projet) #}
+                                        {% if  ( order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation.project.type.shipping ) %}
+
+                                            <a class="maker-action" href="{{ path('order_maker_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_READY_FOR_PICKUP')}) }}">J'informe le client que sa commande est disponible au retrait</a>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <p>ou saisir la reférence colis </p>
+                                                    {% include 'front/common/order_shipment.html.twig' %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                    {% endif %}
+                            {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+  
+    <br>
+    <br>
+    <div class="blockInfo">
+        <div class="row">
+            <div class="col-sm-12">
+                
+                <h4>Détail de la commande </h4>
+                <p></p>
+                    {% if order.type == constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')%}
+                        {% if order.quotation.project.type.isfile %} Envoi d'un fichier pour validation {% endif %}
+                        {% if order.quotation.project.type.isshippingChoice %}<br> Livraison prise en charge par la plateforme <br> Type : {{ order.readableShippingType }} {% endif %} 
+                        {% if order.quotation.project.type.isshipping %}<br> Livraison à la charge du maker {% endif %}
+                    {% else %}
+                            Mode de livraison : {{ order.readableShippingType }}
+                    {% endif %}
+
+                    {% if order.shouldBeReadyAt is not null %}
+                        <br><b>{% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_NOT_SHIPPED') %}A préparer pour{% elseif (order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') or order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_MAKER_SHIP')) %}À remettre au client au plus tard{% else %}À remettre au transporteur au plus tard{% endif %} le {{ order.shouldBeReadyAt|date('d/m/Y', 'Europe/Paris') }}{% if order.shippingType != constant('\\AppBundle\\Entity\\Shipping::TYPE_NOT_SHIPPED') and order.shippingType != constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP')and order.shippingType != constant('\\AppBundle\\Entity\\Shipping::TYPE_MAKER_SHIP') %} avant 17h{% endif %}.</b>
+                    {% endif %}
+
+                {% include 'front/common/order_detail.html.twig' with { 'isMaker': true } %}
+
+            </div>
+        </div>
+        <br><br>
+
+    {# Upload delivery file if necessary #}
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h4>Communication avec le client</h4>
+                <p></p>
+                <h6>
+                {% if order.type is same as(constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')) and order.quotation is not null and order.quotation.project.type.file and (order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING')) or order.status is same as(constant('\\AppBundle\\Entity\\Order::STATUS_FILE_REJECTED'))) %}
+                        <em>N'utilisez pas ce canal pour transmettre votre livrable.</em>
+                {% endif %}
+                </h6>
+                
+                {% include 'front/common/order_messages.html.twig' with { 'isMaker': true } %}
+            </div>
+        </div>
+        <a href="{{ path('order_maker_list') }}">Retour à mes commandes reçues</a>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if app.user.maker is not null %}
+        <script type="text/javascript">
+        var currentOrderStatus = $('#order-status').data('status');
+        $('#action-new').show();
+
+        if ({{ constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING') }} == currentOrderStatus) {
+            $('#action-processing').show();
+        }else {
+            $('#action-processing').hide();
+        }
+
+            $('.printfile-download').click(function(event) {
+                var currentOrderStatus = $('#order-status').data('status');
+                 
+                if ({{ constant('\\AppBundle\\Entity\\Order::STATUS_NEW') }} == currentOrderStatus) {
+                   $('#order-status').attr('data-status', {{ constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING') }});
+                    $('.order-status').html('Prise en charge');
+                    $('#order-processing-link').removeClass('hidden');
+                    
+                    $('#action-new').hide();
+                    $('#action-processing').show();
+                     
+                }
+           
+
+
+
+
+
+
+
+            });
+        </script>
+    {% endif %}
+    {% include 'front/common/order_messages_js.html.twig' %}
+{% endblock %}

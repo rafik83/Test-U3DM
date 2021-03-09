@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        background-color: #ffffff;
+        font-family: sans-serif;
+        line-height: 1.5;
+        height: 180px;
+        font-size: 11px !important;
+    }
+    hr{
+        border-color: black;
+    }
+    img {
+        height: auto;
+        width: auto;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+    .w-25{
+        width: 25%;
+    }
+    .center {
+        text-align: center;
+        justify-content: space-around;
+    }
+    .mrg-0{
+        margin:0;
+    }
+    .footer {
+        position: absolute; bottom: 0; left: 0; right: 0; width: 100%; margin: 0 auto;
+    }
+</style>
+    <div class="center footer">
+        <img class="w-25" src="{{ absolute_url(asset('assets/front/images/invoice-logo.png')) }}"/>
+        <hr/>
+        <p class="mrg-0">
+            The Gator Projects SAS au capital social de 25 000€, RCS 821 786 050 R.C.S. Bobigny <br>
+            SIREN 821 786 050 00012 <br>
+            N° TVA intracommunautaire : FR51821786050
+        </p>
+    </div>
+</body>
+</html>

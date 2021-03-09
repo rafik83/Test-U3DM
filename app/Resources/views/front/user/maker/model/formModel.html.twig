@@ -1,0 +1,272 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% form_theme form 'form/model.html.twig' %}
+
+
+{% set title = 'Ajouter un modèle 3D' %}
+{% if model_name is not null %}
+    {% set title = "Modifier le modèle : #{model_name}" %}
+{% endif %}
+
+{% block user_content %}
+    <h1 class="model_title">{{ title|trans }}</h1>
+    <hr class="model_detail_hr">
+    {% if model_name is not null %}
+        <div class="form-group row">
+            <div class="col-sm-6">
+                <img src={{ image }} class='card-img-top'>
+            </div>
+            <div class="col-sm-6" align='center'>
+                <p>Modifié le {{ model.updatedAt|date('d/m/Y', 'Europe/Paris') }}</p>
+                <p>Créer le {{ model.createdAt|date('d/m/Y', 'Europe/Paris') }}</p>
+                <p>{{ model.nbDownload }} téléchargement(s)</p>
+                <p>{{ model.love }} j'aime(s)</p>
+                <a target="_blank" href="{{ path('model_detail', {'id': model.id, 'name': model.name }) }}" class="btn btn-default">Prévisualiser</a>
+            </div>
+        </div>
+        <hr class="model_detail_hr">
+    {% endif %}
+
+    {% if signalExist == true %}
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="control-label" align="center">Raison(s) du signalement</h2>
+                <table class="table-signal">
+                    <thead>
+                    <tr>
+                        <th class="col-sm-3"></th>
+                        <th class="col-sm-9"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for signal in model.modelSignal %}
+                        {% if signal.status == constant('\\AppBundle\\Entity\\Signal::STATUS_VALID') %}
+                            <tr class="table-border">
+                                <th class="control-label pad-10 mt-5">{{ signal.signalRef.signalName }}</th>
+                                <td class="control-label pad-10 mt-5">{{ signal.description|nl2br }}</td>
+                            </tr>
+                        {% endif %}
+                        
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr class="model_detail_hr">
+    {% endif %}
+    
+    {{ form_errors(form) }}
+    {{ form_start(form) }}
+        {% if model_name is null %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label required">{{ 'model.form.field.file_title'|trans }}</label>
+                <div class="col-sm-10">
+                    {{ form_errors(form.attachmentFile) }}
+                    {{ form_widget(form.attachmentFile) }}
+                </div>
+                <span class="indication">{{ 'model.form.field.file'|trans }}</span>
+            </div>
+        {% endif %}
+        {{ form_row(form.name) }}
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label required">{{ 'model.form.field.category_title'|trans }}</label>
+            <div class="col-sm-10">
+                {{ form_errors(form.categoryModel) }}
+                {{ form_widget(form.categoryModel) }}
+            </div>
+        </div>
+
+        {{ form_row(form.description) }}
+        {{ form_row(form.caracteristique) }}
+        {{ form_row(form.tags) }}
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'model.form.field.price_title'|trans }}</label>
+            <div class="col-sm-5">
+                {{ form_errors(form.price_tax_excl) }}
+                {{ form_widget(form.price_tax_excl) }}
+            </div>
+            {% if model_name is null %}
+                <div class="col-sm-5">
+                    <p>{{ 'model.form.field.price_indication'|trans }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">{{ 'model.form.field.portfolio_title'|trans }}</label>
+            <label class="col-sm-10">{{ 'model.form.field.portfolio'|trans }}</label>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                {{ form_widget(form.portfolioImages) }}
+            </div>
+        </div>
+
+        <div  align="right">
+            <a href="#definition">{{ 'model.form.field.license'|trans }}</a>
+        </div>
+        {{ form_row(form.licences) }}
+
+        
+        
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="col-sm-4" align="left">
+                    {% if model_name is not null %}
+                        <a href="{{ path('model_delete', { 'id': model.id }) }}" onclick="return confirm(' Êtes-vous sur de vouloir supprimer cet modèle ?')"  title="Supprimer ce modème" class="btn btn-default">Supprimer ce modèle</a>
+                    {% endif %}
+                </div>
+                <div class="col-sm-4" align="center">
+                    {{ form_row(form.save) }}
+                </div>
+                <div class="col-sm-4" align="right">
+                    {{ form_row(form.add) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12 bottom-creationModel">
+                <div class="col-sm-6" align="center">
+                    <a class="link-bottom-creationModel" href="{{ path('model_find_by_maker', {'company': maker.company, 'id': maker.id}) }}" >
+                        <u>Tous mes modèles 3D</u>
+                    </a>
+                </div>
+                <div class="col-sm-6" align="center">
+                    <a class="link-bottom-creationModel" href="{{ path('user_maker_creations_new') }}" >
+                        <u>Créer un autre modèle</u>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        
+    {{ form_end(form) }}
+
+        
+    
+{% endblock %}
+
+{% block definition %}
+    <div class="container pad-15-20 col-sm-12 definition-container">
+        <div class="row">
+            <div class="definition" id="definition">
+                <h2 class="col-sm-12 control-label" align="center">Les différentes licences</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="col-sm-2"></th>
+                        <th class="col-sm-10"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for license in licenses %}
+                        <tr>
+                            <th class="control-label pad-10 mt-5">{{ license.name }}</th>
+                            <td class="control-label pad-10 mt-5">{{ license.description }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div  align="right">
+                    <a href="https://creativecommons.org/licenses/?lang=fr-FR" target="_blank">Plus de précision</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+    <script type="text/javascript">
+
+        var submitted = false;
+
+        var needToConfirm = false;
+
+        $(document).bind('DOMSubtreeModified', function () {
+            $("select,input,textarea").change(function() {
+                needToConfirm = true;
+            });
+            
+        });
+
+        
+        
+        $(document).ready( function() {
+            $('.portfolio-collection').collection({
+                position_field_selector: '.image-position',
+                min: 1,
+                add:  '<a href="#" class="btn btn-rounded"><span class="glyphicon glyphicon-plus"></span></a>'
+                });
+            
+            $('.categoryModel-collection').collection({
+                allow_duplicate: false,
+                allow_up: false,
+                allow_down: false,
+                min: 1,
+                add:  '<a href="#" class="btn btn-rounded"><span class="glyphicon glyphicon-plus"></span></a>'
+            });
+
+            $('.collection-remove').on("click",function(){
+                needToConfirm = true;
+            });
+
+            $('.collection-up').on("click",function(){
+                needToConfirm = true;
+            });
+
+            $('.collection-down').on("click",function(){
+                needToConfirm = true;
+            });
+            
+            window.onbeforeunload = function (e) {
+                if (!submitted && needToConfirm == true) {
+                    var message = "You have not saved your changes.", e = e || window.event;
+                    if (e) {
+                        e.returnValue = message;
+                    }
+                    return message;
+                }
+            }
+            $("form").submit(function() {
+                submitted = true;
+            });
+            /*
+            $('.license').change(function(){
+                valeur = $('.license');
+                console.log(valeur);
+            });*/
+        });
+        
+        
+        /*
+        $("categoryModel1").change(function() {
+            console.log("CoucouFISRT");
+        }); 
+
+        selectElem = document.getElementById('categoryModel1');
+        if(selectElem != null){
+            console.log(selectElem.value);
+        }
+        try {
+            console.log(selectElem.value);
+        }
+        catch(e) {
+            console.log(e);
+            // expected output: "Parameter is not a number!"
+        }
+        
+        //valeur = select.options[select.selectedIndex].value;
+        // Quand une nouvelle <option> est selectionnée
+        /*
+        selectElem.addEventListener('change', function() {
+            console.log("coucou3");
+        })
+        console.log("coucou");*/
+
+    </script>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'model_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    Liste des modèles
+                    <span class="panel-subtitle">Liste des modèles existant sur la platforme</span>
+                </div>
+                <form action="{{ path('admin_model_list_status') }}" method="post">
+                    <table class="col-sm-12 m-p-0">
+                        <thead>
+                        <tr>
+                            <th>Status :</th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_Validé" name="prenom[]" value="2" {{ chekOrNot[1] }}>
+                                <label class="form-check-label">Publié</label>
+                            </th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_A_validé" name="prenom[]" value="1" {{ chekOrNot[0] }}>
+                                <label class="form-check-label">En cours publication</label>
+                            </th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_A_corriger" name="prenom[]" value="6" {{ chekOrNot[5] }}>
+                                <label class="form-check-label">A corriger</label>
+                            </th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_Cacher" name="prenom[]" value="4" {{ chekOrNot[3] }}>
+                                <label class="form-check-label">Brouillon</label>
+                            </th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_Signalé" name="prenom[]" value="3" {{ chekOrNot[2] }}>
+                                <label class="form-check-label">Signalé</label>
+                            </th>
+                            <th>
+                                <input type="checkbox" class="form-check-input" id="chek_Supprimer" name="prenom[]" value="5" {{ chekOrNot[4] }}>
+                                <label class="form-check-label">Supprimé</label>
+                            </th>
+                            <th>
+                                <button type="submit" class="btn">Rechercher</button>
+                            </th>
+                           
+                        </tr>
+                        </thead>
+                    </table>
+                </form>
+                <div class="panel-body">
+                    <table id="table-model-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.order.list.column.id'|trans }}</th>
+                            <th>Dernier changement</th>
+                            <th>Nom</th>
+                            <th>{{ 'admin.order.list.column.maker'|trans }}</th>
+                            <th>Prix</th>
+                            <th><span class="icon s7-download"></span></th>
+                            <th><span class="icon s7-like2"></span></th>
+                            <th>Signal</th>
+                            <th>Status</th>
+                            <th>Création</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for model in models %}
+                            <tr>
+                                <td>{{ model.id }}</td>
+                                <td data-order="{{ model.updatedAt|date('YmdHis') }}">{{ model.updatedAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                <td data-order="{{model.name}}" data-search="{{ model.name }}">
+                                    <a href="{{ path('admin_model_modify', {'id': model.id}) }}">
+                                        {{ model.name|length > 19 ? model.name|slice(0, 19)|capitalize ~ '...' : model.name|capitalize  }}
+                                    </a>
+                                </td>                                
+                                <td data-order="{{model.maker.fullname}}">{{ model.maker.fullname }}</td>
+                                <td>{{ ((model.priceTaxIncl)/100)|number_format(2, ',', '.') }}</td>
+                                <td data-order="{{model.nbDownload}}">{{ model.nbDownload }}</a></td>
+                                <td data-order="{{model.love}}">{{ model.love}}</td>
+                                <td>
+                                    {% set break = false %}
+                                    {% for signal in model.modelSignal if not break %}
+                                        {% if signal.status == constant('\\AppBundle\\Entity\\Signal::STATUS_VALID') %}
+                                            {% set break = true %}
+                                            Signalé
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ model.status.name }}</td>
+                                <td data-order="{{ model.createdAt|date('YmdHis') }}">{{ model.createdAt|date('d/m/Y', app.user.timezone) }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    {% if app.user.maker is not null %}
+        <h1>{{ 'Tableau de bord - Maker'|trans }}</h1>
+        <h4>{{ 'Les commandes en cours'|trans }}</h4>
+        {% if makerOrders is not null and 0 < makerOrders|length %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Commandée le</th>
+                    <th>Client</th>
+                    <th>Prix TTC</th>
+                    <th>Fin Prod</th>
+                    <th>État</th>
+                    <th>Expédition</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in makerOrders %}
+                    <tr>
+                        <td><a href="{{ path('order_maker_see', {'reference': order.reference}) }}">{{ order.reference }}</a></td>
+                        <td>{{ order.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                        <td>{{ order.customer.fullname }}</td>
+                        <td>{{ (order.totalAmountForMakerTaxIncl / 100)|number_format(2) }} €</td>
+                        <td>{% if order.shouldBeReadyAt is not null %}{{ order.shouldBeReadyAt|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                        <td>{{ order.makerReadableStatus }}</td>
+                        <td>{{ order.readableShippingType }}</td>
+                        <td><a href="{{ path('order_maker_see', {'reference': order.reference}) }}">consulter</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous retrouverez ici la liste des dernières commandes reçues.</p>
+        {% endif %}
+        <h4>{{ 'Les devis en cours'|trans }}</h4>
+        {% if makerQuotations is not null and 0 < makerQuotations|length %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Projet</th>
+                    <th>État</th>
+                    <th>Prix TTC</th>
+                    <th>Clôturé le</th>
+                    <th>Fin de validité</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for quotation in makerQuotations %}
+                    <tr>
+                        <td><a href="{{ path('quotation_maker_see', {'reference': quotation.reference}) }}">{{ quotation.reference }}</a></td>
+                        <td title="{{ quotation.project.name|capitalize }}" >{{ quotation.project.name|length > 30 ? quotation.project.name|slice(0, 30)|capitalize ~ '...' : quotation.project.name|capitalize }}</td>
+                        <td>{{ quotation.makerReadableStatus }}</td>
+                        <td>{{ ((quotation.getVatPrice + quotation.getTotalPrice) / 100) | number_format(2) }} €</td>
+                        <td>{% if quotation.project.closedAt is not null %}{{ quotation.project.closedAt|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                        <td>{% if quotation.project.closedAt is not null %}{{ quotation.project.closedAt|date_modify("+"~quotationAgreementDays~" day")|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                        <td><a href="{{ path('quotation_maker_see', {'reference': quotation.reference}) }}">consulter</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous retrouverez ici la liste de vos devis en cours.</p>
+        {% endif %}
+        <h4>{{ 'Derniers messages reçus des clients'|trans }}</h4>
+        {% if makerMessages is not null and 0 < makerMessages|length %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Description</th>
+                    <th>Client</th>
+                    <th>Reçu le</th>
+                    <th>Message</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for message in makerMessages %}
+                    <tr>
+                        <td>
+                            {% if message.order is not null %}
+                                <a href="{{ path('order_maker_see', {'reference': message.order.reference}) }}">{{ message.order.reference }}</a>
+                            {% elseif message.quotation is not null %}
+                                <a href="{{ path('quotation_maker_see', {'reference': message.quotation.reference}) }}">{{ message.quotation.project.reference }}</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if message.order is not null %}
+                                Commande du {{ message.order.createdAt|date('d/m/Y', 'Europe/Paris') }}
+                            {% elseif message.quotation is not null %}
+                                Devis {{ message.quotation.reference }}
+                            {% endif %}
+                        </td>
+                        <td>{{ message.author.fullname }}</td>
+                        <td>{{ message.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                        <td>{{ message.text|length > 30 ? message.text|slice(0, 30) ~ '...' : message.text  }}</td>
+                        <td>
+                            {% if message.order is not null %}
+                                <a href="{{ path('order_maker_see', {'reference': message.order.reference}) }}">consulter</a>
+                            {% elseif message.quotation is not null %}
+                                <a href="{{ path('quotation_maker_see', {'reference': message.quotation.reference}) }}">consulter</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous retrouverez ici la liste de vos derniers messages reçus, et auxquels vous n'avez pas répondu.</p>
+        {% endif %}
+        <hr>
+    {% endif %}
+    <h1>{{ 'Tableau de bord'|trans }}{% if app.user.maker is not null %} - Client{% endif %}</h1>
+    <h4>{{ 'Mes demandes de devis'|trans }}</h4>
+    {% if projects is not null and 0 < projects|length %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Projet</th>
+                <th>État</th>
+                <th>Devis reçus</th>
+                <th>Clôturé le</th>
+                <th>Validité des devis</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td><a href="{{ path('design_form', {'reference': project.reference}) }}">{{ project.reference }}</a></td>
+                    <td>{{ project.name|length > 10 ? project.name|slice(0, 10)|capitalize ~ '...' : project.name|capitalize }}</td>
+                    <td>{{ project.customerReadableStatus }}</td>
+                    <td>{% if project.nbQuotationReceivedForCustomer != 0 %}{{ project.nbQuotationReceivedForCustomer }}{% else %}-{% endif %}</td>
+                    <td>{% if project.closedAt is not null %}{{ project.closedAt|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                    <td>{% if project.closedAt is not null %}{{ project.closedAt|date_modify("+"~quotationAgreementDays~" day")|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                    <td><a href="{{ path('design_form', {'reference': project.reference}) }}">consulter</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous retrouverez ici la liste de vos demandes de devis{% if app.user.maker is not null %} faites en tant que client{% endif %}.</p>
+    {% endif %}
+    <h4>{{ 'Mes commandes en cours de traitement'|trans }}</h4>
+    {% if orders is not null and 0 < orders|length %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Commandée le</th>
+                <th>Livraison estimée</th>
+                <th>Maker</th>
+                <th>Prix TTC</th>
+                <th>État</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}">{{ order.reference }}</a></td>
+                    <td>{{ order.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                    <td>{% if order.expectedDeliveryDate is not null %}{{ order.expectedDeliveryDate|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                    <td>{{ order.maker.fullname }}</td>
+                    <td>{{ (order.totalAmountTaxIncl / 100)|number_format(2) }} €</td>
+                    <td>{{ order.customerReadableStatus }}</td>
+                    <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}">consulter</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous retrouverez ici la liste de vos commandes{% if app.user.maker is not null %} passées en tant que client{% endif %}.</p>
+    {% endif %}
+    {% if ordersAwaitingReview is not null and 0 < ordersAwaitingReview|length %}
+        <h4>{{ 'Laissez un commentaire sur la prestation du Maker'|trans }}</h4>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Commandée le</th>
+                <th>Livrée le</th>
+                <th>Maker</th>
+                <th>Prix TTC</th>
+                <th>État</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in ordersAwaitingReview %}
+                <tr>
+                    <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}">{{ order.reference }}</a></td>
+                    <td>{{ order.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                    <td>{% if order.deliveredAt is not null %}{{ order.deliveredAt|date('d/m/Y', 'Europe/Paris') }}{% else %}-{% endif %}</td>
+                    <td>{{ order.maker.fullname }}</td>
+                    <td>{{ (order.totalAmountTaxIncl / 100)|number_format(2) }} €</td>
+                    <td>{{ order.customerReadableStatus }}</td>
+                    <td><a href="{{ path('order_customer_see', {'reference': order.reference}) }}#rating">commenter</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    <h4>{{ 'Derniers messages reçus des Makers'|trans }}</h4>
+    {% if messages is not null and 0 < messages|length %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Description</th>
+                <th>Maker</th>
+                <th>Reçu le</th>
+                <th>Message</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for message in messages %}
+                <tr>
+                    <td>
+                        {% if message.order is not null %}
+                            <a href="{{ path('order_customer_see', {'reference': message.order.reference}) }}">{{ message.order.reference }}</a>
+                        {% elseif message.quotation is not null %}
+                            <a href="{{ path('quotation_customer_see', {'reference': message.quotation.reference}) }}">{{ message.quotation.project.reference }}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if message.order is not null %}
+                            Commande du {{ message.order.createdAt|date('d/m/Y', 'Europe/Paris') }}
+                        {% elseif message.quotation is not null %}
+                            Devis {{ message.quotation.reference }}
+                        {% endif %}
+                    </td>
+                    <td>{% if message.author.maker is not null %}{{ message.author.maker.fullname }}{% else %}-{% endif %}</td>
+                    <td>{{ message.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                    <td>{{ message.text|length > 30 ? message.text|slice(0, 30) ~ '...' : message.text  }}</td>
+                    <td>
+                        {% if message.order is not null %}
+                            <a href="{{ path('order_customer_see', {'reference': message.order.reference}) }}">consulter</a>
+                        {% elseif message.quotation is not null %}
+                            <a href="{{ path('quotation_customer_see', {'reference': message.quotation.reference}) }}">consulter</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous retrouverez ici la liste de vos derniers messages reçus{% if app.user.maker is not null %} en tant que client{% endif %}, et auxquels vous n'avez pas répondu.</p>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    gtag_report_event(this.user3dm,'login','login.success');
+</script>
+{% endblock %}

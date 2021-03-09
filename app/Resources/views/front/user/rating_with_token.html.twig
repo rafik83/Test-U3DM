@@ -1,0 +1,16 @@
+{% extends 'front/base.html.twig' %}
+
+{% block body %}
+    <div class="row" id="rating">
+        <div class="col-sm-12">
+            {% include 'front/common/order_rating.html.twig' %}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {% include 'front/common/order_rating_js.html.twig' %}
+{% endblock %}

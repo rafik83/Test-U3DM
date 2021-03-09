@@ -1,0 +1,44 @@
+
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'dashboard' %}
+{% set activeMenu = 'suggest' %}
+
+{% block body %}
+    <div class="row">
+        {% for category in suggestions %}
+            {% if category.suggestData|length > 0 %}
+                <div class="col-md-4">
+                    <div class="panel panel-default panel-table">
+                        <div class="indicator-item">
+                            <div class="indicator-item-icon">
+                                <h4>{{ category.categoryData }}</h4>
+                            </div>
+                            <div class="indicator-item-value">
+                                {% if category.percentageCategory > 100 %}
+                                    <p class="suggest-wrong">{{ category.percentageCategory }} / 100</p>
+                                {% else %}
+                                    <p class="suggest-list">{{ category.percentageCategory }} / 100</p>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                        {% for suggestion in category.suggestData %}
+                            <div class="indicator-item">
+                                <div class="indicator-item-icon">
+                                    <a href="{{ path('admin_model_modify', {'id': suggestion.model.id}) }}">
+                                        {{ suggestion.model.name }}
+                                    </a>
+                                </div>
+                                <div class="indicator-item-value">
+                                    {{ category.percentages[loop.index - 1].percentage }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+

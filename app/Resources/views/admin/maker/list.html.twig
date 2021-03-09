@@ -1,0 +1,61 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'user' %}
+{% set activeMenu = 'maker_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.maker.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.maker.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-prospect-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.maker.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.maker.list.column.name'|trans }}</th>
+                            <th>{{ 'admin.maker.list.column.company'|trans }}</th>
+                            <th>{{ 'admin.maker.list.column.type'|trans }}</th>
+                            <th>{{ 'admin.maker.list.column.date_created'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for maker in makers %}
+                            <tr>
+                                <td>{{ maker.id }}</td>
+                                <td><a href="{{ path('admin_maker_see', { 'id': maker.id }) }}">{{ maker.lastname|upper }} {{ maker.firstname }}
+                                {% if maker.user.isDeleted() %}
+                                    <i class="s7-delete-user"> deleted</i> 
+                                {% elseif maker.isBlacklisted() %} 
+                                    <i class="s7-mute"> blacklisted</i> 
+                                {% endif %}
+                                </a></td>
+
+
+
+
+                                
+                                <td>{% if maker.company is not null %}{{ maker.company }}{% else %}{{ 'admin.empty'|trans }}{% endif %}</td>
+                                <td class="cell-detail">
+                                    {% if maker.printer %}
+                                        {{ 'admin.user.type.maker.printer'|trans }}
+                                    {% endif %}
+                                    {% if maker.designer %}
+                                        {{ 'admin.user.type.maker.designer'|trans }}
+                                    {% endif %}
+                                </td>
+                                <td data-order="{{ maker.createdAt|date('YmdHis') }}">{{ maker.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                <td class="actions"><a href="{{ path('admin_maker_see', { 'id': maker.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

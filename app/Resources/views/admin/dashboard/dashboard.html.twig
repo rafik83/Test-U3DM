@@ -1,0 +1,77 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'dashboard' %}
+{% set activeMenu = 'dashboard' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading">{{ 'admin.dashboard.latest_prospects.title'|trans }}</div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.dashboard.latest_prospects.column.name'|trans }}</th>
+                            <th>{{ 'admin.dashboard.latest_prospects.column.type'|trans }}</th>
+                            <th>{{ 'admin.dashboard.latest_prospects.column.date'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for prospect in lastProspects %}
+                        <tr>
+                            <td><a href="{{ path('admin_prospect_see', { 'id': prospect.id }) }}">{{ prospect.lastname|upper }} {{ prospect.firstname }}</a></td>
+                            <td class="cell-detail">
+                                {% if prospect.maker %}
+                                    <span>{{ 'prospect.type.maker'|trans }}</span>
+                                    <span class="cell-detail-description">
+                                            {% if prospect.printer %}
+                                                {{ 'prospect.type.maker.printer'|trans }}
+                                            {% endif %}
+                                        {% if prospect.designer %}
+                                            {{ 'prospect.type.maker.designer'|trans }}
+                                        {% endif %}
+                                        </span>
+                                {% else %}
+                                    <span>{{ 'prospect.type.customer'|trans }}</span>
+                                    <span class="cell-detail-description">
+                                            {% if prospect.customerType == constant('\\AppBundle\\Entity\\Prospect::CUSTOMER_TYPE_INDIVIDUAL') %}
+                                                {{ 'prospect.type.customer.type.individual'|trans }}
+                                            {% else %}
+                                                {{ 'prospect.type.customer.type.company'|trans }}
+                                            {% endif %}
+                                        </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ prospect.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                            <td class="actions"><a href="{{ path('admin_prospect_see', { 'id': prospect.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="widget-indicators">
+                <div class="indicator-item">
+                    <div class="indicator-item-icon">
+                        <div class="icon"><span class="s7-users"></span></div>
+                    </div>
+                    <div class="indicator-item-value"><span data-toggle="counter" data-end="{{ counterProspects }}" class="indicator-value-counter">{{ counterProspects }}</span>
+                        <div class="indicator-value-title"><a href="{{ path('admin_prospect_list') }}">{{ 'admin.dashboard.prospects'|trans }}</a></div>
+                    </div>
+                </div>
+                <div class="indicator-item">
+                    <div class="indicator-item-icon">
+                        <div class="icon"><span class="s7-albums"></span></div>
+                    </div>
+                    <div class="indicator-item-value"><span data-toggle="counter" data-end="{{ disabledTags|length }}" class="indicator-value-counter">{{ disabledTags|length }}</span>
+                        <div class="indicator-value-title"><a href="{{ path('admin_tag_list') }}">{{ 'admin.dashboard.disabled_tags'|trans }}</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

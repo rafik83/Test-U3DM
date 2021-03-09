@@ -1,0 +1,90 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'model_list' %}
+
+
+{% block body %}
+<div id="content" class="row">
+    {% if correctionMsg is defined %}
+        <div class="col-sm-12 name-model ">
+            <div class="panel panel-default bg-red">
+                <div class="panel-heading color-white">
+                    <table>
+                        <thead >
+                        <tr class="row col-sm-12 ">
+                            <th class='col-sm-1 text-center'>
+                                <span class="icon s7-attention"></span>
+                            </th>
+                            <td class="color-white col-sm-11  text-center" align="right">
+                            Problème lors de la demande de correction ou de suppression, pour l'instant le status du modèle n'a pas changé. 
+                            Pour supprimer ou demander une correction au maker, vous devez remplir la section "Raison de la demande de correction ou de suppression"
+                            </td>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="col-sm-12 name-model">
+        <div class="panel panel-default">
+            <div class="panel-heading panel-heading-divider">
+                {{ model.name }}
+            </div>
+            <div class="panel-body">
+                <a href="{{ path('model_admin_download', {'id': model.id, 'name': model.name}) }}">
+                    Télécharger le modèle <span class="icon s7-download"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% if signalExist == true %}
+        <div class="col-sm-12 name-model">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Signalement
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <table class="table-signal">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for signal in model.modelSignal %}
+                                {% if signal.status == constant('\\AppBundle\\Entity\\Signal::STATUS_VALID') %}
+                                    <tr class="table-border">
+                                        <th class="control-label pad-10 mt-5">{{ signal.signalRef.signalName }}</th>
+                                        <td class="control-label pad-10 mt-5">{{ signal.description|nl2br }}</td>
+                                    </tr>
+                                {% endif %}
+                                
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <iframe src="{{ path('div_model', {'id': model.id}) }}" scrolling="no" width="100%" style="border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight +'px';"></iframe>
+
+    <div class="col-sm-12 name-model">
+        <div class="panel panel-default">
+            <div class="panel-heading panel-heading-divider">
+                Pousser le modèle en suggestion
+            </div>
+            <div class="panel-body">
+                <iframe src="{{ path('admin_div_suggest_model', {'id': model.id}) }}" scrolling="yes" width="100%" style="border:none;" onload="this.style.height=this.contentDocument.body.scrollHeight +'px';"></iframe>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,88 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'prospect' %}
+{% set activeMenu = 'prospect_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{ prospect.lastname|upper }}{% if prospect.firstname is not null %} {{ prospect.firstname }}{% endif %}{% if prospect.company is not null %}, {{ prospect.company }}{% endif %}
+                            <span class="panel-subtitle">{{ prospect.createdAt|date('d/m/Y H:i', app.user.timezone) }}</span>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            {% if prospect.maker %}
+                                {{ 'prospect.type.maker'|trans }}
+                                <span class="panel-subtitle">
+                                    {% if prospect.printer %}
+                                        {{ 'prospect.type.maker.printer'|trans }}
+                                    {% endif %}
+                                    {% if prospect.designer %}
+                                        {{ 'prospect.type.maker.designer'|trans }}
+                                    {% endif %}
+                                </span>
+                            {% else %}
+                                {{ 'prospect.type.customer'|trans }}
+                                <span class="panel-subtitle">
+                                    {% if constant('\\AppBundle\\Entity\\Prospect::CUSTOMER_TYPE_INDIVIDUAL') == prospect.customerType %}
+                                        {{ 'prospect.type.customer.type.individual'|trans }}
+                                    {% else %}
+                                        {{ 'prospect.type.customer.type.company'|trans }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {% if prospect.token is not null %}
+                        <p><strong>URL d'inscription personnalisée</strong> : {{ absolute_url(path('user_register', {'prospectToken': prospect.token})) }}</p>
+                    {% endif %}
+                    {% if prospect.maker %}
+                        <p><strong>{{ 'admin.prospect.see.technologies'|trans }}</strong></p>
+                        {% if 0 == prospect.technologies|length %}
+                            {{ 'admin.empty'|trans }}
+                        {% else %}
+                            <ul>
+                                {% for tag in prospect.technologies %}
+                                    <li><a href="{{ path('admin_tag_edit', { 'id': tag.id }) }}">{{ tag.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% else %}
+                        <p><strong>{{ 'admin.prospect.see.domains'|trans }}</strong></p>
+                        {% if 0 == prospect.domains|length %}
+                            {{ 'admin.empty'|trans }}
+                        {% else %}
+                            <ul>
+                                {% for tag in prospect.domains %}
+                                    <li><a href="{{ path('admin_tag_edit', { 'id': tag.id }) }}">{{ tag.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
+                    {% if prospect.message is not null %}
+                        <p><strong>{{ 'admin.prospect.see.message'|trans }}</strong></p>
+                        <p>"{{ prospect.message|nl2br }}"</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.prospect.see.contact'|trans }}
+                </div>
+                <div class="panel-body">
+                    <p><span class="icon s7-map-marker"></span> {% if prospect.city is null %}{{ 'admin.empty'|trans }}{% else %}{{ prospect.city }}{% if prospect.country is not null %}, {{ prospect.country }}{% endif %}{% endif %}</p>
+                    <p><span class="icon s7-mail"></span> <a href="mailto:{{ prospect.email }}">{{ prospect.email }}</a></p>
+                    <p><span class="icon s7-phone"></span> {% if prospect.phoneNumber is not null %}{{ prospect.phoneNumber }}{% else %}{{ 'admin.empty'|trans }}{% endif %}</p>
+                    <p><span class="icon s7-paper-plane"></span> {% if prospect.newsletter %}{{ 'admin.prospect.see.newsletter.yes'|trans }}{% else %}{{ 'admin.prospect.see.newsletter.no'|trans }}{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

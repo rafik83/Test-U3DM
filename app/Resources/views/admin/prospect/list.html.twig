@@ -1,0 +1,64 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'prospect' %}
+{% set activeMenu = 'prospect_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.prospect.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.prospect.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-prospect-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.prospect.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.prospect.list.column.name'|trans }}</th>
+                            <th>{{ 'admin.prospect.list.column.company'|trans }}</th>
+                            <th>{{ 'admin.prospect.list.column.type'|trans }}</th>
+                            <th>{{ 'admin.prospect.list.column.date'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for prospect in prospects %}
+                            <tr>
+                                <td>{{ prospect.id }}</td>
+                                <td><a href="{{ path('admin_prospect_see', { 'id': prospect.id }) }}">{{ prospect.lastname|upper }} {{ prospect.firstname }}</a></td>
+                                <td>{% if prospect.company is not null %}{{ prospect.company }}{% else %}{{ 'admin.empty'|trans }}{% endif %}</td>
+                                <td class="cell-detail">
+                                    {% if prospect.maker %}
+                                        <span>{{ 'prospect.type.maker'|trans }}</span>
+                                        <span class="cell-detail-description">
+                                            {% if prospect.printer %}
+                                                {{ 'prospect.type.maker.printer'|trans }}
+                                            {% endif %}
+                                            {% if prospect.designer %}
+                                                {{ 'prospect.type.maker.designer'|trans }}
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        <span>{{ 'prospect.type.customer'|trans }}</span>
+                                        <span class="cell-detail-description">
+                                            {% if prospect.customerType == constant('\\AppBundle\\Entity\\Prospect::CUSTOMER_TYPE_INDIVIDUAL') %}
+                                                {{ 'prospect.type.customer.type.individual'|trans }}
+                                            {% else %}
+                                                {{ 'prospect.type.customer.type.company'|trans }}
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td data-order="{{ prospect.createdAt|date('YmdHis') }}">{{ prospect.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                <td class="actions"><a href="{{ path('admin_prospect_see', { 'id': prospect.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

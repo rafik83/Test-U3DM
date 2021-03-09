@@ -1,0 +1,77 @@
+{% extends 'front/user/base.html.twig' %}
+{% block user_content %}
+    <h1>{{ 'Mes projets'|trans }}</h1>
+    {% if 0 < projects|length %}
+        <table id="table-project-customer-list" class="table table-hover">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Réf. Projet</th>
+                <th>Nom du projet</th>
+                <th>État du projet</th>
+                <th>Devis reçus</th>
+                <th>Fin AO</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td data-order="{{ project.createdAt|date('YmdHis') }}">{{ project.createdAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                    <td data-order="{{ project.reference }}"><a href="{{ path('design_form', {'reference': project.reference}) }}">{{ project.reference }}</a></td>
+                    <td data-order="{{project.name}}" data-search="{{project.name}}">{{ project.name|length > 10 ? project.name|slice(0, 10)|capitalize ~ '...' : project.name|capitalize  }}</td>
+                    <td data-order="{{project.customerReadableStatus}}">{{ project.customerReadableStatus }}</td>
+                    <td data-order="{{ project.nbQuotationReceivedForCustomer }}">{{ project.nbQuotationReceivedForCustomer }}</td>
+                    {% if project.status == constant('\\AppBundle\\Entity\\PROJECT::STATUS_CREATED')%}
+                        <td data-order="-">
+                            -
+                        </td>
+                    {% else %}
+                        <td data-order="{{ project.remainingDay}}">
+                            {% if date(project.closedAt) < date('now', 'utc') %}
+                                            Terminé 
+                                        {% else %}
+                                            J -{{ project.remainingDay }}
+                                        {% endif %}
+                        </td>
+                    {% endif %}
+                    <td>
+
+                        
+                        {% if project.order is not null %}
+                            <a href="{{ path('quotation_customer_see', {'reference': project.order.quotation.reference}) }}">Consulter</a>
+                            | <a href="{{ path('order_customer_see', {'reference': project.order.reference}) }}">Voir la commande</a>
+                        {% else %}
+                            <a href="{{ path('design_form', {'reference': project.reference}) }}">Consulter</a>
+                        {% endif %}
+
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous n'avez créé aucun projet à ce jour.</p>
+    {% endif %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+    <script type="text/javascript">
+        // For datatables
+        App.init();
+        App.dataTables();
+    </script>
+
+{% endblock %}

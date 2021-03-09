@@ -1,0 +1,33 @@
+<div >
+    <table class="col-sm-12 col-md-12 col-lg-12 col-xl-12 select-order">
+        <thead>
+        <tr>
+            <th class="col-md-8"></th>
+            <th class="col-md-4"></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="control-label pad-10 mt-5">
+                    <form id="hu" action="{{ path('model_search') }}" method="GET" class="navbar-form form-search pull-left">
+                        {{ form_widget(form.search, { 'attr': {'class': 'c4' , 'size': '75'}}) }}
+                        <button type="submit" class="btn">Rechercher</button>
+                        {{ form_widget(form) }}
+                    </form>
+                    
+                </td>
+                <td class="control-label pad-10 mt-5">
+                    <h5 class="col-sm-4 order">Trier par :</h5>
+                    <select class="custom-select col-sm-6" id="liste">
+                        <option>Nouveau</option>
+                        <option>Prix croissant</option>
+                        <option>Prix décroissant</option>
+                        <option>Remarqués</option>
+                        <option>Populaires</option>
+                    </select>
+                    <span class="input-group-btn"><i class="glyphicon glyphicon-menu-down"></i></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

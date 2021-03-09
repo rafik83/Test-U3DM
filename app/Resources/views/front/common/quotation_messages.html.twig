@@ -1,0 +1,48 @@
+{% set attachmentDownloadPath = 'quotation_message_attachment_download' %}
+{% set EnableMessageNonModere = false %}
+{% if context is defined and context == 'admin' %}
+    {% set EnableMessageNonModere = true %}
+    {% set attachmentDownloadPath = 'admin_quotation_message_attachment_download' %}
+{% endif %}
+<style>
+    .messages p { padding-bottom: 15px; border-bottom: 1px solid #cccccc; }
+    .messages em { font-size: 13px; }
+</style>
+<div class="messages">
+    {% if 0 == quotation.messages|length %}
+        <p>Aucun message échangé pour le moment.</p>
+    {% endif %}
+
+    {% if messageForm is defined %}
+        {% if messageForm is null %}
+            <p>L'envoi de nouveaux messages n'est possible que lorsque le devis est à l'état diffusé.</p>
+        {% else %}
+            {{ form_start(messageForm) }}
+                {{ form_errors(messageForm) }}
+                {{ form_row(messageForm.text) }}
+                {{ form_row(messageForm.attachmentFile) }}
+                <div class="text-right">
+                    <button type="submit" class="btn btn-rounded">{{ 'form.send'|trans }}</button>
+                </div>
+            {{ form_end(messageForm) }}
+        {% endif %}
+    {% endif %}
+
+    {% for message in quotation.messages %}
+
+   {% if message.isNeedModerate() == false or EnableMessageNonModere == true or message.authorMaker == isMaker  %}
+            <strong>{% if message.authorMaker %}{{ message.author.maker.fullname }}{% else %}{{ message.author.fullname }}{% endif %}</strong>
+            <em>{{ message.createdAt|date('d/m/Y à H:i', 'Europe/Paris') }}</em>
+            {% if context is defined and context == 'admin' %}
+                <a href="{{ path('admin_message_edit', { 'id': message.id }) }}"><i class="fa fa-paperclip"></i> Modérer le message</a> 
+            {% endif %}
+            <p>
+                {{ message.text|nl2br }}
+                {% if message.attachmentName is not null %}
+                    <br><a href="{{ path(attachmentDownloadPath, { 'id': message.id }) }}" target="_blank"><i class="fa fa-paperclip"></i> {{ message.attachmentOriginalName }}</a>
+                {% endif %}
+            </p>
+        {% endif %}
+    {% endfor %}
+
+</div>

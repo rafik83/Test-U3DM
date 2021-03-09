@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Devis</title>
+</head>
+<body>
+<div id="bill">
+    <div class="align">
+        <div class="w-35" style="float: left;">
+            <img src="{{ pathToWeb }}/assets/front/images/invoice-logo.png">
+            <p>
+                <br><br>
+                <b>
+                    {# 78 rue du Sergent Bobillot  <br>
+                    93100 Montreuil <br>
+                    France <br> #}
+                </b>
+            </p>
+        </div>
+        <div class="w-40" style="float: right;">
+            <div class="right align">
+                <div class="border-2 center w-80">
+                    <p class="mrg-0 purple border-bottom">DEVIS</p>
+                    <p class="mrg-0 txt-13">
+                        <b>N° {{ quotation.reference }}</b><br>
+                        Devis du {{ quotation.savedAt|date('d/m/Y') }} <br>
+                        par : {{ quotation.maker.fullname }}<br>
+                        Référence Projet : {{ quotation.project.reference }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="w-80" style="float: right;">
+            <div class="w-40" style="float: right;">
+            <p class="t5 txt-13">
+                <b class="underline">Adresse de facturation :</b><br>
+                {% if quotation.project.customer.defaultBillingAddress.firstname is not null %}
+                    {{ quotation.project.customer.defaultBillingAddress.firstname }} 
+                    {{ quotation.project.customer.defaultBillingAddress.lastname }} 
+                   <br>
+                {% endif %}
+                {% if quotation.project.customer.defaultBillingAddress.company is not null %}
+                   {{ quotation.project.customer.defaultBillingAddress.company }} <br>
+                {% endif %}
+                {% if quotation.project.customer.defaultBillingAddress.street1 is not null %}
+                    {{ quotation.project.customer.defaultBillingAddress.street1 }} 
+                    {% if quotation.project.customer.defaultBillingAddress.street2 is not null %}
+                        {{ quotation.project.customer.defaultBillingAddress.street2 }} <br>
+                    {% endif %}
+                    <br>
+                {% endif %}
+                {% if quotation.project.customer.defaultBillingAddress.zipcode is not null %}
+                    {{ quotation.project.customer.defaultBillingAddress.zipcode }} {{ quotation.project.customer.defaultBillingAddress.city }}, {{ quotation.project.customer.defaultBillingAddress.country }}<br>
+                {% endif %}
+            </p>
+            </div>
+            {% if quotation.project.type.isScanner == true and  quotation.project.scanOnSite == true %}
+                <div class="w-40" style="float: right;">
+                <p class="t5 txt-13">
+                    <b class="underline">Adresse de numérisation :</b><br>
+                    {% if quotation.project.scanAddress.firstname is not null %}
+                        {{ quotation.project.scanAddress.firstname }} 
+                        {{ quotation.project.scanAddress.lastname }} 
+                       <br>
+                    {% endif %}
+                    {% if quotation.project.scanAddress.company is not null %}
+                       {{ quotation.project.scanAddress.company }} <br>
+                    {% endif %}
+                    {% if quotation.project.scanAddress.street1 is not null %}
+                        {{ quotation.project.scanAddress.street1 }} 
+                        {% if quotation.project.scanAddress.street2 is not null %}
+                            {{ quotation.project.scanAddress.street2 }} <br>
+                        {% endif %}
+                    {% endif %}
+                    {% if quotation.project.scanAddress.zipcode is not null %}
+                        {{ quotation.project.scanAddress.zipcode }} {{ quotation.project.scanAddress.city }}, {{ quotation.project.scanAddress.country }}<br>
+                    {% endif %}
+                </p>
+                </div>
+            {% endif %}
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="align txt-13">
+        <strong>Le Projet</strong>
+        <hr>
+        Nom du projet : {{ quotation.project.name }}<br>
+        Type de projet : {{ quotation.project.type.name }}<br>
+        Date de rendu souhaité : {{ quotation.project.readableDeliveryTime }}<br>
+        Description : <br>
+        {{ quotation.project.description|nl2br }}<br>
+    </div>
+    <br><br>
+    <div class="align txt-13">
+        <strong>La proposition du maker : {{ quotation.maker.fullname }}</strong>
+        <hr>
+        Délai de réalisation : {{ quotation.productionTime }} jour(s) <br>
+        Description : <br>
+        {{ quotation.description }} <br>
+    </div>
+    <table class="mrg-40-0 unbreakable">
+        <thead class="purple">
+        <tr>
+            <th width="50%">Désignation</th>
+            <th>Qté</th>
+            <th>PU</th>
+            <th>Total HT</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for line in quotation.lines %}
+            <tr>
+                <td class="left"><b>{{ line.description }}</b></td>
+                <td>{{ line.quantity }}</td>
+                <td>{{ (line.price / 100)|number_format(2) }} €</td>
+                <td>{{ ((line.price*line.quantity)/ 100)|number_format(2) }} €</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="pad-10 no-border" colspan="2">Devis valide jusqu'au : {{ quotationValidity }} </td>
+            <td class="pad-10">
+                <b>Total HT</b>
+            </td>
+            <td class="pad-10">
+                <b>{{ ((quotation.totalPrice) / 100)|number_format(2) }} €</b>
+            </td>
+        </tr>
+        <tr>
+            <td class="pad-10 no-border" colspan="2"></td>
+            <td class="pad-10">
+                <b>TVA</b>
+            </td>
+            <td class="pad-10">
+                <b>{{ ((quotation.vatPrice) / 100)|number_format(2) }} €</b>
+            </td>
+        </tr>
+        <tr>
+            <td class="pad-10 no-border" colspan="2"></td>
+            <td class="pad-10">
+                <b>Total TTC</b>
+            </td>
+            <td class="pad-10">
+                <b>{{ ((quotation.totalPrice + quotation.vatPrice) / 100)|number_format(2) }} €</b>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+</body>
+</html>
+
+<style>
+
+    body {
+        padding: 20px 0 0 0;
+        margin: 0;
+        background: transparent;
+        font-family: sans-serif;
+        line-height: 1.5;
+        font-size: 13px !important;
+    }
+
+    /********************************* TABLE */
+
+    table{
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+    table.unbreakable {
+        page-break-inside: avoid;
+    }
+    table.unbreakable thead {
+        display: table-row-group;
+    }
+    table.unbreakable tr {
+        page-break-inside: avoid;
+    }
+    td, caption{
+        border: solid black 1px;
+    }
+
+    th{
+        border: none;
+    }
+    caption {
+        border-bottom: none;
+        background: inherit;
+    }
+    thead th, thead td, tfoot td{
+        font-weight: 400;
+    }
+    table.grid thead{
+        background: rgb(235,235,235);
+        color: #464646;
+    }
+    table.grid tr:nth-child(2n){
+        background: rgb(247,247,247);
+        color: #464646;
+    }
+    table.grid tr:hover td, table.grid tr:hover th{
+        border-bottom: solid rgb(165,165,165) 1px;
+    }
+    table.grid thead:hover  th,table.grid thead:hover  td,table.grid tfoot:hover  td{
+        border: solid rgb(215,215,215) 1px;
+    }
+
+    hr{
+        border-color: black;
+    }
+    /********************************* TABLE */
+
+    img {
+        height: auto;
+        width: auto;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+    #bill {
+        background: white;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100%;
+        position: relative;
+    }
+
+    #bill, #bill > * {
+        box-sizing: border-box;
+    }
+    .space{
+        padding-top: 50%;
+    }
+    .align {
+        display: flex
+    }
+    .w-80{
+        width: 80%;
+    }
+    .w-40{
+        width: 40%;
+    }
+    .w-35{
+        width: 35%;
+    }
+    .w-25{
+        width: 25%;
+    }
+    .underline{
+        text-decoration: underline;
+    }
+    .center {
+        text-align: center;
+        justify-content: space-around;
+    }
+    .fit {
+        text-align: justify;
+        justify-content: space-between;
+    }
+    .right {
+        text-align: right;
+        justify-content: flex-end;
+    }
+    .left {
+        text-align: left;
+        justify-content: flex-start;
+    }
+    .mrg-0{
+        margin:0;
+    }
+    .mrg-40-0{
+        margin: 40px 0px;
+    }
+    .pad-5{
+        padding: 5px
+    }
+    .pad-10{
+        padding: 10px;
+    }
+    .pad-0-30{
+        padding: 0px 30px;
+    }
+    .purple{
+        background: #960048;
+        color: white;
+    }
+    .border-bottom{
+        border-bottom: solid 2px black;
+    }
+    .border{
+        border: solid 1px black;
+    }
+    .border-2{
+        border: solid 2px black;
+    }
+    .no-border{
+        border: none;
+    }
+</style>

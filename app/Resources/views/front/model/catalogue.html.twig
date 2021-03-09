@@ -1,0 +1,550 @@
+{% extends 'front/base.html.twig' %}
+
+{% use 'bootstrap_4_horizontal_layout.html.twig' %}
+
+
+
+{% block body %}
+    <div id="big-form">
+        <div id="how-it-work" class="col-sm-12 bg-white pad-15">
+            <h2 class="toggle mrg-0">{# <span class="rounded">0</span>  #}Comment ajouter vos modèles 3D ?</h2>
+            
+            <div class="flex mrg-0">
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-user-circle fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Créer un compte maker</h3>
+                </div>Reste pas mal de page sur le Word Press
+
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-file-alt fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Déposer votre modèle</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-edit fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Editer votre modèle</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-share fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Publier</h3>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <div class="col-sm-12">
+            {{ render(controller(
+                'AppBundle:Model:SearchBar'
+            ))}}
+        </div>
+        <div class="col-sm-2 m-p-0">
+            <div class="panel-group m-p-0" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default panel-color">
+                    <div class=" panel-margin" role="tab" id="headingAll">
+                        <a class="collapsed-title UpCategory" href="{{ path('model_home')}}">
+                            Tous les modèles
+                        </a>
+                    </div>
+                </div>
+                {% for category0 in categoryLevel0 %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading{{ category0.id }}">
+                            <h4 class="panel-title">
+                                <a id="catUp" class="collapsed-title UpCategory" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ category0.id }}" aria-expanded="false" aria-controls="collapse{{ category0.id }}">
+                                    {{ category0.name }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse{{ category0.id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{ category0.id }}">
+                            <div class="panel-body">
+                                <a class="UnderCategory" href="{{ path('model_find_by_categorySup', { 'id': category0.id , 'name': category0.name})}}">&nbsp;&nbsp;&nbsp;Tous</a>
+                            </div>
+                            {% for category1 in categoryLevel1 %}
+                                {% if category1.upCategory == category0 %}
+                                    <div class="panel-body">
+                                        <a class="UnderCategory" href="{{ path('model_find_by_category', { 'id': category1.id , 'name': category1.name })}}">&nbsp;&nbsp;&nbsp;{{ category1.name }}</a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}  
+                        </div>
+                    </div>
+                {% endfor %}                
+            </div>
+        </div>
+        <div class="col-sm-10">
+             <div id="userTable" class="col-sm-12">
+                <searchCategory>
+                </searchCategory>
+                <div class="col-sm-12">
+                    <div id="loaderFirst" class="loaderCatalogue">
+                    </div>
+                </div>
+                <ajaxCard>
+                    {% for model in models %}
+                        <div class='col-sm-6 col-xs-6 col-md-4 cardlist'>
+                            <div class='card bg-white'>
+                                <a href="{{ path('model_detail', {'id': model.id, 'name': model.name }) }}">
+                                    <img src="{{ model.imageLink }}" class='card-img-top' alt = "{{model.name}}">
+                                    <h2 class='card-title' align='center'>{{ model.name|length > 19 ? model.name|slice(0, 19) ~ '...' : model.name }}</h2>
+                                </a>
+                                <div class='card-body row'>
+                                    <table class='col-xs-12 cardlist'>
+                                        <thead>
+                                            <th class='col-sm-4'>
+                                                <h5 align='center' class='card-text'>{{ model.love }} <span class='glyphicon glyphicon-heart'></h5>
+                                            </th>
+                                            <th class='col-sm-4'>
+                                                {% if model.priceTaxIncl == 0 %}
+                                                    <h5 align='center' class='card-text'>Gratuit</h5>
+                                                {% else %}
+                                                    <h5 align='center' class='card-text'>{{ ((model.priceTaxIncl)/100)|number_format(2, ',', '.') }} €</h5>
+                                                {% endif %}
+                                            </th>
+                                            <th class='col-sm-4'>
+                                                <h5 align='center' class='card-text'>{{ model.nbDownload }} <span class='glyphicon glyphicon-download-alt'></h5>
+                                            </th>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </ajaxcard>
+                <div class="col-sm-12">
+                    <div id="loader" class="loaderCatalogue" style="display: none;">
+                    </div>
+                </div>
+                {% if nbModels > 9 %}
+                    <div class="col-sm-12" align="center" id="btnMoreModel">
+                        <button type="button" class="btn" id="modelPlus">Afficher plus de modèles</button>
+                    </div>
+                {% endif %}
+             </div>
+        </div>
+        
+        
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+
+    {# App VueJS #}
+    <!--<script src="{{ asset('build/app-description.js') }}"></script>-->
+    {# End App VueJS #}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+        var modelPlus = 0;
+        $("#loaderFirst").css("display","none");
+        var seeMore = false;
+        window.onload = function(){ 
+            
+            var orderBy;
+            var currentLocation =  document.location.href;
+            //var data_list = currentLocation.split("/");
+            console.log(currentLocation);
+            orderBy = document.getElementById("liste").options[document.getElementById('liste').selectedIndex].text; 
+            //console.log(orderBy);
+            /*
+            $.ajax({
+                url:'/fr/api/model/order',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    "order": orderBy,
+                    "url": currentLocation
+                },
+                async: true,
+                success: function (response)
+                {
+                    var len = response.length;
+                    if(len > 0) {
+                        for(var i=0; i<len; i++){
+
+                            var data_json = JSON.stringify(response[i]); 
+                            var words = data_json.split(':').join(',').split('"').join(',').split(',');
+                            //console.log(words);
+                            var id = words[3];
+                            var name = words[8];
+                            if (name.length > 19) {
+                                name = name.slice(0,19) + "...";
+                            }
+                            //console.log(name);
+                            var makerName = words[14];
+                            var priceTaxIncl = words[19];
+                            if (priceTaxIncl == "0") {
+                                priceTaxIncl = "Gratuit";
+                            } else {
+                                realPrice = parseFloat(priceTaxIncl).toFixed(2);
+                                //console.log(realPrice);
+                                realPrice = realPrice.replace('.', ',');
+                                priceTaxIncl = realPrice + " €";
+                            }
+                            var love = words[23];
+                            var download = words[27];
+                            var image = words[32] + ":" + words[33] + ":" + words[34];
+
+                            
+
+                            var route = '{{ path("model_detail", {'id': 'id','name': 'name'}) }}'; 
+                            route = route.replace("id", id);
+                            route = route.replace("name", name.replace(/ /g,"%20"));
+                            //replace space by "%20" because if there is a space in the name, the url will just read the first word
+
+                            //console.log(route);
+
+
+                            
+                            var tr_str = 
+                                "<div class='col-sm-6 col-xs-6 col-md-4 cardlist'>" +
+                                    "<div class='card bg-white'>" + // cadre blanc autour de la carte : pad-10 mt-5
+                                        "<a href=" + route +">" +
+                                            "<img src='" + image + "'class='card-img-top'alt='"+ newModel.name +"'  >" +
+                                            "<h2 class='card-title' align='center'>" + name + "</h2>" +
+                                        "</a>" +
+                                        "<div class='card-body row'>" +
+                                            "<table class='col-xs-12 cardlist'>" +
+                                                "<thead>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + love + " <span class='glyphicon glyphicon-heart'></h5>" +
+                                                    "</th>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + priceTaxIncl + "</h5>" +
+                                                    "</th>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + download + " <span class='glyphicon glyphicon-download-alt'></h5>" +
+                                                    "</th>" +
+                                                "</thead>" +
+                                            "</table>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>";
+
+                            $("#userTable ajaxCard").append(tr_str);
+                        }
+                    }else {
+                        $("#userTable ajaxCard").append( "<h2 align='center'>Aucun modèle trouvé !</h2>");
+                    }
+                }
+            })
+            */
+        } 
+        $(document).ajaxError(function() {
+            $("#userTable ajaxCard").append( "<h2 align='center'>Aucun modèle trouvé</h2>");
+            $("#loader").css("display","none");
+        });
+        $(document).ajaxStart(function() {
+            // show loader on start
+            if(seeMore === false) {
+                $("#loaderFirst").css("display","block");
+            } else {
+                $("#loader").css("display","block");
+                //document.getElementById("loader").style.display = "block";
+            }
+        }).ajaxSuccess(function() {
+            if(seeMore === false) {
+                $("#loaderFirst").css("display","none");
+            } else {
+                $("#loader").css("display","none");
+                seeMore = false;
+                //document.getElementById("loader").style.display = "none";
+            }
+        });
+        $(document).ready(function () {
+
+            
+            var currentLocation =  document.location.href;
+            var words = currentLocation.split('/');
+            console.log(words);
+            if (words[5] == 'category' || words[5] == 'Upcategory') {
+                //console.log('coucou');
+                categoryUp = decodeURI(words[6]);
+
+                //categoryUp = words[6].replace(/%20/g," ");
+                //categoryUp = categoryUp.replace(/%26/g,"&");
+                //categoryUp = categoryUp.replace(/%C3%A9/g,"é");
+                //categoryUp = categoryUp.replace(/%C3%A8/g,"è");
+                //categoryUp = categoryUp.replace(/%C3%AB/g,"ë");
+                //categoryUp = categoryUp.replace(/%C3%AA/g,"ê");
+                //categoryUp = categoryUp.replace(/%C3%A0/g,"à");
+                //categoryUp = categoryUp.replace(/%C3%B9/g,"ù");
+                //categoryUp = categoryUp.replace(/%C3%BB/g,"û");
+                //categoryUp = categoryUp.replace(/%C3%B4/g,"ô");
+                //categoryUp = categoryUp.replace(/%C3%AE/g,"î");
+                //categoryUp = categoryUp.replace(/%C3%AF/g,"ï");
+                //categoryUp = categoryUp.replace(/%C3%A7/g,"ç");
+                //categoryUp = categoryUp.replace(/%7C/g,"|");
+                //categoryUp = categoryUp.replace(/%27/g,"\'");
+                //categoryUp = categoryUp.replace(/%C3%89/g,"É");
+                //console.log(categoryUp);
+
+
+               $("#userTable searchCategory").append( "<h2>Catégorie : " + categoryUp +"</h2>");
+            }
+
+            let elm = document.getElementById('how-it-work');
+            this.className += ' inactive'
+            $("#how-it-work > :last-child").toggle(1000);
+
+            var isActive= false;
+            $("#how-it-work").click(function(e){
+                
+                if(!isActive){
+                    isActive= true;
+                    var switcher= $("#how-it-work > :last-child");
+                    if(this.className.indexOf(' inactive') > -1){
+                        this.className = this.className.replace(" inactive", "");
+                        $("#how-it-work > :last-child").toggle(1000);
+                    } else {
+                        if(e.target.tagName == 'H2'){
+                            this.className += ' inactive'
+                            $("#how-it-work > :last-child").toggle(1000);
+                        }
+                    }
+                }
+                setTimeout(function() {isActive= false}, 1050);	
+
+            });
+
+            $(".custom-select").change(function() {
+                var orderBy;
+                var currentLocation =  document.location.href;
+                var data_list = currentLocation.split("/");
+                //console.log(data_list);
+                orderBy = document.getElementById("liste").options[document.getElementById('liste').selectedIndex].text; 
+                //console.log(orderBy);
+                
+                $.ajax({
+                    url:'/fr/api/model/order2',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        "order": orderBy,
+                        "url": currentLocation
+                    },
+                    async: true,
+                    success: function (response)
+                    {
+                        $("#userTable ajaxCard").empty();
+                        var len = response.length;
+                        //console.log(len);
+                        if(len > 0) {
+                            var nbOfNewModel = 9;
+                            if(9 > len) {
+                                nbOfNewModel = len;
+                            }
+                            for(var i=0; i<nbOfNewModel; i++){
+
+                                var newModel = response[i];
+                                /*
+                                var data_json = JSON.stringify(response[i]); 
+                                //console.log(data_json);
+                                var words = data_json.split(':').join(',').split('"').join(',').split(',');
+                                //console.log(words);
+                                var id = words[3];
+                                var name = words[8];
+                                if (name.length > 19) {
+                                    name = name.slice(0,19) + "...";
+                                }
+                                var makerName = words[14];
+                                var priceTaxIncl = words[19];
+                                if (priceTaxIncl == "0") {
+                                    priceTaxIncl = "Gratuit";
+                                } else {
+                                    realPrice = parseFloat(priceTaxIncl).toFixed(2);
+                                    //console.log(realPrice);
+                                    realPrice = realPrice.replace('.', ',');
+                                    priceTaxIncl = realPrice + " €";
+                                }
+                                var love = words[23];
+                                var download = words[27];
+                                var image = words[32] + ":" + words[33] + ":" + words[34];
+                                */
+                                if (newModel.name.length > 19) {
+                                    newModel.name = newModel.name.slice(0,19) + "...";
+                                }
+                                if (newModel.priceTaxIncl == "0") {
+                                    priceTaxIncl = "Gratuit";
+                                } else {
+                                    realPrice = parseFloat(newModel.priceTaxIncl).toFixed(2);
+                                    //console.log(realPrice);
+                                    realPrice = realPrice.replace('.', ',');
+                                    priceTaxIncl = realPrice + " €";
+                                }
+
+                                var route = '{{ path("model_detail", {'id': 'id','name': 'name'}) }}'; 
+                                route = route.replace("id", newModel.id);
+                                route = route.replace("name", newModel.name.replace(/ /g,"%20"));
+                                //replace space by "%20" because if there is a space in the name, the url will just read the first word
+                                console.log(route);
+                                
+                                var tr_str = 
+                                    "<div class='col-sm-6 col-xs-6 col-md-4 cardlist'>" +
+                                        "<div class='card bg-white'>" + // cadre blanc autour de la carte : pad-10 mt-5
+                                            "<a href=" + route +">" +
+                                                "<img src='" + newModel.image + "'class='card-img-top' alt='"+ newModel.name +"'  >" +
+                                                "<h2 class='card-title' align='center'>" + newModel.name + "</h2>" +
+                                            "</a>" +
+                                            "<div class='card-body row'>" +
+                                                "<table class='col-xs-12 cardlist'>" +
+                                                    "<thead>" +
+                                                        "<th class='col-sm-4'>" +
+                                                            "<h5 align='center' class='card-text'>" + newModel.love + " <span class='glyphicon glyphicon-heart'></h5>" +
+                                                        "</th>" +
+                                                        "<th class='col-sm-4'>" +
+                                                            "<h5 align='center' class='card-text'>" + priceTaxIncl + "</h5>" +
+                                                        "</th>" +
+                                                        "<th class='col-sm-4'>" +
+                                                            "<h5 align='center' class='card-text'>" + newModel.download + " <span class='glyphicon glyphicon-download-alt'></h5>" +
+                                                        "</th>" +
+                                                    "</thead>" +
+                                                "</table>" +
+                                            "</div>" +
+                                        "</div>" +
+                                    "</div>";
+
+
+                                $("#userTable ajaxCard").append(tr_str);
+                            }
+                        } else {
+                            $("#userTable ajaxCard").append( "<h2 align='center'>Aucun modèle trouvé</h2>");
+                        }
+                        
+                    }
+                })
+            });
+
+            
+        });
+
+        $("#modelPlus").click(function(e){
+            seeMore = true;
+            var currentLocation =  document.location.href;
+            var data_list = currentLocation.split("/");
+            //console.log(data_list[6]);
+
+            $("#btnMoreModel").hide(); 
+
+            var orderBy;
+            var currentLocation =  document.location.href;
+            var data_list = currentLocation.split("/");
+            //console.log(data_list);
+            orderBy = document.getElementById("liste").options[document.getElementById('liste').selectedIndex].text; 
+            //console.log(orderBy);
+            
+            $.ajax({
+                url:'/fr/api/model/order2',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    "order": orderBy,
+                    "url": currentLocation
+                },
+                async: true,
+                success: function (response)
+                {
+                    //$("#userTable ajaxCard").empty();
+                    var len = response.length;
+                    var modelslice = 9*modelPlus;
+                    modelPlus = modelPlus + 1;
+                    //console.log(response.slice(modelslice+9,modelslice+18));
+                    response = response.slice(modelslice+9,modelslice+18)
+                    
+                    var nbOfNewModel = 9;
+                    if(modelslice+18 > len) {
+                        nbOfNewModel = 9 - (modelslice+18 - len);
+                    }
+
+                    if(len > 0) {
+                        
+                        //console.log(newModels)
+                        for(var i=0; i<nbOfNewModel; i++){
+                            var newModel = response[i];
+                            /*
+                            var data_json = JSON.stringify(response[i]); 
+                            //console.log(data_json);
+                            var words = data_json.split(':').join(',').split('"').join(',').split(',');
+                            //console.log(words);
+                            var id = words[3];
+                            var name = words[8];
+                            if (name.length > 19) {
+                                name = name.slice(0,19) + "...";
+                            }
+                            var makerName = words[14];
+                            var priceTaxIncl = words[19];
+                            if (priceTaxIncl == "0") {
+                                priceTaxIncl = "Gratuit";
+                            } else {
+                                realPrice = parseFloat(priceTaxIncl).toFixed(2);
+                                //console.log(realPrice);
+                                realPrice = realPrice.replace('.', ',');
+                                priceTaxIncl = realPrice + " €";
+                            }
+                            var love = words[23];
+                            var download = words[27];
+                            var image = words[32] + ":" + words[33] + ":" + words[34];
+                            */
+                            if (newModel.name.length > 19) {
+                                newModel.name = newModel.name.slice(0,19) + "...";
+                            }
+
+                            if (newModel.priceTaxIncl == "0") {
+                                priceTaxIncl = "Gratuit";
+                            } else {
+                                realPrice = parseFloat(newModel.priceTaxIncl).toFixed(2);
+                                //console.log(realPrice);
+                                realPrice = realPrice.replace('.', ',');
+                                priceTaxIncl = realPrice + " €";
+                            }
+
+                            var route = '{{ path("model_detail", {'id': 'id','name': 'name'}) }}'; 
+                            route = route.replace("id", newModel.id);
+                            route = route.replace("name", newModel.name.replace(/ /g,"%20"));
+                            //replace space by "%20" because if there is a space in the name, the url will just read the first word
+                            //console.log(route);
+                            
+                            var tr_str = 
+                                "<div class='col-sm-6 col-xs-6 col-md-4 cardlist'>" +
+                                    "<div class='card bg-white'>" + // cadre blanc autour de la carte : pad-10 mt-5
+                                        "<a href=" + route +">" +
+                                            "<img src='" + newModel.image + "'class='card-img-top' alt='" + newModel.name  +"'>" +
+                                            "<h2 class='card-title' align='center'>" + newModel.name + "</h2>" +
+                                        "</a>" +
+                                        "<div class='card-body row'>" +
+                                            "<table class='col-xs-12 cardlist'>" +
+                                                "<thead>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + newModel.love + " <span class='glyphicon glyphicon-heart'></h5>" +
+                                                    "</th>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + priceTaxIncl + "</h5>" +
+                                                    "</th>" +
+                                                    "<th class='col-sm-4'>" +
+                                                        "<h5 align='center' class='card-text'>" + newModel.download + " <span class='glyphicon glyphicon-download-alt'></h5>" +
+                                                    "</th>" +
+                                                "</thead>" +
+                                            "</table>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>";
+
+                            $("#userTable ajaxCard").append(tr_str);
+                            
+                            
+                        }
+                    } else {
+                        $("#userTable ajaxCard").append( "<h2 align='center'>Aucun modèle trouvé</h2>");
+                    }
+                    if(modelslice+18 < len) {
+                        $("#btnMoreModel").show(); 
+                    }
+                    
+                    
+                    
+                }
+            })
+        });
+    </script>
+{% endblock %}

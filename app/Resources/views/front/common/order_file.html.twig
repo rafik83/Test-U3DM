@@ -1,0 +1,39 @@
+<style>
+    
+    .file-order em { font-size: 8px; }
+</style>
+
+<div>
+    {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING') or 
+       order.status == constant('\\AppBundle\\Entity\\Order::STATUS_FILE_REJECTED')  %}
+        {% if fileForm is defined %}
+            {% if fileForm is not null %}
+           
+                
+                
+                {{ form_start(fileForm) }}
+                {{ form_errors(fileForm) }}
+
+                <div class="file-order">
+                <b>Format autorisé : .zip, .7z, .rar</b>
+                    {{ form_widget(fileForm.file) }}
+                   
+                    <button type="submit" class="btn btn-rounded">{{ 'form.send'|trans }}</button>
+                </div>       
+                {# 
+                <div class="container">
+                    <div class="col-sm-0">
+                    {{ form_label(fileForm.urlDownload) }}
+                    </div>
+                </div>
+                    {{ form_widget(fileForm.urlDownload) }}
+                </div>
+                #}
+                 
+                {{ form_end(fileForm) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+
+</div>

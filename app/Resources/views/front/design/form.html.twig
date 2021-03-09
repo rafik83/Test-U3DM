@@ -1,0 +1,104 @@
+{% extends 'front/base.html.twig' %}
+{% block meta %}
+<meta title="title" content="Impression et modelisation 3D en ligne - Devis gratuit en ligne et instantané." />
+<meta property="description" content="Déposez vos projets en impression 3d et/ou modélisation 3D et recevez des devis sur lesquels vous pourrez échanger avec les makers" />
+{% endblock %}
+{% block body %}
+    <div id="big-form">
+        <div id="how-it-work" class="col-sm-12 bg-white pad-15">
+            <h2 class="toggle mrg-0">{# <span class="rounded">0</span>  #}Comment ça marche ?</h2>
+            <div class="flex mrg-0">
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-edit fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Je dépose mon projet</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-comments fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Je reçois des devis et<br>je peux poser des questions</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-file-invoice fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Je sélectionne un devis</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="fas fa-shipping-fast fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Si besoin je choisis<br>un mode de transport</h3>
+                </div>
+                <div class="text-center pad-0-15">
+                    <i class="far fa-credit-card fa-4x mrg-15-0"></i>
+                    <h3 class='h4 pad mrg-0'>Paiement sécurisé</h3>
+                </div>
+            </div>
+        </div>
+        <div id="app-designer" class="col-sm-12"
+                api-url-referentiel-design="{{ path('api_design_referentiel_ajax') }}"
+                url-api-shipping="{{ path('api_shipping_ajax') }}"
+                api-url-delete-file="{{ path('project_file_delete', {'idFile': 'xx','idProject': 'yy'}) }}" 
+                stripe-public-key="{{ stripe_public_key }}" 
+                email-contact="{{ email_contact }}" 
+                state-project="{{ state_project }}"
+                url-api-chronopost="{{ path('api_shipping_relays_ajax') }}"
+                url-api-user-create="{{ path('api_user_register') }}" 
+                url-api-user-login="{{ path('api_user_login') }}"
+                url-api-user-logout="{{ path('api_user_logout') }}" 
+                url-api-user-connected="{{ path('api_user_connected') }}"
+                url-api-send-project="{{ path('api_save_project_ajax') }}"
+                url-api-fees="{{ path('api_fee_ajax') }}"
+                url-api-coupon="{{ path('api_coupon_apply_ajax') }}"
+                url-api-order="{{ path('api_place_order_ajax') }}"
+                url-api-payment="{{ path('api_payment_ajax') }}"
+                url-api-third-d-secure="{{ path('api_third_d_secure_ajax') }}"
+                url-covid-project="{{ path('covid_form')}}"
+                url-new-project="{{ path('design_form')}}"
+                url-user-project-list="{{ path('project_customer_list')}}"
+                >
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+    <script type="text/javascript">
+        const projectOrigin = JSON.parse("{{ project|json_encode|e('js') }}") ;
+        const makers = JSON.parse("{{ makers|json_encode|e('js') }}") ;
+        const tagSpecial = "{{ tagSpec }}";
+        const expiredValidityDate = "{{ expiredValidityDate }}";
+
+        const expiredDate = "{{ expiredDate|date('d/m/Y', 'Europe/Paris') }}";
+
+        const stateProject = "{{ state_project }}";
+
+
+        $(document).ready(function() {
+          
+            if(stateProject != 'open'){
+                $("#how-it-work > :last-child").toggle(1000);
+                $("#how-it-work").addClass(' inactive');
+                /*var switcher= $("#how-it-work > :last-child");
+                    if(this.className.indexOf(' inactive') > -1){
+                        this.className = this.className.replace(" inactive", "");
+                        $("#how-it-work > :last-child").toggle(1000);
+                    } else {
+                        if(e.target.tagName == 'H2'){
+                            this.className += ' inactive'
+                            $("#how-it-work > :last-child").toggle(1000);
+                        }
+                    }*/
+            }
+
+        });
+
+        //console.log(projectOrigin);
+        //console.log(makers);
+    </script>
+    
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.ui.widget.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.iframe-transport.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.fileupload.js') }}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {# App VueJS #}
+    <script src="{{ asset('build/app-designer.js') }}"></script>
+    {# End App VueJS #}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}

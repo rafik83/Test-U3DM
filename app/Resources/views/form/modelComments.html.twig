@@ -1,0 +1,16 @@
+{% block appbundle_comment_model_portfolio %}
+    <div class="row">
+        <div class="col-sm-8">
+            {{ form_errors(form.pictureFile) }}
+            {{ form_widget(form.pictureFile) }}
+        </div>
+        <div class="col-sm-4">
+            <a class="collection-remove btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+            </a>
+            <a class="collection-add btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

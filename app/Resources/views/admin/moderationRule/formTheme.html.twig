@@ -1,0 +1,26 @@
+
+
+{# better disposition of each elements #}
+{% block appbundle_admin_moderationRule_widget %}
+    <div class="row horizontal-form">
+        <div class="col-md-2">
+            {{ form_row(form.expression) }}
+        </div>
+        <div class="col-md-3">
+            {{ form_row(form.replace) }}
+        </div>
+        <div class="col-md-3">
+            {{ form_row(form.position) }}
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+            <a href="#" class="collection-up btn btn-default" title="Move element up"><span class="glyphicon glyphicon-arrow-up"></span></a>
+            <a href="#" class="collection-down btn btn-default" title="Move element down"><span class="glyphicon glyphicon-arrow-down"></span></a>
+            <a href="#" class="collection-remove btn btn-default" title="Delete element"><span class="glyphicon glyphicon-trash"></span></a>
+            <a href="#" class="collection-add btn btn-default" title="Add element"><span class="glyphicon glyphicon-plus-sign"></span></a>
+            <a href="#" class="collection-duplicate btn btn-default" title="Duplicate element"><span class="glyphicon glyphicon-th-large"></span></a>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% form_theme formQuotation.lines with ['form/quotation-line.html.twig'] only %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'quotation_list' %}
+
+{% block body %}
+    <div class="row">      
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.quotation.see.management'|trans({'%ref%': quotation.reference, '%date%': quotation.savedAt|date('d/m/Y à H:i', app.user.timezone) }) }}
+                </div>
+                <div class="panel-body">
+                    <p>
+                        Maker : 
+                        <a href="{{ path('admin_maker_see', { id: quotation.maker.id }) }}">
+                            {{ quotation.maker.company }}
+                        </a>
+                    </p>
+                    <p>
+                        {{ 'admin.quotation.list.column.status'|trans }} : 
+                        <span>{{ quotation.adminReadableStatus }}</span>
+                        {% if quotation.order is not null %} | <a href="{{ path('admin_order_see', { 'reference': quotation.order.reference }) }}">Voir la commande</a>{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.quotation.see.project'|trans }} N° <a href="{{ path('admin_project_see', { reference: quotation.project.reference }) }}">{{quotation.project.reference }}</a>
+                </div>
+                <div class="panel-body">
+                    <p>
+                        {{ 'admin.quotation.list.column.closedat'|trans }} : {{ quotation.project.closedAt|date('d/m/Y à H:i', app.user.timezone)}}
+                    </p>
+                    <p>
+                        {{ 'admin.quotation.see.customer'|trans }} : 
+                        <a href="{{ path('admin_user_see', { id: quotation.project.customer.id }) }}">
+                            {{ quotation.project.customer.fullname }}
+                        </a> 
+                            -
+                        <a href="mailto:{{ quotation.project.customer.email }}">
+                            {{ quotation.project.customer.email }}
+                        </a>  
+                    </p>
+                </div>
+            </div>
+        </div>
+        {# LINE 1 - END #}
+        {# LINE 2 #}
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.quotation.see.quotation.info'|trans }}
+                </div>
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        {{ form_start(formQuotation) }}
+                        {{ form_row(formQuotation.internalReference)}}
+                        {{ form_row(formQuotation.description)}}
+                        {{ form_row(formQuotation.productionTime)}}
+                        <div class="col-sm-10">
+                            <div class="row quotation-lines">
+                                <div class="col-sm-1">
+                                    <strong>#</strong>
+                                </div>
+                                <div class="col-sm-5">
+                                    <strong>Détail de la prestation</strong>
+                                </div>
+                                <div class="col-sm-1">
+                                    <strong>Qté</strong>
+                                </div>
+                                <div class="col-sm-2">
+                                    <strong>PU HT</strong>
+                                </div>
+                                <div class="col-sm-2">
+                                    <strong>TOTAL HT</strong>
+                                </div>
+                                <div class="col-sm-1" id="delete-line"> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lines col-sm-10" data-prototype="{{ form_widget(formQuotation.lines.vars.prototype)|e }}">
+                          {{ form_row(formQuotation.lines)}}  
+                        </div>
+                        <hr>
+                        <div id="lines-total" class="col-sm-10">
+                            <div class="row quotation-lines">
+                                <div class="col-sm-9 text-right">
+                                    <strong>TOTAL HT</strong>
+                                </div>
+                                <div class="col-sm-2 text-right" id="div-total-ht">
+                                    
+                                </div>
+                                <div class="col-sm-1"> 
+                                </div>
+                            </div>
+                        </div>
+                        <div id="lines-total" class="col-sm-10">
+                            <div class="row quotation-lines">
+                                <div class="col-sm-9 text-right">
+                                    <strong>TVA</strong>
+                                </div>
+                                <div class="col-sm-2 text-right" id="div-vat">
+                                    
+                                </div>
+                                <div class="col-sm-1"> 
+                                </div>
+                            </div>
+                        </div>
+                        <div id="lines-total" class="col-sm-10">
+                            <div class="row quotation-lines">
+                                <div class="col-sm-9 text-right">
+                                    <strong>TOTAL TTC</strong>
+                                </div>
+                                <div class="col-sm-2 text-right" id="div-total-ttc">
+                                    
+                                </div>
+                                <div class="col-sm-1"> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="col-sm-12">
+                            <div class="col-sm-12 text-center">{{ form_widget(formQuotation.save)}} 
+                                {{ form_widget(formQuotation.accept)}}
+
+                                {{ form_widget(formQuotation.refuse)}}</div>
+
+                        </div>
+
+                    {{ form_end(formQuotation) }}
+                </div>
+            </div>
+        </div>
+        </div>
+        {# LINE ACTION #}
+        {% if quotation.status == constant('\\AppBundle\\Entity\\Quotation::STATUS_SENT') or
+              quotation.status == constant('\\AppBundle\\Entity\\Quotation::STATUS_DISPATCHED') or 
+              quotation.status == constant('\\AppBundle\\Entity\\Quotation::STATUS_NOT_DISPATCHED')
+        %}
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="row panel-body">
+                    <div class="text-center col-sm-6">
+                        {{ form_start(correctionForm) }}
+                            <div class="form-group">
+                                <div class="text-left col-sm-10">{{ 'admin.quotation.form.field.correction_reason.label'|trans }}</div>
+                            </div>
+                            {{ form_widget(correctionForm) }}
+                            <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'admin.quotation.see.to.correct'|trans }}</button>
+                        {{ form_end(correctionForm) }}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {# LINE ACTION - END #}
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.messages'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% include 'front/common/quotation_messages.html.twig' with {'context': 'admin'} %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+    jQuery(document).ready(function() {
+
+        reCalculatePrice();
+            
+    });
+
+    function reCalculatePrice(){
+
+            var totalHt = 0;
+
+            $('.line-number').each(function(e){
+
+                var q = $(this).find('.quantity').val().replace(",", ".");
+
+                var pu = $(this).find('.pu-ht').val().replace(",", ".");
+
+
+                if(q == 0 || q == undefined || pu == 0 || pu == undefined){
+                    var pt = 0;
+                } else {
+                    var pt = Number(q) * Number(pu);
+                }
+
+                totalHt += pt;
+                
+                $(this).find('.total-line').val(pt.toFixed(2));
+
+            });
+
+            $('#div-total-ht').html('<strong>'+totalHt.toFixed(2)+' €</strong>');
+
+            $('#div-vat').html('<strong>'+(totalHt*0.20).toFixed(2)+' €</strong>');
+
+            $('#div-total-ttc').html('<strong>'+ (totalHt+(totalHt*0.20)).toFixed(2) +' €</strong>');
+
+
+    }
+
+    </script>
+    
+{% endblock %}

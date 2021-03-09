@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture</title>
+</head>
+<body>
+<div id="bill">
+    <div class="align">
+        <div class="w-35" style="float: left;">
+            <img src="{{ pathToWeb }}/assets/front/images/invoice-logo.png">
+            <p>
+                <br><br>
+                <b>
+                    78 rue du Sergent Bobillot  <br>
+                    93100 Montreuil <br>
+                    France <br>
+                </b>
+            </p>
+        </div>
+        <div class="w-40" style="float: right;">
+            <div class="right align">
+                <div class="border-2 center w-80">
+                    <p class="mrg-0 purple border-bottom">FACTURE</p>
+                    <p class="mrg-0 t5 pad-5">
+                        <b>N° {{ invoiceNumber }}</b><br>
+                        <b>Émise le {{ order.createdAt|date('d/m/Y') }}</b><br>
+                        Commande passée le {{ order.createdAt|date('d/m/Y') }}<br>
+                        Référence commande : {{ order.reference }}
+                    </p>
+                </div>
+            </div>
+            <br><br>
+            <p class="t5">
+                <b class="underline">Adresse de facturation</b><br>
+                {% include 'front/common/address.html.twig' with { 'address': order.billingAddress } %}
+            </p>
+            <p class="t5">
+                <b class="underline">Adresse de livraison</b><br>
+                {% include 'front/common/address.html.twig' with { 'address': order.shippingAddress } %}
+            </p>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+    {% if order.quotation is not null and order.quotation.project is not null %}
+        <h2><u>{{ order.quotation.project.name }}</u></h2>
+    {% endif %}
+    <table class="mrg-40-0 unbreakable">
+        <thead class="purple">
+        <tr>
+            <th width="50%">Désignation</th>
+            <th>Qté</th>
+            <th>TVA</th>
+            <th>PU&nbsp;HT</th>
+            <th>PU&nbsp;TTC</th>
+            <th>Total&nbsp;HT</th>
+            <th>Total&nbsp;TVA</th>
+            <th>Total&nbsp;TTC</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if models == null %}
+            {# loop through the items but ignore items relative to an OrderItemPrint (such as OrderItemPrintFinishing), we will add them inside the loop directly #}
+            {% for item in order.items if item.printItem is not defined %}
+                <tr>
+                    <td class="left"><b>{% if item.printFile is defined %}{% if item.printFile.originalName is not null %}{{ item.printFile.originalName }}{% else %}{{ item.printFile.name }}{% endif %}</b> : {{ item.descriptionConfiguration }}{% else %}{{ item.description }}{% endif %}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.taxRate }}&nbsp;%</td>
+                    <td>{{ (item.unitAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (item.unitAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (item.quantity * item.unitAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (item.quantity * (item.unitAmountTaxIncl - item.unitAmountTaxExcl) / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (item.quantity * item.unitAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                </tr>
+                {% if item.itemFinishings is defined %}
+                    {% for itemFinishing in item.itemFinishings %}
+                        <tr>
+                            <td class="left">{{ itemFinishing.description }}</td>
+                            <td>{{ itemFinishing.quantity }}</td>
+                            <td>{{ itemFinishing.taxRate }}&nbsp;%</td>
+                            <td>{{ (itemFinishing.unitAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                            <td>{{ (itemFinishing.unitAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                            <td>{{ (itemFinishing.quantity * itemFinishing.unitAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                            <td>{{ (itemFinishing.quantity * (itemFinishing.unitAmountTaxIncl - itemFinishing.unitAmountTaxExcl) / 100)|number_format(2) }}&nbsp;€</td>
+                            <td>{{ (itemFinishing.quantity * itemFinishing.unitAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for model in models %}
+                <tr>
+                    <td class="left"><b>{{ model.name }} </b> | {{ model.maker.company }}</td>
+                    <td>1</td>
+                    <td>20&nbsp;%</td>
+                    <td>{{ (model.priceTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (model.priceTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (model.priceTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ ((model.priceTaxIncl - model.priceTaxExcl) / 100)|number_format(2) }}&nbsp;€</td>
+                    <td>{{ (model.priceTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        <tr>
+            <td class="left">Frais de service</td>
+            <td>1</td>
+            <td>{{ order.defaultTaxRate }}&nbsp;%</td>
+            <td>{{ (order.feeAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (order.feeAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (order.feeAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ ((order.feeAmountTaxIncl - order.feeAmountTaxExcl) / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (order.feeAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+        </tr>
+        {% if order.coupon is not null %}
+            <tr>
+                <td class="left">{{ order.coupon.label }}</td>
+                <td>1</td>
+                <td>{{ order.defaultTaxRate }}&nbsp;%</td>
+                <td>- {{ (order.discountAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                <td>- {{ (order.discountAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+                <td>- {{ (order.discountAmountTaxExcl / 100)|number_format(2) }}&nbsp;€</td>
+                <td>- {{ ((order.discountAmountTaxIncl - order.discountAmountTaxExcl) / 100)|number_format(2) }}&nbsp;€</td>
+                <td>- {{ (order.discountAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+            </tr>
+        {% endif %}
+        {# CAUTION !!! @see UD57 #}
+        {# On invoice, U3DM want to calculate and display tax on shipping... even though we did not store it upon order creation because of specs stating there was no tax on shipping #}
+        {# Note: shipping tax must not be shown on any order summary (front nor customer/maker/admin pages) #}
+        {% set shippingTaxAmount = order.shippingAmountTaxIncl * order.defaultTaxRate / (100 + order.defaultTaxRate) %}
+        <tr>
+            <td class="left">Frais de port</td>
+            <td>1</td>
+            <td>{{ order.defaultTaxRate }}&nbsp;%</td>
+            <td>{{ ((order.shippingAmountTaxIncl - shippingTaxAmount) / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (order.shippingAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ ((order.shippingAmountTaxIncl - shippingTaxAmount) / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (shippingTaxAmount / 100)|number_format(2) }}&nbsp;€</td>
+            <td>{{ (order.shippingAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td class="pad-10 no-border" colspan="6"></td>
+            <td class="pad-10">
+                <b>Total</b>
+            </td>
+            <td class="pad-10">
+                <b>{{ (order.totalAmountTaxIncl / 100)|number_format(2) }}&nbsp;€</b>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="align center mrg-40-0">
+        <div class="w-40 right align">
+            <div class="border center pad-0-30">
+                TOTAL HT <br>
+                {# CAUTION !!! @see upper: we must sub the calculated shipping tax amount #}
+                {{ ((order.totalAmountTaxExcl - shippingTaxAmount) / 100)|number_format(2) }}&nbsp;€
+            </div>
+        </div>
+        <div class="w-40 left align">
+            <div class="border center pad-0-30">
+                TOTAL TVA <br>
+                {# CAUTION !!! @see upper: we must add the calculated shipping tax amount #}
+                {{ ((order.totalTaxAmount + shippingTaxAmount) / 100)|number_format(2) }}&nbsp;€
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<style>
+
+    body {
+        padding: 20px 0 0 0;
+        margin: 0;
+        background: transparent;
+        font-family: sans-serif;
+        line-height: 1.5;
+        font-size: 13px !important;
+    }
+
+    /********************************* TABLE */
+
+    table{
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+    table.unbreakable {
+        page-break-inside: avoid;
+    }
+    table.unbreakable thead {
+        display: table-row-group;
+    }
+    table.unbreakable tr {
+        page-break-inside: avoid;
+    }
+    td, caption{
+        border: solid black 1px;
+    }
+
+    th{
+        border: none;
+    }
+    caption{
+        border-bottom: none;
+        background: inherit;
+    }
+    thead th, thead td, tfoot td{
+        font-weight: 400;
+    }
+    table.grid thead{
+        background: rgb(235,235,235);
+        color: #464646;
+    }
+    table.grid tr:nth-child(2n){
+        background: rgb(247,247,247);
+        color: #464646;
+    }
+    table.grid tr:hover td, table.grid tr:hover th{
+        border-bottom: solid rgb(165,165,165) 1px;
+    }
+    table.grid thead:hover  th,table.grid thead:hover  td,table.grid tfoot:hover  td{
+        border: solid rgb(215,215,215) 1px;
+    }
+    table td {
+        font-size: 12px !important;
+    }
+    table thead th {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    hr{
+        border-color: black;
+    }
+    /********************************* TABLE */
+
+    img {
+        height: auto;
+        width: auto;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+    #bill {
+        background: white;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100%;
+        position: relative;
+    }
+
+    #bill, #bill > * {
+        box-sizing: border-box;
+    }
+    .space{
+        padding-top: 50%;
+    }
+    .align {
+        display: flex
+    }
+    .w-80{
+        width: 80%;
+    }
+    .w-40{
+        width: 40%;
+    }
+    .w-35{
+        width: 35%;
+    }
+    .w-25{
+        width: 25%;
+    }
+    .underline{
+        text-decoration: underline;
+    }
+    .center {
+        text-align: center;
+        justify-content: space-around;
+    }
+    .fit {
+        text-align: justify;
+        justify-content: space-between;
+    }
+    .right {
+        text-align: right;
+        justify-content: flex-end;
+    }
+    .left {
+        text-align: left;
+        justify-content: flex-start;
+    }
+    .mrg-0{
+        margin:0;
+    }
+    .mrg-40-0{
+        margin: 40px 0px;
+    }
+    .pad-5{
+        padding: 5px
+    }
+    .pad-10{
+        padding: 10px
+    }
+    .pad-0-30{
+        padding: 0px 30px;
+    }
+    .purple{
+        background: #960048;
+        color: white;
+    }
+    .border-bottom{
+        border-bottom: solid 2px black;
+    }
+    .border{
+        border: solid 1px black;
+    }
+    .border-2{
+        border: solid 2px black;
+    }
+    .no-border{
+        border: none;
+    }
+</style>

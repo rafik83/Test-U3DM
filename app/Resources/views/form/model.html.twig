@@ -1,0 +1,68 @@
+{% block appbundle_user_model_portfolio_image_widget %}
+    <div class="row">
+        <div class="col-sm-8">
+            {{ form_errors(form.pictureFile) }}
+            {{ form_widget(form.pictureFile) }}
+            {{ form_widget(form.position) }}
+        </div>
+        <div class="col-sm-4">
+            <a class="collection-remove btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+            </a>
+            <a class="collection-up btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-arrow-up"></span>
+            </a>
+            <a class="collection-down btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-arrow-down"></span>
+            </a>
+            <a class="collection-add btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block appbundle_category_model_choose_widget %}
+    <div class="row">
+        <div class="col-sm-8">
+            {{ form_widget(form.category) }}
+        </div>
+        <div class="col-sm-2">
+            <a class="collection-remove btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+            </a>
+            <a class="collection-add btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{%- block money_widget -%}
+    {% set attr = attr|merge({'class':'form-control'}) %}
+    <div class="input-group">
+        <input type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        <span class="input-group-addon">{% if attr.unit is defined %}{{ attr.unit|trans }}{% else %}€ HT{% endif %}</span>
+    </div>
+{%- endblock money_widget -%}
+
+{% block appbundle_suggestion_model_widget %}
+    <div class="row">
+        <div class="col-sm-4">
+            Catégorie supérieur
+            {{ form_widget(form.categoryUp) }}
+        </div>
+        <div class="col-sm-4">
+            Pourcentage
+            {{ form_widget(form.percentage) }}
+        </div>
+        <div class="col-sm-2">
+            <a class="collection-remove btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-trash"></span>
+            </a>
+            <a class="collection-add btn-sm" href="#">
+                <span aria-hidden="true" class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

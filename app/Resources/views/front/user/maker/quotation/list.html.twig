@@ -1,0 +1,59 @@
+{% extends 'front/user/base.html.twig' %}
+{% block user_content %}
+    <h1>{{ 'Gestion des devis'|trans }}</h1>
+    {% if 0 < quotations|length %}
+        <table id="table-quotation-list" class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Réf. Devis</th>
+                <th>Réf. Projet</th>
+                <th>Description</th>
+                <th>État devis</th>
+                <th>Date clôture de l’AO</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quotation in quotations %}
+                <tr>
+                    <td data-order="{{ quotation.savedAt|date('YmdHis') }}">{{ quotation.savedAt|date('d/m/Y', 'Europe/Paris') }}</td>
+                    <td data-search="{{ quotation.reference }} {{ quotation.internalReference }} {{quotation.description}}"><a href="{{ path('quotation_maker_see', {'reference': quotation.reference}) }}" title="{{ quotation.internalReference }} | {{ quotation.description|length > 30 ? quotation.description|slice(0, 30)|capitalize ~ '...' : quotation.description|capitalize  }}">{{ quotation.reference }}</a></td>
+                    <td data-order="{{ quotation.project.reference }}">{{ quotation.project.reference }}</td>
+                    <td data-search="{{ quotation.project.name }}" title="{{ quotation.project.name|capitalize }}"  >{{ quotation.project.name|length > 30 ? quotation.project.name|slice(0, 30)|capitalize ~ '...' : quotation.project.name|capitalize }}</td>
+                    <td>{{ quotation.makerReadableStatus }}</td>
+                    <td data-order="{{ quotation.project.closedAt|date('YmdHis') }}">{{ quotation.project.closedAt|date('d/m/Y - H:i:s', 'Europe/Paris') }}</td>
+                    <td>
+                        <a href="{{ path('quotation_maker_see', {'reference': quotation.reference}) }}">Consulter</a>
+                        {% if quotation.order is not null %}
+                            | <a href="{{ path('order_maker_see', {'reference': quotation.order.reference}) }}">Voir la commande</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Vous n'avez aucun devis.</p>
+    {% endif %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+    <script type="text/javascript">
+        // For datatables
+        App.init();
+        App.dataTables();
+    </script>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="{{ asset('favicon.png') }}">
+<title>{{ 'admin.title'|trans }}</title>
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/stroke-7/style.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/perfect-scrollbar/css/perfect-scrollbar.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/css/app.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/css/admin.css') }}"/>
+{% endblock %}
+</head>
+<body class="mai-splash-screen">
+{% block body %}{% endblock %}
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/jquery/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/main.js') }}"></script>
+{% endblock %}
+</body>
+</html>

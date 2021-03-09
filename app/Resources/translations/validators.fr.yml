@@ -1,0 +1,27 @@
+prospect.maker.choose_type: Veuillez choisir au moins une compétence (imprimeur et/ou designer)
+prospect.customer.required_company: Veuillez saisir le nom de votre société
+user.email_already_used: Cette adresse e-mail est déjà utilisée
+user.address.billing.missing_required_field: L'adresse de facturation est incomplète, veuillez remplir le champ "%field%"
+maker.choose_type: Veuillez préciser si vous êtes imprimeur, designer ou les deux
+maker.address.missing_required_field: L'adresse est incomplète, veuillez remplir le champ "%field%"
+maker.pickup_address.missing_required_field: L'adresse de retrait sur place est incomplète, veuillez remplir le champ "%field%"
+printer.negative_value: Le champ "%field%" ne peut pas contenir de valeur négative
+scanner.negative_value: Le champ "%field%" ne peut pas contenir de valeur négative
+user.mismatch.email: Valeur différente de l'adresse e-mail
+user.mismatch.password: Valeur différente du mot de passe
+user.down.password: Votre mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial, une majuscule et une minuscule et plus de 8 caractères 
+coupon.missing_discount_value: Un des deux champs Réduction (% ou €) doit être saisi
+coupon.launch_date_before_now: La date de lancement ne peut pas être dans le passé
+coupon.launch_date_after_start: La date de lancement doit être située avant la date de début de validité
+coupon.end_date_before_start: La date de fin de validité doit être située après la date de début de validité
+coupon.negative_min_order_amount: Le montant minimum de commande ne peut pas être négatif
+coupon.u3dm_percent_part_limit: La part U3DM doit être comprise entre 0 et 100 %
+missing_required_field.logo: Veuillez sélectionner un logo
+missing_required_field.portfolio: Veuillez sélectionner au moins une image dans votre portfolio
+model.negative_value: Le champ "%field%" ne peut pas contenir de valeur négative
+model.type_file: Le champ "%field%" ne peut être qu'un .zip, .stl ou .obj
+model.type_image: Le champ "%field%" ne peut être qu'un .jpg, .png .gif ou .pdf
+model.size_image: Le portfolio ne peut contenir un fichier de plus de %field%o
+model.size_file: Le fichier ne peut être de plus de %field%o
+model.name: Le champ "%field%" ne peut contenir de "/"
+rate.no_null: Merci de noter et de mettre un commentaire

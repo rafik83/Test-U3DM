@@ -1,0 +1,31 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1>{{ 'Mes imprimantes'|trans }}</h1>
+    <ul>
+        {% for printer in printers %}
+            <li>
+                <a href="{{ path('user_printer_edit', { 'id': printer.id }) }}">{{ printer.model }}</a> |
+                {{ 'Technologie'|trans }} : {{ printer.technology.name }} |
+                {{ printer.products|length }} {{ 'produit configuré|produits configurés'|transchoice(printer.products|length) }} |
+                {{ 'Disponibilité'|trans }} :
+                {% if printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_AVAILABLE')) %}
+                    <span style="color: green;">OK</span>
+                {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_PARTIALLY_AVAILABLE')) %}
+                    <span style="color: orange;">Disponible mais certains produits ne le sont pas</span>
+                {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_NOT_AVAILABLE')) %}
+                    <span style="color: red;">Non disponible ou aucun produit disponible</span>
+                {% endif %}
+                 | <a href="{{ path('user_printer_delete', { 'id': printer.id }) }}" onclick="return confirm(' Êtes-vous sur de vouloir supprimer cette imprimante ?')" title="Supprimer cette imprimante">
+                    <i class="far fa-trash-alt"></i>
+                </a>
+                 | <a href="{{ path('user_printer_clone', { 'id': printer.id }) }}" onclick="return confirm(' Êtes-vous sur de vouloir dupliquer cette imprimante ?')"  title="Dupliquer cette imprimante">
+                    <i class="far fa-copy"></i>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="text-right">
+        <a href="{{ path('user_printer_add') }}" class="btn btn-default">Ajouter une imprimante</a>
+    </div>
+{% endblock %}

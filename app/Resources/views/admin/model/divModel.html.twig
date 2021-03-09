@@ -1,0 +1,166 @@
+<html>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/plugins.css') }}">{# This is a modified version from the template, to remove some unused plugins #}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/type/icons.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/style.min.css') }}">{# This is a modified version from the template, to minify it #}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/template/css/template.css') }}">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/css/bordeaux.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/front/css/front.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/perfect-scrollbar/css/perfect-scrollbar.min.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/css/dataTables.bootstrap4.css') }}"/>
+
+
+<body>
+
+{% form_theme form 'form/model.html.twig' %}
+<div class="bg-white pad-15-20">
+    <h1 class="model_title">Modifier</h1>
+    {{ form_errors(form) }}
+    {{ form_errors(formCorrection) }}
+    {{ form_start(formCorrection) }}
+    
+    {{ form_start(form) }}
+    
+        {{ form_row(form.name) }}
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label required">{{ 'model.form.field.category_title'|trans }}</label>
+            <div class="col-sm-10">
+                {{ form_errors(form.categoryModel) }}
+                {{ form_widget(form.categoryModel) }}
+            </div>
+        </div>
+
+        {{ form_row(form.description) }}
+        {{ form_row(form.caracteristique) }}
+        {{ form_row(form.tags) }}
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">{{ 'model.form.field.price_title'|trans }}</label>
+            <div class="col-sm-5">
+                {{ form_errors(form.price_tax_excl) }}
+                {{ form_widget(form.price_tax_excl) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label required">{{ 'model.form.field.portfolio_title'|trans }}</label>
+            <label class="col-sm-10">{{ 'model.form.field.portfolio'|trans }}</label>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                {{ form_widget(form.portfolioImages) }}
+            </div>
+        </div>
+
+        <div  align="right">
+            <a target="_parent" href="https://creativecommons.org/licenses/?lang=fr-FR">{{ 'model.form.field.license'|trans }}</a>
+        </div>
+        {{ form_row(form.licences) }}
+        
+        <div class="col-sm-12" align="center">
+            <input type="submit" value="Publier" class="btn" name="add" id="publier" formtarget="_parent"/>
+        </div>
+    
+
+        {{ form_row(formCorrection.correctionReason) }}
+        
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="col-sm-6" align="center">
+                    <input type="submit" value="Supprimer ce modèle" id='suppr' class="btn" name="add" formtarget="_parent"/>
+                </div>
+                <div class="col-sm-6" align="center">
+                    <input type="submit" value="Demander une correction" class="btn" name="add" formtarget="_parent"/>
+                </div>
+            </div>
+        </div>
+    {{ form_rest(formCorrection) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+    {{ form_end(formCorrection) }}
+    
+</div>
+</body>
+
+<script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ asset('assets/front/template/js/plugins.js') }}"></script>{# TODO remove unused plugins #}
+<script type="text/javascript" src="{{ asset('assets/front/template/js/scripts-custom.js') }}"></script>{# This is a modified version from the template, to remove some unused plugins #}{# TODO remove other unused plugins #}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/select2.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.1/js/i18n/fr.js"></script>
+<script type="text/javascript" src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/template/js/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/admin/js/admin-datatables.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/front/js/main.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+<script type="text/javascript">
+
+    var submitted = false;
+
+    var needToConfirm = false;
+
+    $(document).bind('DOMSubtreeModified', function () {
+        $("select,input,textarea").change(function() {
+            needToConfirm = true;
+        });
+        
+    });
+
+    
+    
+    $(document).ready( function() {
+        $('.portfolio-collection').collection({
+            position_field_selector: '.image-position',
+            min: 1,
+            add:  '<a href="#" class="btn btn-rounded"><span class="glyphicon glyphicon-plus"></span></a>'
+            });
+        
+        $('.categoryModel-collection').collection({
+            allow_duplicate: false,
+            allow_up: false,
+            allow_down: false,
+            min: 1,
+            add:  '<a href="#" class="btn btn-rounded"><span class="glyphicon glyphicon-plus"></span></a>'
+        });
+
+        $('.collection-remove').on("click",function(){
+            needToConfirm = true;
+        });
+
+        $('.collection-up').on("click",function(){
+            needToConfirm = true;
+        });
+
+        $('.collection-down').on("click",function(){
+            needToConfirm = true;
+        });
+        
+        window.onbeforeunload = function (e) {
+            if (!submitted && needToConfirm == true) {
+                var message = "You have not saved your changes.", e = e || window.event;
+                if (e) {
+                    e.returnValue = message;
+                }
+                return message;
+            }
+        }
+        $("form").submit(function() {
+            submitted = true;
+        });
+
+    });
+
+</script>
+
+</html>

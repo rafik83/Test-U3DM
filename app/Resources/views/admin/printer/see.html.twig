@@ -1,0 +1,92 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'user' %}
+{% set activeMenu = 'maker_list' %}
+
+{% set maker = printer.maker %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if maker.company is not null %}{{ maker.company|upper }} - {% endif %}{{ maker.lastname|upper }}{% if maker.firstname is not null %} {{ maker.firstname }}{% endif %}
+                            <span class="panel-subtitle"><a href="{{ path('admin_maker_see', { 'id': maker.id }) }}">{{ 'Retour à la page Maker'|trans }}</a></span>
+                        </div>
+                        <div class="col-sm-6 text-right">
+                            {% if maker.printer %}
+                                {{ 'admin.user.type.maker.printer'|trans }}
+                            {% endif %}
+                            {% if maker.designer %}
+                                {{ 'admin.user.type.maker.designer'|trans }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Imprimante <i>{{ printer.model }}</i>
+                    <div class="panel-subtitle">
+                        <strong>Technologie</strong> : {{ printer.technology.name }}<br>
+                        <strong>Prix du setup</strong> : {{ (printer.setupPrice / 100)|number_format(2) }} €<br>
+                        <strong>Taille maximale de l'impression</strong> : {{ printer.maxDimensions.x }} x {{ printer.maxDimensions.y }} x {{ printer.maxDimensions.z }} mm<br>
+                        <strong>Volume minimal de l'impression</strong> : {{ printer.minVolume }} mm3<br>
+                        <strong>Disponibilité</strong> :
+                        {% if printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_AVAILABLE')) %}
+                            <span style="color: green;">OK</span>
+                        {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_PARTIALLY_AVAILABLE')) %}
+                            <span style="color: orange;">Dispo mais pas tous les produits</span>
+                        {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_NOT_AVAILABLE')) %}
+                            <span style="color: red;">Non dispo ou aucun produit dispo</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {% for product in printer.products %}
+                        <div class="row" style="margin-bottom: 15px;">
+                            <div class="col-sm-3">
+                                <strong>Disponibilité</strong><br>{% if product.available %}<span style="color: green;">Disponible</span>{% else %}<span style="color: red;">Non disponible</span>{% endif %}
+                            </div>
+                            <div class="col-sm-3">
+                                <strong>Matériau</strong><br>{{ product.material.name }}
+                            </div>
+                            <div class="col-sm-3">
+                                <strong>Hauteur de couche</strong><br>{{ product.layer.height }} µm
+                            </div>
+                            <div class="col-sm-3">
+                                <strong>Couleurs</strong><br>{% for color in product.colors %}{{ color.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 15px;">
+                            {% if printer.technology.fillingRate %}
+                                <div class="col-sm-3">
+                                    <strong>Prix si remplissage entre 0 et 25%</strong><br>{{ (product.price25 / 100)|number_format(2) }} € HT / cm3
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>Prix si remplissage entre 26 et 50%</strong><br>{{ (product.price50 / 100)|number_format(2) }} € HT / cm3
+                                </div>
+                            {% endif %}
+                            <div class="col-sm-3">
+                                <strong>Prix{% if printer.technology.fillingRate %} si remplissage entre 51 et 100%{% endif %}</strong><br>{{ (product.price100 / 100)|number_format(2) }} € HT / cm3
+                            </div>
+                        </div>
+                        {% if product.finishings is not null and product.finishings|length > 0 %}
+                            <div class="row" style="margin-bottom: 15px;">
+                                <div class="col-sm-3">
+                                    <strong>Finitions</strong><br>
+                                    {% for finishing in product.finishings %}
+                                        {{ finishing.finishing.name }} - {{ (finishing.price / 100)|number_format(2) }} € HT<br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <hr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

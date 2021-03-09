@@ -1,0 +1,125 @@
+{% extends 'front/base.html.twig' %}
+
+{% set showMakerForm = true %}
+{% if not formCustomer.vars.valid %}
+    {% set showMakerForm = false %}
+{% endif %}
+
+{% set hideMainMenu = true %}
+
+{% block meta %}
+<meta title="title" content="United 3D Makers : Inscription sur la plateforme" />
+<meta property="description" content="Mettez vos pièces en production en moins de 5 minutes. Déposez vos projets et recevez des devis." />
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="title_header">
+            <p class="lead text-center">Le temps est venu de concevoir et de fabriquer les choses autrement.</p>
+        </div>
+        {% include 'front/common/flash.html.twig' %}
+        <div class="col-sm-6">
+            <div class="wpb_wrapper" id="formCustomerText">
+                <blockquote class="border" style="margin-top: 35px;">
+                    <p>Des pièces sur mesure pour ingénieurs et designers, des maquettes d’études ou de présentation pour les architectes, des objets de communication pour les agences de marketing dans toute la France.</p>
+                </blockquote>
+                <blockquote class="border">
+                    <p>Du prototype à la pièce finie, en passant par la production de séries.</p>
+                </blockquote>
+                <blockquote class="border">
+                    <p>Mettez vos pièces en production en moins de 5 minutes.</p>
+                </blockquote>
+                <blockquote class="border">
+                    <p>Des professionnels de la fabrication additive à votre écoute, pour vous aider à réaliser vos projets.</p>
+                </blockquote>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="box bg-white bg-box">
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="formCustomer">
+                        <h2 class="section-title section-title-line text-center" style="margin-bottom: 35px;">Inscription</h2>
+                        {{ form_start(formCustomer) }}
+                        {{ form_errors(formCustomer) }}
+                        <div class="row" style="margin-bottom: 15px;">
+                            <div class="col-xs-6" >
+                                {{ form_widget(formCustomer.firstname) }}
+                            </div>
+                            <div class="col-xs-6">
+                                {{ form_widget(formCustomer.lastname) }}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 35px;">
+                            <div class="col-xs-6">
+                                {{ form_widget(formCustomer.email) }}
+                            </div>
+                            <div class="col-xs-6">
+                                {{ form_widget(formCustomer.customer_type) }}
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" id="prospect-submit-button" name="formCustomer[submit]"  class="btn btn-rounded">{{ 'form.register'|trans }}</button>
+                        </div>
+                        {{ form_end(formCustomer) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="background-color: #2b2b2b; padding-top: 35px; padding-bottom: 35px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="text-center">
+                <img src="{{ asset('assets/front/images/inscription-client.jpg') }}" alt = "Imprimantes 3D FDM - Impression en cours ">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container inner">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="section-title section-title-line text-center">UNITED 3D MAKERS assure vos arrières</h2>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-3">
+            <h3 class="text-center" style="color: #960048;">Des imprimeurs 3D professionnels</h3>
+            <p class="text-center">Sélectionnés soigneusement et testés à l’aveugle avant d’être intégrés à la plateforme</p>
+        </div>
+        <div class="col-sm-3">
+            <h3 class="text-center" style="color: #960048;">La protection de vos fichiers</h3>
+            <p class="text-center">Les pages du site sont chiffrées par une clé 128bits</p>
+        </div>
+        <div class="col-sm-3">
+            <h3 class="text-center" style="color: #960048;">Un paiement sécurisé</h3>
+            <p class="text-center">Votre paiement est séquestré sur un compte protégé, jusqu’à la réalisation de votre projet par le maker</p>
+        </div>
+        <div class="col-sm-3">
+            <h3 class="text-center" style="color: #960048;">Un large choix de matériaux</h3>
+            <p class="text-center">Des bio-plastiques, des alumines, des résines médicales et calcinables, souples, translucides, des métaux et plus encore</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        var f=true;
+        function gtagInteraction (){gtag_report_event(this.user3dm,'registration','account_registration.info.started');}
+        gtag_report_event(this.user3dm,'registration','account_registration.info.view');
+    </script>
+    <script type="text/javascript">
+        
+        $('#prospect-submit-button').click(function() {
+            fbq('track', 'Subscribe', {currency: "EUR", value: 50.00});
+            gtag_report_event(this.user3dm,'registration','account_registration.info.attempt');
+        });
+        $('#appbundle_prospect_customer_firstname').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#appbundle_prospect_customer_lastname').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#appbundle_prospect_customer_email').change(function() {if (f) {gtagInteraction(); f=false;}});
+        $('#appbundle_prospect_customer_customer_type').change(function() {if (f) {gtagInteraction(); f=false;}});
+
+    </script>
+{% endblock %}

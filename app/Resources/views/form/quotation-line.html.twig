@@ -1,0 +1,30 @@
+{% use 'form_div_layout.html.twig' %}
+
+{% block appbundle_quotation_line_widget %}
+
+    <div class="row quotation-lines line-number">
+        <div class="col-sm-1">
+            {{ form_widget(form.number) }}
+        </div>
+        <div class="col-sm-5">
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description) }}
+        </div>
+        <div class="col-sm-1">
+            {{ form_errors(form.quantity) }}
+            {{ form_widget(form.quantity) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_errors(form.price) }}
+            {{ form_widget(form.price) }}
+        </div>
+        <div class="col-sm-2">
+            <input type="text" class="total-line" readonly="true" tabindex="-1">
+        </div>
+        <div class="col-sm-1">
+            <a href="#" class="remove-line btn btn-rounded" tabindex="-1"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+        </div>
+    </div>
+
+{% endblock %}
+

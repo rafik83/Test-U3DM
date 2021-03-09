@@ -1,0 +1,65 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'dashboard' %}
+{% set activeMenu = 'message' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    Liste des messages
+                   
+                </div>
+                <div class="panel-body">
+                    <table id="table-message-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Bloqué</th>
+                            <th>Référence</th>
+                            <th>Description</th>
+                            <th>Auteur</th>
+                            <th>Reçu le</th>
+                            <th>Message</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for message in messages %}
+                            <tr>
+                                <td>{% if message.needModerate %} <b> Bloqué </b> {% else %} Diffusé {% endif %}</td>
+                                <td>
+                                    {% if message.order is not null %}
+                                        <a href="{{ path('admin_order_see', {'reference': message.order.reference}) }}">{{ message.order.reference }}</a>
+                                    {% elseif message.quotation is not null %}
+                                        <a href="{{ path('admin_quotation_see', {'reference': message.quotation.reference}) }}">{{ message.quotation.project.reference }}</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if message.order is not null %}
+                                        Commande du {{ message.order.createdAt|date('d/m/Y', 'Europe/Paris') }}
+                                    {% elseif message.quotation is not null %}
+                                        Dmd Devis {{ message.quotation.reference }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ message.author.fullname }}</td>
+                               
+                                <td data-order="{{ message.createdAt|date('YmdHis') }}">{{ message.createdAt|date('d/m/Y H:i', 'Europe/Paris') }}</td>
+
+                                <td data-search="{{ message.text }}"  title="{{ message.text }}">{{ message.text|length > 30 ? message.text|slice(0, 30) ~ '...' : message.text  }}</td>
+                   
+
+
+                                
+                                <td class="actions"><a href="{{ path('admin_message_edit', { 'id': message.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+
+                                
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

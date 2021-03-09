@@ -1,0 +1,17 @@
+{% block appbundle_comment_model_portfolio %}
+    <div class="row">
+        Coucou
+        <div class="col-sm-8">
+            {{ form_errors(form.pictureFile) }}
+            {{ form_widget(form.pictureFile) }}
+        </div>
+        <div class="col-sm-4">
+            <a class="collection-remove btn-sm" href="#">
+                <i class="s7-plus"></i>
+            </a>
+            <a class="collection-add btn-sm" href="#">
+                <i class="s7-trash"></i>
+            </a>
+        </div>
+    </div>
+{% endblock %}

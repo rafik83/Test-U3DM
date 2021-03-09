@@ -1,0 +1,122 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% set title = 'Ajouter un scanner' %}
+{% if scanner is defined %}
+    {% set title = 'Modifier un scanner' %}
+{% endif %}
+
+{% block user_content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>{{ title|trans }}</h1>
+        </div>
+        <div class="col-sm-6">
+            <div class="text-right"><a href="mailto:contact@united-3dmakers.fr?subject=Scanner%20:%20Ajout%20de%20référence">Demander l'ajout de nouvelle référence</a></div>
+        </div>
+    </div>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.visible) }}
+            </div>
+        </div>
+        {{ form_row(form.name) }}
+        {{ form_row(form.technology) }}
+        {{ form_row(form.precision) }}
+        {{ form_row(form.resolution) }}
+        {{ form_row(form.brand) }}
+        {{ form_row(form.maxDimensions) }}
+        {{ form_row(form.minDimensions) }} 
+        <div class="form-submit text-right">
+            <input id="current_user" type="hidden" value="{{ maker.user.firstname }}" />
+            <button type="submit" id="btn_submit" class="btn btn-rounded">{% if scanner is defined %}{{ 'scanner.form.submit.update'|trans }}{% else %}{{ 'scanner.form.submit.add'|trans }}{% endif %}</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        var submitted = false;
+
+        var needToConfirm = false;
+
+        $(document).bind('DOMSubtreeModified', function () {
+            $("select,input,textarea").change(function() {
+                needToConfirm = true;
+            });
+        });
+
+        $(document).ready(function () {
+            window.onbeforeunload = function (e) {
+                if (!submitted && needToConfirm == true) {
+                    var message = "You have not saved your changes.", e = e || window.event;
+                    if (e) {
+                        e.returnValue = message;
+                    }
+                    return message;
+                }
+            }
+            $("form").submit(function(event) {
+
+                function isChecked(inputSelector) {
+                    var res = false;
+                    $(inputSelector).each(function() {
+                        if ($(this).is(':checked')) {
+                            res = true;
+                        }
+                    });
+                    return res;
+                }
+
+                if (!isChecked('input[name="scanner[technology]"]')) {
+                    alert('Veuillez sélectionner une technologie de scanner.');
+                    event.preventDefault();
+                } else if (!isChecked('input[name="scanner[precision]"]')) {
+                    alert('Veuillez sélectionner une précision de scanner.');
+                    event.preventDefault();
+                } else if (!isChecked('input[name="scanner[resolution]"]')) {
+                    alert('Veuillez sélectionner une résolution de scanner.');
+                    event.preventDefault();
+                } else {
+                    submitted = true;
+                }
+            });
+
+            $("#btn_submit").click(function (e){
+                var currentUser = $("#current_user").val();
+                if ($('#scanner_name').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_brand').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_maxDimensions_x').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_maxDimensions_y').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_maxDimensions_z').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_minDimensions_x').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_minDimensions_y').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+                if ($('#scanner_minDimensions_z').length == 1){
+                    gtag_report_event(currentUser,'param.scanner','field_error');
+                }
+
+
+            });
+
+        });
+
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% form_theme form _self %}
+
+{% block _maker_termsAccepted_row %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox checkbox-inline">
+                <label>
+                    <input type="checkbox" id="maker_termsAccepted" name="maker[termsAccepted]" required="required" value="1">
+                    <span><!-- fake checkbox --></span>
+                    <span class="wrapped-label">J'ai lu et j'accepte les <a href="{{ www_base_url }}/cgu-cgv-m/" target="_blank">conditions générales d'utilisation et de vente</a></span>
+                </label>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% set title = 'Créer ma société' %}
+{% if edit is defined and edit is same as(true) %}
+    {% set title = 'Ma société' %}
+{% endif %}
+
+{% block user_content %}
+    <table   WIDTH="100%"><tr valign="center">
+    <td><h1>{{ title|trans }}</h1></td>
+    <td align="right"><a href="{{ www_base_url }}/cgu-cgv-m/" target="_blank">{{ 'maker.form.consult.cgu'|trans }}</a></td>
+    </tr></table>
+    <h6>{{ status|trans }}</h6>
+    
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {{ form_row(form.printer) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {{ form_row(form.designer) }}
+        </div>
+    </div>
+    {{ form_row(form.company) }}
+    {{ form_row(form.companyType) }}
+    {{ form_row(form.siren) }}
+    {{ form_row(form.vatNumber) }}
+    
+    <div class="col-sm-offset-2 col-sm-10">
+        Vous ne possedez pas de site Web? Vous pouvez indiquer un lien vers un compte de média sociaux 
+    </div>
+    {{ form_row(form.webSite) }}
+    {{ form_row(form.address) }}
+    <h5>Représentant légal</h5>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {{ form_row(form.firstname) }}
+            <input type="hidden" id="current_user" value="{{ maker.user.firstname }}" />
+            {{ form_row(form.birthDate) }}
+            
+            {% if form.identityPaperFile is defined %}
+                <h6>Pièce d'identité  - Passeport, carte d'identité ou permis de conduire</h6>
+                {{ form_row(form.identityPaperFile) }}
+                {{ form_row(form.identityPaperFileVerso) }}
+                <div class="form-group form-helper">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        Les fichiers doivent être au format JPG ou PNG <br>
+                        La taille des fichiers doit être inférieure à 5 Mo <br>
+                        Les fichiers doivent être en couleur, l'image à l'endroit et les informations bien lisibles
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Pièce d'identité</label>
+                    <div class="col-sm-10">
+                        <p style="margin: 6px 0 0 0;">Pour changer la pièce d'identité, merci de nous contacter via <a href="mailto:contact@united-3dmakers.fr">contact@united-3dmakers.fr</a>.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <h5>Coordonnées bancaires</h5>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {% if maker.stripeBankAccountIbanLast4 is not null and maker.stripeBankAccountIbanBankName is not null %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">IBAN actuel</label>
+                    <div class="col-sm-10">
+                        FR** **** **** **** **** ***{{ maker.stripeBankAccountIbanLast4 }} - {{ maker.stripeBankAccountIbanBankName }}
+
+                    </div>
+                </div>
+            {% endif %}
+            {{ form_row(form.iban) }}
+        </div>
+    </div>
+    {% if form.termsAccepted is defined %}
+        {{ form_row(form.termsAccepted) }}
+    {% endif %}
+    <div class="text-right">
+        <button type="submit" id="btn_submit" class="btn btn-rounded">{{ 'form.save'|trans }}</button>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("#btn_submit").click(function (e) {
+                var currentUser = $("#current_user").val();
+                if ($('#maker_company').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_siren').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_webSite').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_company').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_street1').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_zipcode').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_city').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_country').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_address_telephone').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_firstname').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_lastname').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_birthDate_day').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_birthDate_month').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_birthDate_year').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if ($('#maker_iban').length == 1){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+
+                if($("#maker_identityPaperFile_file").clickable == undefined){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+                if($("#maker_identityPaperFileVerso_file").clickable == undefined){
+                    gtag_report_event(currentUser,'account.maker','field_error');
+                }
+
+
+
+            });
+
+        });
+
+
+
+    </script>
+
+{% endblock %}

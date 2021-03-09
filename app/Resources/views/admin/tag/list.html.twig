@@ -1,0 +1,50 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'ref' %}
+{% set activeMenu = 'ref_tag' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default panel-table">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="tools"><a href="{{ path('admin_tag_add') }}"><span class="icon s7-magic-wand"></span> {{ 'admin.tag.add.title'|trans }}</a></div>
+                    {{ 'admin.tag.list.title'|trans }}
+                    <span class="panel-subtitle">{{ 'admin.tag.list.subtitle'|trans }}</span>
+                </div>
+                <div class="panel-body">
+                    <table id="table-tag-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.tag.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.tag.list.column.name'|trans }}</th>
+                            <th>{{ 'admin.tag.list.column.type'|trans }}</th>
+                            <th>{{ 'admin.tag.list.column.status'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for tag in tags %}
+                            <tr{% if tag.type == constant('\\AppBundle\\Entity\\Tag::TYPE_UNKNOWN') or not tag.enabled %} class="highlight highlight-red"{% endif %}>
+                                <td>{{ tag.id }}</td>
+                                <td><a href="{{ path('admin_tag_edit', { 'id': tag.id }) }}">{{ tag.name }}</a></td>
+                                <td>
+                                    {% if tag.type == constant('\\AppBundle\\Entity\\Tag::TYPE_DOMAIN') %}
+                                        {{ 'tag.type.domain'|trans }}
+                                    {% elseif tag.type == constant('\\AppBundle\\Entity\\Tag::TYPE_TECHNOLOGY') %}
+                                        {{ 'tag.type.technology'|trans }}
+                                    {% else %}
+                                        {{ 'tag.type.unknown'|trans }}
+                                    {% endif %}
+                                </td>
+                                <td>{% if tag.enabled %}{{ 'admin.tag.list.status.enabled'|trans }}{% else %}{{ 'admin.tag.list.status.disabled'|trans }}{% endif %}</td>
+                                <td class="actions"><a href="{{ path('admin_tag_edit', { 'id': tag.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'front/base.html.twig' %}
+
+{% set hideMainMenu = true %}
+{% block meta %}
+<meta title="title" content="United 3D Makers : Makers professionnels rejoignez nous." />
+<meta property="description" content="Vous êtes un professionnel de l'impression 3D, de la modélisation 3D, inscrivez vous sur la plateforme et créer votre profil" />
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="title_header">
+            <h2 class="section-title section-title-line text-center">{{ 'Maker professionnel'|trans }}</h2>
+            <p class="lead text-center">
+                United 3D Makers est un réseau de services de fabrication additive et de modélisation 3D en France.<br>
+                Les entreprises du réseau qui produisent les pièces ou les designs commandés via le site United 3D Makers sont nos partenaires de fabrication.
+            </p>
+        </div>
+        <div>
+            <blockquote class="border">
+                <p>Nos exigences :</p>
+            </blockquote>
+        </div>
+        <ul style="font-size: 16px;">
+            <li>Vous êtes une entreprise professionnelle établie dans l’UE et inscrite au Registre du Commerce et des Sociétés.</li>
+            <li>Pour l’impression 3D :  vous utilisez au moins une machine de fabrication additive professionnelle (pas uniquement des imprimantes de bureau).</li>
+            <li>Pour la modélisation 3D : vous avez acquis les licences des logiciels que vous utilisez.</li>
+            <li>Toutes vos productions sont faites en interne, pas de sous traitance.</li>
+            <li>Vous avez mis en place un contrôle qualité et vous respectez les normes des machines, des matériaux et des logiciels que vous utilisez.</li>
+        </ul>
+        {% include 'front/common/flash.html.twig' %}
+    </div>
+</div>
+<div style="background-color: #2b2b2b;">
+    <div class="container inner">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="text-center">
+                    <div class="box bg-white bg-box" style="margin-bottom: 0;">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="formMaker">
+                                <h2 class="section-title section-title-line text-center" style="margin-bottom: 35px;">{{ 'Inscription'|trans }}</h2>
+                                {{ form_start(formMaker) }}
+                                {{ form_errors(formMaker) }}
+                                <div class="row" style="margin-bottom: 15px;">
+                                    <div class="col-xs-6">
+                                        {{ form_widget(formMaker.firstname) }}
+                                    </div>
+                                    <div class="col-xs-6">
+                                        {{ form_widget(formMaker.lastname) }}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 35px;">
+                                    <div class="col-xs-6">
+                                        {{ form_widget(formMaker.email) }}
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="text-left">
+                                            {{ form_row(formMaker.printer) }}
+                                            {{ form_row(formMaker.designer) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group text-center">
+                                    <button type="submit" id="formMaker_submit" name="formMaker[submit]" class="btn btn-rounded">{{ 'Créer mon profil'|trans }}</button>
+                                </div>
+                                {{ form_end(formMaker) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container inner">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2 class="section-title section-title-line text-center">UNITED 3D MAKERS assure vos arrières</h2>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-xs-1 col-xs-offset-1">
+            <img src="{{ asset('assets/front/images/inscription-maker-picto-1.png') }}" alt = "picto créez un profil simplement">
+        </div>
+        <div class="col-xs-4 text-left" style="padding-right: 50px;">
+            <h3 style="color: #960048;">Créez un profil simplement</h3>
+            <p>En quelques minutes, créez votre profil, vous êtes prêts à recevoir vos premiers projets.</p>
+        </div>
+        <div class="col-xs-4 text-right" style="padding-left: 50px;">
+            <h3 style="color: #960048;">Gagnez du temps</h3>
+            <p>Sur la plateforme, recevez des projets, créez des devis, éditez l’étiquette de transport.</p>
+        </div>
+        <div class="col-xs-1">
+            <img src="{{ asset('assets/front/images/inscription-maker-picto-2.png') }}" alt = "picto Gagnez du temps">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-1 col-xs-offset-1">
+            <img src="{{ asset('assets/front/images/inscription-maker-picto-3.png') }}" alt ="picto Paiement sécurisé">
+        </div>
+        <div class="col-xs-4 text-left" style="padding-right: 50px;">
+            <h3 style="color: #960048;">Soyez sûrs d’être payés</h3>
+            <p>United 3D Makers sécurise votre paiement avant le début du projet. Une fois la mission terminée, vous recevez l’argent à votre rythme.</p>
+        </div>
+        <div class="col-xs-4 text-right" style="padding-left: 50px;">
+            <h3 style="color: #960048;">Travaillez sereinement</h3>
+            <p>Vous avez des questions ? Notre équipe vous accompagne tout au long de vos missions.</p>
+        </div>
+        <div class="col-xs-1">
+            <img src="{{ asset('assets/front/images/inscription-maker-picto-4.png') }}" alt ="picto check-hand travaillez sereinement">
+        </div>
+    </div>
+</div>
+<div style="background-color: #2b2b2b; padding-top: 35px; padding-bottom: 35px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="text-center">
+                <img src="{{ asset('assets/front/images/inscription-maker.jpg') }}" alt ="Equipe 3 personnes autour d'une imprimante 3D professionnelle avec 5 tetes d'impression">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container inner" style="display: none;">
+{% endblock %}

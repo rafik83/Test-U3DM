@@ -1,0 +1,888 @@
+########################################################################################################################
+#
+# Admin
+#
+########################################################################################################################
+admin.title: United 3D Makers - Admin
+admin.copyright: © 2019 The Gator Projects
+admin.empty: -
+
+admin.login.title: Administration
+admin.login.form.field.email.label: E-mail
+admin.login.form.field.password.label: Mot de passe
+admin.login.form.button.login.label: Connexion
+
+admin.menu.user.logout: Déconnexion
+admin.menu.tab.home: Accueil
+admin.menu.tab.order: Commandes
+admin.menu.tab.user: Utilisateurs
+admin.menu.tab.prospect: Prospects
+admin.menu.tab.ref: Réf. Impression
+admin.menu.tab.ref_design: Réf. Design
+admin.menu.tab.setting: Paramètres
+admin.menu.item.dashboard: Dashboard
+admin.menu.item.order.list: Commandes
+admin.menu.item.rating.list: Commentaires & notations
+admin.menu.item.project.list: Demandes de devis
+admin.menu.item.quotation.list: Devis
+admin.menu.item.user.list: Clients
+admin.menu.item.maker.list: Makers
+admin.menu.item.prospect.list: Prospects
+admin.menu.item.tag.list: Tags
+admin.menu.item.tag.add: Ajouter un tag
+admin.menu.item.color.list: Couleurs
+admin.menu.item.finishing.list: Finitions
+admin.menu.item.layer.list: Couches
+admin.menu.item.material.list: Matériaux
+admin.menu.item.technology.list: Technologies
+admin.menu.item.project_type.list: Types de projet
+admin.menu.item.field.list: Applications
+admin.menu.item.skill.list: Compétences
+admin.menu.item.software.list: Logiciels
+admin.menu.item.precision.list: Précisions
+admin.menu.item.resolution.list: Résolutions
+admin.menu.item.technology_scanner.list: Technologies
+admin.menu.item.setting.list: Paramètres
+admin.menu.item.coupon.list: Coupons
+admin.menu.item.moderation.rule.list: Règles de modération
+
+admin.dashboard.latest_prospects.title: 5 derniers prospects
+admin.dashboard.latest_prospects.column.name: Nom
+admin.dashboard.latest_prospects.column.type: Type
+admin.dashboard.latest_prospects.column.date: Date
+admin.dashboard.prospects: Prospects
+admin.dashboard.disabled_tags: Tags non activés
+
+admin.order.list.title: Liste des commandes
+admin.order.list.subtitle: Liste des commandes passées sur la plate-forme
+admin.order.list.column.id: ID
+admin.order.list.column.date: Date
+admin.order.list.column.reference: Référence
+admin.order.list.column.status: État
+admin.order.list.column.type: Type
+admin.order.list.column.customer: Client
+admin.order.list.column.maker: Maker
+admin.order.list.column.amount: Montant
+admin.order.see.customer: Client
+admin.order.see.maker: Maker
+admin.order.see.maker.commission_rate: Commission U3DM sur cette commande
+admin.order.see.maker.commission_amount: Part U3DM
+admin.order.see.maker.cut: Part Maker
+admin.order.see.shipping_address: Adresse de livraison client
+admin.order.see.billing_address: Adresse de facturation client
+admin.order.see.shipments: Expédition
+admin.order.see.payments: Paiement (mouvements)
+admin.order.see.refunds: Remboursement (mouvements)
+admin.order.see.management: Gestion de la commande %ref% du %date%
+admin.order.see.summary: Détail de la commande
+admin.order.see.messages: Messages privés échangés
+admin.order.see.rating: Note & commentaire client
+admin.order.see.rating.unknown: Aucune note & commentaire
+admin.order.see.history: Historique des états
+admin.order.see.history.creation: Création de la commande
+admin.order.see.history.by: action %origin%
+
+
+admin.quotation.list.title: Devis
+admin.quotation.list.subtitle: Devis issus des projets
+admin.quotation.list.column.id: ID
+admin.quotation.list.column.date: Date
+admin.quotation.list.column.ref.quotation: Réf. Devis
+admin.quotation.list.column.ref.project: Réf. Projet
+admin.quotation.list.column.status: État
+admin.quotation.list.column.customer: Client
+admin.quotation.list.column.maker: Maker
+admin.quotation.list.column.closedat: Date de clôture de l'AO
+admin.quotation.list.column.type: Type
+admin.quotation.see.management: Devis N° %ref% du %date%
+admin.quotation.see.customer: Client
+admin.quotation.see.project: Projet
+admin.quotation.see.to.correct: Demander une correction au maker
+admin.quotation.see.dispatch: Diffuser le devis
+admin.quotation.see.not.dispatch: Ne pas diffuser le devis
+admin.quotation.see.quotation.info: Détail du devis
+admin.quotation.flash.accept.dispatch.success: Le devis vient d'être diffusé au client avec succès
+admin.quotation.flash.refuse.dispatch.success: Le devis a été mis de coté (non diffusé au client)
+admin.quotation.flash.accept.to.correct.success: Le maker vient d'être averti de la demande de correction
+admin.quotation.form.field.correction_reason.label: Raison de la demande de correction
+
+
+admin.project.list.title: Demandes de devis
+admin.project.list.subtitle: Demandes de devis passés sur la plate-forme
+admin.project.list.column.id: ID
+admin.project.list.column.date: Date création
+admin.project.list.column.reference: Référence
+admin.project.list.column.status: État
+admin.project.list.column.customer: Client
+admin.project.list.column.nb.maker: Makers
+admin.project.list.column.nb.processing : Attente maker
+admin.project.list.column.nb.quotation: Diffusé
+admin.project.list.column.nb.notDispatch : Non retenu
+admin.project.list.column.waiting.moderate: Attente modération
+admin.project.list.column.closedat: Date de clôture
+admin.project.see.management: Demande de devis N° %ref% du %date%
+admin.project.see.customer: Client
+admin.project.see.project.info: Détails de la demande 
+admin.project.see.project.search.maker: Recherche autre maker
+admin.project.see.project.result.search.maker: Resultat(s) pour '%keyword%'
+admin.project.form.button.add.to.selection: Ajouter à la sélection de maker
+admin.project.see.project.selected.maker: Liste des makers sélectionnés
+admin.project.see.project.maker.prospect: Prospect
+admin.project.see.project.maker.no.stripe: No Stripe
+admin.project.see.update.closedat: Modifier la date de clôture
+admin.project.see.cancel: Fermer le projet (abandon)
+admin.project.see.attachment.file: Fichier(s) joint(s)
+
+admin.project.form.field.closed_at.label: Modifier la date de clôture
+admin.project.form.field.name.label: Titre du projet
+admin.project.form.field.type.label: Type de projet
+admin.project.form.field.fields.label: Applications
+admin.project.form.field.softwares.label: Logiciels
+admin.project.form.field.skills.label: Compétences
+admin.project.form.field.delivery.time.label: Date de rendu souhaité
+admin.project.form.field.address.scanner.label: Adresse du scanner
+admin.project.form.field.dimensions.label: Dimensions de l'objet
+admin.project.form.field.scan.on.site.label: Le client souhaite que le maker se déplace
+admin.project.flash.update.closed_at: La date de clôture a bien été mise à jour
+admin.project.flash.update.project: La demande de devis a bien été mise à jour
+admin.project.flash.cancel.project: Le projet est passé à l'état abandonné
+admin.project.form.button.delete: Supprimer le projet
+admin.project.form.button.dispatch: Diffuser la demande aux makers
+admin.project.flash.delete.success: L'état du projet est passé à Supprimé
+admin.project.flash.return.success: L'état du projet est passé à Créé
+admin.project.flash.delete.quotation.success: Le devis a bien été supprimé
+admin.project.flash.dispatch.success: Le projet a bien été diffusé aux makers
+admin.project.alert.please.select.maker: Merci de sélectionner au moins un maker
+
+admin.rating.list.title: Liste des commentaires à modérer
+admin.rating.list.subtitle: Liste des commentaires et notes déposés par les clients
+admin.rating.list.column.id: ID
+admin.rating.list.column.date: Date
+admin.rating.list.column.status: État
+admin.rating.list.column.customer: Client
+admin.rating.list.column.maker: Maker
+admin.rating.list.column.note: Note
+admin.rating.list.column.comment: Commentaire
+admin.rating.action.edit: Modifier
+admin.rating.action.delete: Supprimer
+admin.rating.action.validate: Valider
+admin.rating.edit.title: Modifier un avis
+admin.rating.edit.success: L'avis a été modifié
+
+admin.user.list.title: Liste des clients
+admin.user.list.subtitle: Liste des comptes client créés depuis le site.
+admin.user.list.column.id: ID
+admin.user.list.column.date_created: Date de création
+admin.user.list.column.date_enabled: Date d'activation
+admin.user.list.column.name: Nom
+admin.user.list.column.email: E-mail
+admin.user.see.created_at: Créé le
+admin.user.see.enabled_at: Activé le
+admin.user.see.not_enabled: Non activé
+admin.user.see.deleted_at: Supprimé le
+admin.user.see.contact: Contact
+admin.user.see.newsletter.yes: Inscrit à la newsletter
+admin.user.see.newsletter.no: Non inscrit à la newsletter
+admin.user.see.see_maker: Voir le compte maker associé
+admin.user.type.customer: Client
+admin.user.type.maker: Maker
+admin.user.type.maker.printer: Imprimeur
+admin.user.type.maker.designer: Designer
+
+admin.maker.list.title: Liste des makers
+admin.maker.list.subtitle: Liste des comptes maker créés depuis le site.
+admin.maker.list.column.id: ID
+admin.maker.list.column.date_created: Création
+admin.maker.list.column.type: Type
+admin.maker.list.column.name: Nom
+admin.maker.list.column.company: Entreprise
+admin.maker.see.created_at: Créé le
+admin.maker.see.see_user: Voir le compte client associé
+admin.maker.see.printer.list.column.model: Modèle
+admin.maker.see.printer.list.column.technology: Technologie
+admin.maker.see.printer.list.column.products: Produits
+admin.maker.see.printer.list.column.status: Disponibilité
+admin.maker.see.scanner.list.column.name: Nom
+admin.maker.see.scanner.list.column.brand: Marque
+admin.maker.see.scanner.list.column.technology: Technologie
+admin.maker.see.scanner.list.column.precision: Précision
+admin.maker.see.scanner.list.column.resolution: Résolution
+admin.maker.see.scanner.list.column.dimensions: Dimensions
+admin.maker.see.scanner.list.column.status: Statut
+
+admin.prospect.list.title: Liste des prospects
+admin.prospect.list.subtitle: Les prospects proviennent du formulaire du site.
+admin.prospect.list.column.id: ID
+admin.prospect.list.column.date: Date
+admin.prospect.list.column.type: Type
+admin.prospect.list.column.name: Nom
+admin.prospect.list.column.company: Société
+admin.prospect.see.message: Message
+admin.prospect.see.contact: Contact
+admin.prospect.see.technologies: Technologies
+admin.prospect.see.domains: Domaines d'activité
+admin.prospect.see.newsletter.yes: Inscrit à la newsletter
+admin.prospect.see.newsletter.no: Non inscrit à la newsletter
+
+admin.tag.list.title: Liste des tags
+admin.tag.list.subtitle: Les tags sont utilisés dans les formulaires prospects. Les tags non classés ou désactivés sont marqués en rouge.
+admin.tag.list.column.id: ID
+admin.tag.list.column.type: Type de tag
+admin.tag.list.column.name: Libellé du tag
+admin.tag.list.column.status: Statut
+admin.tag.list.status.enabled: Activé
+admin.tag.list.status.disabled: Désactivé
+admin.tag.add.title: Ajouter un tag
+admin.tag.edit.title: Modifier un tag
+admin.tag.flash.create: Le tag a été créé.
+admin.tag.flash.update: Le tag a été modifié.
+admin.tag.flash.remove: Le tag a été supprimé.
+
+admin.color.list.title: Liste des couleurs
+admin.color.list.subtitle: Les couleurs sont utilisées dans la configuration des imprimantes et sur le formulaire impression.
+admin.color.list.column.id: ID
+admin.color.list.column.name: Nom
+admin.color.list.column.hexadecimal_code: Code hexadécimal
+admin.color.add.title: Ajouter une couleur
+admin.color.edit.title: Modifier une couleur
+admin.color.form.field.enabled: Activée
+admin.color.form.field.name: Nom court
+admin.color.form.field.name_long: Nom long
+admin.color.form.field.name_english: Nom anglais
+admin.color.form.field.description: Description
+admin.color.form.field.hexadecimal_code: Code hexadécimal
+admin.color.form.field.editorial_link: Lien éditorial
+admin.color.flash.create: La couleur a été créée.
+admin.color.flash.update: La couleur a été modifiée.
+admin.color.flash.remove: La couleur a été supprimée.
+
+admin.finishing.list.title: Liste des finitions
+admin.finishing.list.subtitle: Les finitions sont utilisées dans la configuration des imprimantes et sur le formulaire impression.
+admin.finishing.list.column.id: ID
+admin.finishing.list.column.name: Finition
+admin.finishing.add.title: Ajouter une finition
+admin.finishing.edit.title: Modifier une finition
+admin.finishing.form.field.enabled: Activée
+admin.finishing.form.field.name: Nom court
+admin.finishing.form.field.name_long: Nom long
+admin.finishing.form.field.name_english: Nom anglais
+admin.finishing.form.field.description: Description
+admin.finishing.form.field.editorial_link: Lien éditorial
+admin.finishing.flash.create: La finition a été créée.
+admin.finishing.flash.update: La finition a été modifiée.
+admin.finishing.flash.remove: La finition a été supprimée.
+
+admin.layer.list.title: Liste des hauteurs de couche
+admin.layer.list.subtitle: Les hauteurs de couche sont utilisées dans la configuration des imprimantes et sur le formulaire impression.
+admin.layer.list.column.id: ID
+admin.layer.list.column.name: Hauteur (µm)
+admin.layer.add.title: Ajouter une hauteur de couche
+admin.layer.edit.title: Modifier une hauteur de couche
+admin.layer.form.field.enabled: Activée
+admin.layer.form.field.name: Hauteur (µm)
+admin.layer.form.field.definition: Définition
+admin.layer.form.field.description: Description
+admin.layer.form.field.editorial_link: Lien éditorial
+admin.layer.flash.create: La hauteur de couche a été créée.
+admin.layer.flash.update: La hauteur de couche a été modifiée.
+admin.layer.flash.remove: La hauteur de couche a été supprimée.
+
+admin.material.list.title: Liste des matériaux
+admin.material.list.subtitle: Les matériaux sont utilisés dans la configuration des imprimantes et sur le formulaire impression.
+admin.material.list.column.id: ID
+admin.material.list.column.name: Matériau
+admin.material.list.column.technologies: Technologies
+admin.material.add.title: Ajouter un matériau
+admin.material.edit.title: Modifier un matériau
+admin.material.form.field.enabled: Activé
+admin.material.form.field.name: Nom court
+admin.material.form.field.name_long: Nom long
+admin.material.form.field.name_english: Nom anglais
+admin.material.form.field.description: Description
+admin.material.form.field.editorial_link: Lien éditorial
+admin.material.form.field.technologies: Technologies
+admin.material.flash.create: Le matériau a été créé.
+admin.material.flash.update: Le matériau a été modifié.
+admin.material.flash.remove: Le matériau a été supprimé.
+
+admin.technology.list.title: Liste des technologies
+admin.technology.list.subtitle: Les technologies sont utilisées dans la configuration des imprimantes et sur le formulaire impression.
+admin.technology.list.column.id: ID
+admin.technology.list.column.name: Technologie
+admin.technology.add.title: Ajouter une technologie
+admin.technology.edit.title: Modifier une technologie
+admin.technology.form.field.enabled: Activée
+admin.technology.form.field.active_volume_methode: Active le choix de la methode de calcul
+admin.technology.form.field.name: Nom court
+admin.technology.form.field.name_long: Nom long
+admin.technology.form.field.name_english: Nom anglais
+admin.technology.form.field.description: Description
+admin.technology.form.field.editorial_link: Lien éditorial
+admin.technology.form.field.filling_rate: Permet de gérer un taux de remplissage
+admin.technology.flash.create: La technologie a été créée.
+admin.technology.flash.update: La technologie a été modifiée.
+admin.technology.flash.remove: La technologie a été supprimée.
+
+admin.setting.list.title: Liste des paramètres
+admin.setting.list.subtitle: Les paramètres sont appliqués globalement sur la plate-forme.
+admin.setting.list.column.id: ID
+admin.setting.list.column.name: Nom
+admin.setting.list.column.value: Valeur
+admin.setting.edit.title: Modifier un paramètre
+admin.setting.flash.update: Le paramètre a été modifié.
+admin.setting.form.field.name.label: Nom
+admin.setting.form.field.value.label: Valeur
+admin.setting.form.field.value.percent.label: Valeur (%)
+
+
+admin.coupon.list.title: Liste des coupons
+admin.coupon.list.subtitle: Les coupons de réduction sont utilisables par les clients finaux.
+admin.coupon.list.column.id: ID
+admin.coupon.list.column.code: Code
+admin.coupon.list.column.type: Type
+admin.coupon.list.column.launch_date: Lancement
+admin.coupon.list.column.start_date: Début
+admin.coupon.list.column.end_date: Fin
+admin.coupon.list.column.label: Libellé
+admin.coupon.add.title: Ajouter un coupon
+admin.coupon.edit.title: Modifier un coupon
+
+admin.moderation.rule.list.title: Listes des règles de modération
+admin.moderation.rule.list.subtitle: Application des règles de modération sur les échanges clients/makers.
+admin.moderation.rule.list.column.id: ID
+admin.moderation.rule.list.column.position: Priorité
+admin.moderation.rule.list.column.expression: Expression
+admin.moderation.rule.placeholder.column.expression: Expression recherchée (Format Regex)
+admin.moderation.rule.list.column.replace: Remplacé par
+admin.moderation.rule.placeholder.column.replace: Texte de remplacement
+admin.moderation.rule.placeholder.column.position: N° de priorité (0=plus prioritaire)
+admin.moderation.rule.list.column.moderation: Filtrer par l'admin
+admin.moderation.rule.list.column.moderation.type: Type de moderation
+admin.moderation.rule.add.title: Ajouter une règle
+admin.moderation.rule.edit.title: Modifier une règle
+admin.moderation.rule.list.moderation.auto: Automatique
+admin.moderation.rule.list.moderation.manual: Filtre admin
+
+admin.coupon.form.field.code.label: Code
+admin.coupon.form.field.type.label: Type
+admin.coupon.form.field.label.label: Libellé
+admin.coupon.form.field.description.label: Description
+admin.coupon.form.field.discount_percent.label: Réduction (%)
+admin.coupon.form.field.discount_amount.label: Réduction (€ HT)
+admin.coupon.form.field.min_order_amount.label: Montant mini commande (€ HT)
+admin.coupon.form.field.start_date.label: Date de début
+admin.coupon.form.field.end_date.label: Date de fin
+admin.coupon.form.field.max_per_customer.label: Max par client (null = illimité)
+admin.coupon.form.field.initial_stock.label: Quantité totale (null = illimitée)
+admin.coupon.form.field.launch_date.label: Date de lancement (coupon non modifiable après cette date)
+admin.coupon.form.field.u3dm_percent_part.label: Part U3DM (%)
+admin.coupon.form.field.enabled.label: Activé
+admin.coupon.form.field.customers.label: Clients (aucun = tous)
+admin.coupon.flash.create: Le coupon a été créé.
+admin.coupon.flash.update: Le coupon a été modifié.
+admin.moderation.rule.flash.create: La règle a été créée.
+admin.moderation.rule.flash.update: La règle a été modifiée.
+
+
+admin.field.list.title: Liste des applications
+admin.field.list.subtitle: Les applications sont utilisées dans la définition des projets et sur le formulaire design.
+admin.field.list.column.id: ID
+admin.field.list.column.name: Application
+admin.field.add.title: Ajouter une application
+admin.field.edit.title: Modifier une application
+admin.field.form.field.enabled: Activée
+admin.field.form.field.name: Nom
+admin.field.form.field.description: Description
+admin.field.form.field.editorial_link: Lien éditorial
+admin.field.flash.create: L'application a été créée.
+admin.field.flash.update: L'application a été modifiée.
+admin.field.flash.remove: L'application a été supprimée.
+
+admin.message.edit.title: Modérer un message
+
+admin.technology_scanner.list.title: Liste des technologies de scanner
+admin.technology_scanner.list.subtitle: Les technologies de scanner sont utilisées dans la définition des scanners.
+admin.technology_scanner.list.column.id: ID
+admin.technology_scanner.list.column.name: Technologie
+admin.technology_scanner.add.title: Ajouter une technologie de scanner
+admin.technology_scanner.edit.title: Modifier une technologie de scanner
+admin.technology_scanner.form.field.enabled: Activée
+admin.technology_scanner.form.field.name: Nom
+admin.technology_scanner.form.field.description: Description
+admin.technology_scanner.form.field.editorial_link: Lien éditorial
+admin.technology_scanner.flash.create: La technologie a été créée.
+admin.technology_scanner.flash.update: La technologie a été modifiée.
+admin.technology_scanner.flash.remove: La technologie a été supprimée.
+
+admin.skill.list.title: Liste des compétences
+admin.skill.list.subtitle: Les compétences sont utilisées dans la définition des projets et sur le formulaire designer.
+admin.skill.list.column.id: ID
+admin.skill.list.column.name: Compétence
+admin.skill.add.title: Ajouter une compétence
+admin.skill.edit.title: Modifier une compétence
+admin.skill.form.field.enabled: Activée
+admin.skill.form.field.name: Nom
+admin.skill.form.field.description: Description
+admin.skill.form.field.editorial_link: Lien éditorial
+admin.skill.flash.create: La compétence a été créée.
+admin.skill.flash.update: La compétence a été modifiée.
+admin.skill.flash.remove: La compétence a été supprimée.
+
+admin.software.list.title: Liste des logiciels
+admin.software.list.subtitle: Les logiciels sont utilisés dans la définition des projets et sur le formulaire designer.
+admin.software.list.column.id: ID
+admin.software.list.column.name: Logiciel
+admin.software.add.title: Ajouter un logiciel
+admin.software.edit.title: Modifier un logiciel
+admin.software.form.field.enabled: Activé
+admin.software.form.field.name: Nom
+admin.software.form.field.description: Description
+admin.software.form.field.editorial_link: Lien éditorial
+admin.software.flash.create: Le logiciel a été créé.
+admin.software.flash.update: Le logiciel a été modifié.
+admin.software.flash.remove: Le logiciel a été supprimé.
+
+admin.precision.list.title: Liste des précisions
+admin.precision.list.subtitle: Les précisions sont utilisées dans la définition des scanners.
+admin.precision.list.column.id: ID
+admin.precision.list.column.name: Précision
+admin.precision.add.title: Ajouter une précision
+admin.precision.edit.title: Modifier une précision
+admin.precision.form.field.enabled: Activée
+admin.precision.form.field.name: Nom
+admin.precision.form.field.description: Description
+admin.precision.form.field.editorial_link: Lien éditorial
+admin.precision.flash.create: La précision a été créée.
+admin.precision.flash.update: La précision a été modifiée.
+admin.precision.flash.remove: La précision a été supprimée.
+
+admin.project_type.list.title: Liste des types de projet
+admin.project_type.list.subtitle: Les types de projet sont utilisés dans la définition des projets et sur le formulaire designer.
+admin.project_type.list.column.id: ID
+admin.project_type.list.column.name: Type de projet
+admin.project_type.add.title: Ajouter un type de projet
+admin.project_type.edit.title: Modifier un type de projet
+admin.project_type.form.field.enabled: Activé
+admin.project_type.form.field.name: Nom
+admin.project_type.form.field.description: Description
+admin.project_type.form.field.description_maker: Description pour les makers
+admin.project_type.form.field.editorial_link: Lien éditorial
+admin.project_type.form.field.scanner: Nécessite l'utilisation d'un scanner (implique filtre des makers sur dimensions scan)
+admin.project_type.form.field.shipping: Livraison assurée par le maker
+admin.project_type.form.field.file: validation d'un livrable numérique
+admin.project_type.form.field.tagSpec: Tag pour les projets spéciaux
+admin.project_type.form.field.addressProject : Demande une adresse à la creation du projet
+admin.project_type.form.field.addressProjectLabel: libellé de l'adresse
+admin.project_type.form.field.shippingChoice: Livraison assurée par la plateforme
+admin.project_type.flash.create: Le type de projet a été créé.
+admin.project_type.flash.update: Le type de projet a été modifié.
+admin.project_type.flash.remove: Le type de projet a été supprimé.
+
+admin.resolution.list.title: Liste des résolutions
+admin.resolution.list.subtitle: Les résolutions sont utilisées dans la définition des scanners.
+admin.resolution.list.column.id: ID
+admin.resolution.list.column.name: Résolution
+admin.resolution.add.title: Ajouter une résolution
+admin.resolution.edit.title: Modifier une résolution
+admin.resolution.form.field.enabled: Activée
+admin.resolution.form.field.name: Nom
+admin.resolution.form.field.description: Description
+admin.resolution.form.field.editorial_link: Lien éditorial
+admin.resolution.flash.create: La résolution a été créée.
+admin.resolution.flash.update: La résolution a été modifiée.
+admin.resolution.flash.remove: La résolution a été supprimée.
+
+########################################################################################################################
+#
+# E-mails
+#
+########################################################################################################################
+email.notification.admin.prospect.create.subject: Nouveau prospect %type%
+email.notification.admin.prospect.create.body: "Un nouveau prospect %type% a été enregistré sur United 3D Makers : %name%."
+email.notification.admin.user.enable.subject: Nouveau compte client activé
+email.notification.admin.user.enable.body: "Un nouveau compte client a été activé sur United 3D Makers : %name%."
+email.notification.admin.footer: Cette notification a été envoyée depuis %url%.
+
+########################################################################################################################
+#
+# General
+#
+########################################################################################################################
+title: United 3D Makers
+"": ""
+__: __
+back: Retour
+
+########################################################################################################################
+#
+# Menu
+#
+########################################################################################################################
+menu.main.prospect: Rejoignez-nous !
+menu.main.information: S'informer
+menu.main.about: À propos
+menu.main.team: L'équipe
+menu.main.print: Impression 3D
+menu.main.design: Modélisation 3D
+menu.main.login: Mon compte
+menu.main.model: Modèles 3D
+
+########################################################################################################################
+#
+# Footer
+#
+########################################################################################################################
+footer.about: Jeune Start-up, nous simplifions l’impression 3D en mettant en relation les différents acteurs du secteur dans un souci permanent d’innovation et de performance.
+footer.read_more: En savoir plus
+footer.link.about: En savoir plus
+footer.category.societe: Societe
+footer.category.help: Besoin d’aide
+footer.category.connection: Connexion
+footer.category.information: S’informer
+footer.link.contact: Contact
+footer.link.legal: Mentions légales
+footer.link.faq: FAQ
+footer.link.cgu: CGU
+footer.link.about: À propos
+footer.link.team: L’équipe
+footer.link.sitemap: Plan du site
+footer.link.blog.news: Actualités de la 3D
+footer.link.blog.articles: Dossiers 3D
+footer.link.blog.material: Les matériaux
+footer.link.blog.technologies: Les technologies
+footer.link.blog.tutorials: Nos tutos vidéo
+footer.link.prospect: Rejoignez-nous !
+footer.link.account: Mon compte
+footer.link.print: Imprimer en 3D
+footer.link.design: Designer 3D
+footer.tooltip.soon: Bientôt !
+footer.newsletter: Newsletter
+footer.newsletter.placeholder: votre@email.com
+footer.newsletter.register: S'abonner
+footer.newsletter.pending: Envoi en cours...
+footer.newsletter.success: Merci, vous êtes bien abonné à notre newsletter.
+footer.newsletter.error: Veuillez vérifier que l'adresse e-mail saisie est correcte.
+footer.copyright: United 3D Makers - 2019 - Tous droits réservés.
+footer.support_by: Un projet soutenu par
+
+########################################################################################################################
+#
+# Prospect
+#
+########################################################################################################################
+prospect.title: Rejoignez-nous !
+prospect.subtitle: Donnez nous quelques détails sur vous.
+prospect.switcher.maker: Vous êtes un professionnel de l’impression 3D et du design 3D
+prospect.switcher.customer: Vous recherchez des imprimeurs 3D ou des designers 3D pour réaliser vos projets
+prospect.type.maker: Maker
+prospect.type.maker.printer: Imprimeur
+prospect.type.maker.designer: Designer
+prospect.type.customer: Client
+prospect.type.customer.type.individual: Particulier
+prospect.type.customer.type.company: Entreprise
+prospect.form.button.toggle_maker: Je suis un maker
+prospect.form.button.toggle_customer: Je suis un client
+prospect.form.field.maker.printer.label: Vous êtes imprimeur
+prospect.form.field.maker.designer.label: Vous êtes designer
+prospect.form.field.customer_type.individual.label: Particulier
+prospect.form.field.customer_type.company.label: Professionnel
+prospect.form.field.email.label: Adresse e-mail
+prospect.form.field.firstname.label: Prénom
+prospect.form.field.lastname.label: Nom
+prospect.form.field.company.label: Société
+prospect.form.field.city.label: Ville
+prospect.form.field.country.label: Pays
+prospect.form.field.phone_number.label: Téléphone
+prospect.form.field.message.label: Votre message
+prospect.form.field.technologies.label: Technologies
+prospect.form.field.domains.label: Domaines d'activité
+prospect.form.field.newsletter.label: Inscription à la newsletter
+
+########################################################################################################################
+#
+# Tag
+#
+########################################################################################################################
+tag.type.unknown: Non classé
+tag.type.domain: Domaine d'activité
+tag.type.technology: Technologie
+tag.form.field.type.label: Type de tag
+tag.form.field.name.label: Libellé du tag
+tag.form.field.enabled.label: Activé
+
+########################################################################################################################
+#
+# User
+#
+########################################################################################################################
+user.form.field.type.company: Entreprise
+user.form.field.type.individual: Particulier
+user.form.field.firstname: Prénom
+user.form.field.lastname: Nom
+user.form.field.company: Société
+user.form.field.company_type: Forme juridique
+user.form.field.web_site: Site Web
+user.form.field.email: Adresse e-mail
+user.form.field.email.repeat: Répéter e-mail
+user.form.field.password: Mot de passe
+user.form.field.password.repeat: Répéter mot de passe
+user.form.field.new_password: Nouveau mot de passe
+user.form.field.new_password.repeat: Répéter le nouveau mot de passe
+user.form.field.newsletter: Inscription à la newsletter
+user.form.field.phone_number: Téléphone
+user.form.field.address: Adresse
+user.form.field.address.billing: Adresse de facturation
+user.form.field.address.shipping: Adresse de livraison
+user.form.field.address.same: Utiliser la même adresse pour la facturation
+user.form.forgot_password.title: Mot de passe oublié
+user.form.forgot_password.text: Veuillez saisir votre adresse e-mail. Vous recevrez un lien permettant de choisir un nouveau mot de passe.
+user.form.forgot_password.confirmation: Vous allez recevoir un e-mail contenant un lien temporaire qui vous permettra de choisir un nouveau mot de passe.
+user.form.reset_password.text: Veuillez saisir votre nouveau mot de passe.
+user.form.reset_password.field.password: Nouveau mot de passe
+user.form.reset_password.field.password.repeat: Répéter mot de passe
+user.dashboard.menu.profile.customer: Mon compte Client
+user.dashboard.menu.profile.password: Mon mot de passe
+user.dashboard.menu.profile.customer.edit: Modifier mon compte Client
+user.dashboard.menu.profile.maker: Mon compte Maker
+user.dashboard.menu.profile.maker.create: Créer ma société
+user.dashboard.menu.profile.maker.edit: Ma société
+user.dashboard.menu.profile.maker.details.edit: Mes informations commerciales
+user.dashboard.menu.logout: Déconnexion
+user.flash.enabled: Bienvenue ! Votre compte a été activé. Vous pouvez dès maintenant compléter votre profil.
+user.flash.updated: Vos informations personnelles ont bien été mises à jour.
+user.flash.forgot_password.error: Le lien sur lequel vous avez cliqué est incorrect. Veuillez faire une nouvelle demande de ré-initialisation de mot de passe.
+user.flash.password_reset: Votre mot de passe a bien été modifié.
+
+########################################################################################################################
+#
+# Maker
+#
+########################################################################################################################
+maker.form.field.available: Je suis actuellement disponible pour traiter des commandes
+maker.form.consult.cgu: Voir les conditions générales de vente
+maker.form.field.printer: Je suis imprimeur
+maker.form.field.designer: Je suis designer
+maker.form.field.siren: N° de SIREN
+maker.form.field.vat_number: N° TVA intracommunautaire
+maker.form.field.pickup: Il est possible de retirer les commandes sur place
+maker.form.field.pickup_address: Adresse de retrait
+maker.form.field.bio: Présentation
+maker.form.field.order.file: Fichier livrable .zip ou .tar
+maker.form.field.order.url.download: ou un lien de téléchargement 
+
+
+maker.flash.maker_already_set: Vous avez déjà créé un compte Maker.
+maker.flash.maker_not_set: Vous n'avez pas de compte Maker.
+maker.flash.maker_created: Votre société a bien été créée. Vous pouvez maintenant saisir vos informations commerciales.
+maker.flash.maker_updated: Votre société a été mise à jour.
+maker.flash.bank_setup_updated: Vos coordonnées bancaires ont été mises à jour.
+maker.flash.bank_setup_error: Une erreur est survenue lors de l'enregistrement de vos coordonnées bancaires.
+maker.flash.enabled: Félicitations, votre compte Maker est bien activé !
+
+# Project & quotation
+maker.project.flash.delete.quotation.success: Le projet a été refusé avec succès
+maker.project.flash.accept.quotation.success: Vous pouvez désormais saisir votre devis
+maker.project.form.field.internal.reference.label: Référence interne
+maker.project.form.field.internal.production.time.label: Délai de réalisation
+maker.quotation.line.form.field.description: Intitulé de la Présentation
+maker.quotation.line.form.field.quantity: Quantité
+maker.quotation.line.form.field.price: Prix Unitaire HT
+maker.quotation.line.form.field.line: Ligne du devis
+maker.project.form.button.save.label: Enregistrer sans diffuser
+maker.project.form.button.sent.label: Envoyer le devis
+
+
+maker.project.flash.save.quotation: Votre devis a bien été enregistré
+maker.project.flash.sent.quotation: Votre devis a bien été envoyé
+maker.project.flash.error.negative.quotation: Votre devis ne doit pas avoir un total négatif
+maker.project.flash.error.negative.production.time: Le délai de réalisation doit être supérieur à 0 jour
+
+########################################################################################################################
+#
+# Address
+#
+########################################################################################################################
+address.form.field.firstname: Prénom
+address.form.field.lastname: Nom
+address.form.field.company: Société
+address.form.field.street1: Rue
+address.form.field.street2: Complément d'adresse
+address.form.field.zip_code: Code postal
+address.form.field.city: Ville
+address.form.field.country: Pays
+address.form.field.telephone: Téléphone
+
+########################################################################################################################
+#
+# Printer
+#
+########################################################################################################################
+printer.form.field.available: Imprimante disponible
+printer.form.field.technology: Technologie
+printer.form.field.model: Modèle
+printer.form.field.setup_price: Prix du setup
+printer.form.field.max_dimensions: Taille maximale de l'impression
+printer.form.field.volume_methode: Mehode de calcul du prix
+printer.form.field.volume_methode.matiere_object: Utilise le volume de matière de la pièce
+printer.form.field.volume_methode.bounding_box: Utilise le volume de la boite contenant la pièce (Bounding Box)
+printer.form.field.min_volume: Volume minimal d'impression (mm³)
+printer.form.field.products: Produits
+printer.form.submit.add: Enregistrer et ajouter des produits
+printer.form.submit.update: Enregistrer la configuration de l'imprimante
+printer.flash.created: Votre imprimante a été créée. Vous pouvez maintenant saisir ses produits.
+printer.flash.updated: Votre imprimante a été mise à jour.
+
+########################################################################################################################
+#
+# Printer Products
+#
+########################################################################################################################
+printer_product.form.field.available: Disponible
+printer_product.form.field.material: Matériau
+printer_product.form.field.layer: Hauteur de couche
+printer_product.form.field.colors: Couleurs
+printer_product.form.field.price_25: Prix si remplissage entre 0 et 25%
+printer_product.form.field.price_50: Prix si remplissage entre 26 et 50%
+printer_product.form.field.price_100: Prix si remplissage entre 51 et 100%
+printer_product.form.field.price_default: Prix
+printer_product.form.field.price.unit: € HT / cm³
+printer_product.form.field.finishings: Options de finition
+printer_product.form.action.add: Ajouter un produit
+printer_product.form.action.duplicate: Dupliquer ce produit
+printer_product.form.action.delete: Supprimer ce produit
+
+########################################################################################################################
+#
+# Dimensions
+#
+########################################################################################################################
+dimensions.form.field.x: X
+dimensions.form.field.y: Y
+dimensions.form.field.z: Z
+
+########################################################################################################################
+#
+# Forms
+#
+########################################################################################################################
+form.send: Envoyer
+form.save: Enregistrer
+form.update: Mettre à jour
+form.add: Ajouter
+form.cancel: Annuler
+form.remove: Supprimer
+form.register: S'inscrire
+form.login: Se connecter
+form.search: Rechercher
+
+########################################################################################################################
+#
+# Flash
+#
+########################################################################################################################
+flash.close: Fermer
+flash.prospect.create: Merci d'avoir pris le temps de laisser vos coordonnées, vous recevrez très rapidement des nouvelles de United 3D Makers.
+
+########################################################################################################################
+#
+# PrintEngine
+#
+########################################################################################################################
+print_engine.ref.finishing.none: Aucune finition
+print_engine.ref.filling.none: Aucun remplissage
+print_engine.ref.filling.25: 0-25%
+print_engine.ref.filling.50: 26-50%
+print_engine.ref.filling.100: 51-100%
+
+########################################################################################################################
+#
+# Scanner
+#
+########################################################################################################################
+scanner.parameter.updated: Vos paramètres ont bien été mis à jour
+scanner.form.field.name: Nom
+scanner.form.field.available: Scanner disponible
+scanner.form.field.technology: Technologie
+scanner.form.field.precision: Précision
+scanner.form.field.resolution: Résolution
+scanner.form.field.brand: Marque
+scanner.form.field.setup_price: Prix du setup
+scanner.form.field.max_dimensions: Format maximal de l'objet
+scanner.form.field.min_dimensions: Format minimal de l'objet
+scanner.form.submit.add: Enregistrer la configuration du scanner
+scanner.form.submit.update: Enregistrer la configuration du scanner
+scanner.flash.created: Votre scanner a été créé.
+scanner.flash.updated: Votre scanner a été mis à jour.
+
+########################################################################################################################
+#
+# Scanner
+#
+########################################################################################################################
+designer.form.field.available: Designer disponible sur le site United 3d Makers
+designer.form.submit.save: Sauvegarder mes paramètres
+designer.form.field.project.type: Vos projets types
+designer.form.field.project.skills: Vos compétences
+designer.form.field.project.software: Vos logiciels
+
+########################################################################################################################
+#
+# Model
+#
+########################################################################################################################
+model.flash.created: Votre modèle a été créé.
+model.flash.updated: Votre modèle a été mis à jour.
+model.form.field.portfolio_title: Portfolio
+model.form.field.portfolio: Boostez vos téléchargements en ajoutant des photos de vos objets imprimés. La présentation utilise la photo en première position
+model.form.field.category_title: Categorie(s)
+model.form.field.file_title: Fichier(s) 3D
+model.form.field.file: Ajouter un fichier STL, OBJ, ou ZIP
+model.form.field.price_title: Prix hors taxe
+model.form.field.price_indication: Si vous ne rentrez pas un prix, votre modèle sera gratuit
+model.form.field.license: En savoir plus sur les licences
+model.form.modification: Vous ne pouvez modifier ni le nom de votre modèle ni le fichier zip
+
+model.form.label.name: Nom
+model.form.label.description: Description
+model.form.label.caracteristique: Caractéristiques
+model.form.label.licences: Licence
+model.form.label.price_tax_excl: Prix hors taxe
+model.form.label.attachmentFile: Fichier(s) 3D
+model.form.label.tags: Tags
+model.form.label.categoryModel: Categorie(s)
+model.form.label.portfolioImages: Portfolio
+model.form.label.save: Enregistrer en brouillon
+model.form.label.add: Publier
+model.form.label.delete: Supprimer
+
+model.admin.flash.updated: Le modèle a été mis à jour.
+model.admin.flash.validated: Le modèle a été publié.
+
+
+
+########################################################################################################################
+#
+# Stripe
+#
+########################################################################################################################
+
+Stripe.Account.Status.verifyOK: Compte vérifié.
+Stripe.Account.Status.Active: Actif
+Stripe.Account.Status.Limited: Limité
+Stripe.Account.Status.Error: En erreur
+Stripe.Account.Status.None: Non créé
+Stripe.Account.Status.VerifyPending: Vérification en cours - Des informations complémentaires pourront vous être demandées.
+Stripe.Account.PapierIdentityMissing: Merci de fournir une pièce d'identité valide et lisible
+Stripe.Account.StripeRepresentativeMissing: Merci de renseigner la fiche du representant légal de la société
+
+########################################################################################################################
+#
+# Message
+#
+########################################################################################################################
+Message.order.refused: Le livrable a été refusé
+Message.order.unknown: Commande inconnue
+Message.order.rating.wait: En attente de notation
+Message.order.no_rate: Merci de noter et de mettre un commentaire
+Message.order.rating.done: Commande déjà notée
+Message.order.rating.thanks: Merci pour votre retour

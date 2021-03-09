@@ -1,0 +1,57 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    database_host: localhost
+    database_port: 3306
+    database_name: ~
+    database_user: ~
+    database_password: ~
+    # You should uncomment this if you want to use pdo_sqlite
+    #database_path: '%kernel.project_dir%/var/data/data.sqlite'
+
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: ~
+    mailer_password: ~
+    mailer_port: ~
+
+    email_from_address: ~
+    email_from_name: ~
+
+    admin_notification_email_address: ~
+
+    # A secret key that's used to generate certain security-related tokens
+    secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Additional U3DM params
+    www_base_url: ~
+    ga_tracking_id: UA-98614954-1
+    crisp_website_id: ~
+    # Stripe params
+    stripe_public_key: pk_test_xxxxxxxxxxxxxx
+    stripe_secret_key: sk_test_xxxxxxxxxxxxxx
+    stripe_version: 'YYYY-MM-DD'
+    payment:
+        currency: EUR
+        decimal: true
+
+    # Colissimo params
+    colissimo_contract_number: ~
+    colissimo_password: ~
+
+    # Chronopost params
+    chronopost_account_number: ~
+    chronopost_password: ~
+
+    # Snappy library path
+    snappy_lib_path: /srv/data/home/wkhtmltopdf
+
+    # Google API Key 
+    google_api_key: xxxxxxxxxxxxxx
+
+    # SendinBlue API Key
+    sendinblue_api_key: xxxxxxxxxxxxxx
+
+    gads_id: null
+    gtag_manager_id: null

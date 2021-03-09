@@ -1,0 +1,89 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1>Mon profil client</h1>
+    {{ form_errors(form) }}
+    {{ form_start(form) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.firstname) }}
+        {{ form_row(form.lastname) }}
+        {{ form_row(form.company) }}
+        {{ form_row(form.companyType) }}
+        {{ form_row(form.defaultShippingAddress) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.sameAddress) }}
+            </div>
+        </div>
+        {{ form_row(form.defaultBillingAddress) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.newsletter) }}
+            </div>
+        </div>
+        <div class="text-right">
+            <button type="submit" class="btn btn-rounded">{{ 'form.save'|trans }}</button>    
+        </div>
+        
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var sameAddressBox = $('#user_profile_sameAddress');
+            toggleBillingAddress(sameAddressBox);
+            sameAddressBox.change(function() {
+                toggleBillingAddress($(this));
+            });
+            toggleCompanyFields();
+            $('#radio_individual').change(function() {
+                toggleCompanyFields();
+            });
+            $('#radio_company').change(function() {
+                toggleCompanyFields();
+            });
+
+            if ($('#user_profile_firstname').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_lastname').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_firstname').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_lastname').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_street1').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_zipcode').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_country').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+            if ($('#user_profile_defaultShippingAddress_telephone').length == 1){
+                gtag_report_event(this.user3dm,'account','field_error');
+            }
+
+        });
+        function toggleBillingAddress(sameAddressBox) {
+            if (sameAddressBox.prop('checked')) {
+                $('#user_profile_defaultBillingAddress').parent().parent().hide();
+            } else {
+                $('#user_profile_defaultBillingAddress').parent().parent().show();
+            }
+        }
+        function toggleCompanyFields() {
+            if ($('#radio_individual').prop('checked')) {
+                $('.company-only').parent().parent().hide();
+            } else {
+                $('.company-only').parent().parent().show();
+            }
+        }
+    </script>
+{% endblock %}

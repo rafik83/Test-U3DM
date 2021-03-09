@@ -1,0 +1,302 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'user' %}
+{% set activeMenu = 'maker_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if maker.company is not null %}{{ maker.company|upper }} - {% endif %}{{ maker.lastname|upper }}{% if maker.firstname is not null %} {{ maker.firstname }}{% endif %}
+                            <span class="panel-subtitle">{{ 'admin.user.see.created_at'|trans }} {{ maker.createdAt|date('d/m/Y H:i', app.user.timezone) }}</span>
+                            
+                            {% if maker.user.isDeleted() ==  false%}
+                                {% if maker.blacklisted %}
+                                    <a  class="panel-subtitle" href="{{ path('admin_maker_blacklisted', {'id': maker.id ,'blacklist': 0}) }}">Dé-blacklister le maker</a>
+                                {% else  %}
+                                    <a  class="panel-subtitle" href="{{ path('admin_maker_blacklisted', {'id': maker.id ,'blacklist': 1}) }}">Blacklister le maker</a>
+                                {% endif %}
+                            {% endif %}
+                            <br><span class="panel-subtitle"><a href="{{ path('admin_user_see', { 'id': maker.user.id }) }}">{{ 'admin.maker.see.see_user'|trans }}</a></span>
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+                            {% if maker.printer %}
+                                {{ 'admin.user.type.maker.printer'|trans }}
+                            {% endif %}
+                            {% if maker.designer %}
+                                {{ 'admin.user.type.maker.designer'|trans }}
+                            {% endif %}
+                            {% if maker.user.isDeleted() ==  false%}
+                                <span class="panel-subtitle">{% if maker.available %}<span style="color: green;">Disponible</span>{% else %}<span style="color: red;">Non disponible</span>{% endif %}</span>
+                                <span class="panel-subtitle">{% if maker.blacklisted %}<span style="color: red;">Blacklisté</span>{% endif %}</span>
+                            {% else %}
+                                <span class="panel-subtitle"><span style="color: red;">Supprimé</span></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    Type d'entreprise : {% if maker.companyType is not null %}{{ maker.companyType }}{% else %}n/a{% endif %}<br>
+                    Siren : {% if maker.siren is not null %}{{ maker.siren }}{% else %}n/a{% endif %}<br>
+                    TVA : {% if maker.vatNumber is not null %}{{ maker.vatNumber }}{% else %}n/a{% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-heading-divider">
+                            Adresse
+                        </div>
+                        <div class="panel-body">
+                            {% if maker.address is not null %}{% include 'front/common/address.html.twig' with { address: maker.address } %}{% else %}n/a{% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-heading-divider">
+                            Adresse de retrait
+                        </div>
+                        <div class="panel-body">
+                            {% if maker.pickup %}
+                                {% if maker.pickupAddress is not null %}{% include 'front/common/address.html.twig' with { address: maker.pickupAddress } %}{% else %}n/a{% endif %}
+                            {% else %}
+                                Pas de retrait sur place
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            Commandes
+                            <span class="panel-subtitle">{{ maker.orders|length }} commandes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table id="table-user-order-list" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>{{ 'admin.order.list.column.id'|trans }}</th>
+                            <th>{{ 'admin.order.list.column.date'|trans }}</th>
+                            <th>{{ 'admin.order.list.column.reference'|trans }}</th>
+                            <th>{{ 'admin.order.list.column.status'|trans }}</th>
+                            <th>{{ 'admin.order.list.column.customer'|trans }}</th>
+                            <th>{{ 'admin.order.list.column.amount'|trans }}</th>
+                            <th class="actions"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in maker.orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td data-order="{{ order.createdAt|date('YmdHis') }}">{{ order.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                <td><a href="{{ path('admin_order_see', { 'reference': order.reference }) }}">{{ order.reference }}</a></td>
+                                <td data-order="{{ order.status }}">{{ order.adminReadableStatus }}</td>
+                                <td>{{ order.customer.fullname }}</td>
+                                <td data-order="{{ order.totalAmountTaxIncl }}">{{ (order.totalAmountTaxIncl / 100)|number_format(2) }} € TTC</td>
+                                <td class="actions"><a href="{{ path('admin_order_see', { 'reference': order.reference }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if maker.printer %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        {{ maker.printers|length }} {{ 'imprimante|imprimantes'|transchoice(maker.printers|length) }}
+                    </div>
+                    <div class="panel-body">
+                        <table id="table-printer-list" class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ 'admin.maker.see.printer.list.column.model'|trans }}</th>
+                                <th>{{ 'admin.maker.see.printer.list.column.technology'|trans }}</th>
+                                <th>{{ 'admin.maker.see.printer.list.column.products'|trans }}</th>
+                                <th>{{ 'admin.maker.see.printer.list.column.status'|trans }}</th>
+                                <th>{{ 'admin.maker.list.column.date_created'|trans }}</th>
+                                <th class="actions"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for printer in maker.printers %}
+                                <tr>
+                                    <td><strong>{{ printer.model }}</strong></td>
+                                    <td>{{ printer.technology.name }}</td>
+                                    <td data-order="{{ printer.products|length }}">{{ printer.products|length }} {{ 'produit|produits'|transchoice(printer.products|length) }}</td>
+                                    <td class="cell-detail" data-order="{{ printer.status }}">
+                                        {% if printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_AVAILABLE')) %}
+                                            <span style="color: green;">OK</span>
+                                        {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_PARTIALLY_AVAILABLE')) %}
+                                            <span style="color: orange;">Dispo mais pas tous les produits</span>
+                                        {% elseif printer.status is same as(constant('\\AppBundle\\Entity\\Printer::STATUS_NOT_AVAILABLE')) %}
+                                            <span style="color: red;">Non dispo ou aucun produit dispo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-order="{{ printer.createdAt|date('YmdHis') }}">{{ printer.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                    <td class="actions"><a href="{{ path('admin_printer_see', { 'id': printer.id }) }}" class="icon"><i class="s7-right-arrow"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+            {% if maker.designer %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        Infos Designer
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            <strong>Projets types</strong><br>
+                            {% for project in maker.designProjectTypes %}
+                                {{ project.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p>
+                            <strong>Compétences</strong><br>
+                            {% for skill in maker.designSkills %}
+                                {{ skill.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p>
+                            <strong>Logiciels</strong><br>
+                            {% for software in maker.designSoftwares %}
+                                {{ software.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        {{ maker.scanners|length }} {{ 'scanner|scanners'|transchoice(maker.scanners|length) }}
+                    </div>
+                    <div class="panel-body">
+                        <table id="table-scanner-list" class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ 'admin.maker.see.scanner.list.column.name'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.brand'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.technology'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.precision'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.resolution'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.dimensions'|trans }}</th>
+                                <th>{{ 'admin.maker.see.scanner.list.column.status'|trans }}</th>
+                                <th>{{ 'admin.maker.list.column.date_created'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for scanner in maker.scanners %}
+                                <tr>
+                                    <td><strong>{{ scanner.name }}</strong></td>
+                                    <td>{{ scanner.brand }}</td>
+                                    <td>{{ scanner.technology.name }}</td>
+
+                                    <td>{{ scanner.precision.name }}</td>
+                                    <td>{{ scanner.resolution.name }}</td>
+                                    <td>Min : {{ scanner.minDimensions }} mm<br>Max : {{ scanner.maxDimensions }} mm</td>
+
+                                    <td class="cell-detail" data-order="{{ scanner.visible }}">
+                                        {% if scanner.isVisible %}
+                                            <span style="color: green;">Visible</span>
+                                        {% else %}
+                                            <span style="color: red;">Invisible</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-order="{{ scanner.createdAt|date('YmdHis') }}">{{ scanner.createdAt|date('d/m/Y H:i', app.user.timezone) }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Profil
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">{% if maker.profilePictureName is not null %}<img src="{{ vich_uploader_asset(maker, 'profilePictureFile') | imagine_filter('maker_profile') }}">{% else %}n/a{% endif %}</div>
+                    {{ maker.bio|nl2br }}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.user.see.contact'|trans }}
+                </div>
+                <div class="panel-body">
+                    <span class="icon s7-mail"></span> <a href="mailto:{{ maker.user.email }}">{{ maker.user.email }}</a><br>
+                    <span class="icon s7-phone"></span> {% if maker.address is not null and maker.address.telephone is not null %}{{ maker.address.telephone }}{% else %}{{ 'admin.empty'|trans }}{% endif %}<br>
+                    <span class="icon s7-paper-plane"></span> {% if maker.user.newsletter %}{{ 'admin.user.see.newsletter.yes'|trans }}{% else %}{{ 'admin.user.see.newsletter.no'|trans }}{% endif %}<br>
+                    <span class="icon s7-cloud"></span> 
+                        {% if maker.webSite is not null %}<a href="{{ maker.webSite }}" target="_blank">{{ maker.webSite }}</a>{% else %}n/a{% endif %}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Stripe
+                    <span class="panel-subtitle"> <span style="color: {{StripeRequirements.colorAlert}};"> Etat du compte : {{ StripeRequirements.status| trans }}</span></span>
+
+                </div>
+                <div class="panel-body">
+                    {% if maker.stripeId is not null %} 
+                        <a href="https://dashboard.stripe.com/connect/accounts/{{ maker.stripeId }}" target="Stripe">Voir le compte Stripe</a><br>
+                        <strong>Banque</strong><br>{% if maker.stripeBankAccountIbanBankName is not null %}{{ maker.stripeBankAccountIbanBankName }}{% else %}n/a{% endif %}<br>
+                        <strong>Date de naissance</strong><br>{% if maker.birthDate is not null %}{{ maker.birthDate|date('d/m/Y') }}{% else %}n/a{% endif %}<br>
+                        <strong>Papier d'identité</strong><br>
+                        {% if maker.identityPaperName is not null %}<a href="{{ path('admin_maker_identity_paper_download', { 'id': maker.id }) }}" target="_blank">{{ maker.identityPaperName }}</a>{% else %}n/a{% endif %}<br>
+                        {% if maker.identityPaperNameVerso is not null %}<a href="{{ path('admin_maker_identity_paper_verso_download', { 'id': maker.id }) }}" target="_blank">{{ maker.identityPaperNameVerso }}</a>{% else %}n/a{% endif %}<br>
+                        
+                        {% if StripeRequirements.dataDue != null %}
+                            <strong>Informations manquantes</strong><br>
+                            {% for doc in StripeRequirements.dataDue %}{{ doc}}<br>{% endfor %}
+                        {% endif %}
+                        {% if  StripeRequirements.director == false %} <a  class="panel-subtitle" href="{{ path('admin_maker_stripe_relations', {'id': maker.id ,'typeRelation': 0}) }}">Confirmer directeurs fournis</a> {% endif %}
+                        {% if  StripeRequirements.executive == false %} <a  class="panel-subtitle" href="{{ path('admin_maker_stripe_relations', {'id': maker.id ,'typeRelation': 1}) }}">Confirmer propriétaires fournis</a> {% endif %}
+                    {% endif %}
+                    
+                    
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    Taux de commission
+                </div>
+                <div class="panel-body">
+                    Ce maker est configuré avec {% if maker.customCommissionRate is null %}le taux de commission par défaut{% else %}un taux de commission personnalisé{% endif %} : <strong>{{ currentCommissionRate }} %</strong>.<br><br>
+                    {{ form_start(commissionRateForm) }}
+                    Taux personnalisé (%)
+                    {{ form_row(commissionRateForm.customCommissionRate) }}
+                    <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.save'|trans }}</button>
+                    Laisser vide pour utiliser le taux par défaut
+                    {{ form_end(commissionRateForm) }}
+                </div>
+            </div>
+            {% if maker.designer %}
+                <div class="panel panel-default">
+                    <div class="panel-heading panel-heading-divider">
+                        Modération Design
+                    </div>
+                    <div class="panel-body">
+                        Ce maker Designer est configuré en modération {% if maker.designAutoModeration %}automatique{% else %}manuelle{% endif %}.<br><br>
+                        {{ form_start(designAutoModerationForm) }}
+                        {{ form_row(designAutoModerationForm.designAutoModeration) }}
+                        <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.save'|trans }}</button>
+                        {{ form_end(designAutoModerationForm) }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

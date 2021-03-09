@@ -1,0 +1,48 @@
+{% extends 'front/user/base.html.twig' %}
+
+{% block user_content %}
+    <h1>Demander un ajout dans le référentiel</h1>
+    <p>Vous pouvez demander plusieurs ajouts en séparant les valeurs par des virgules. Votre demande sera envoyée par e-mail à United 3D Makers.</p>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        <div class="form-group hideable show-technology">
+            <div class="col-sm-offset-2 col-sm-10">
+                {{ form_row(form.fillingRate) }}
+            </div>
+        </div>
+        <div class="hideable show-material">
+            {{ form_row(form.technologies) }}
+        </div>
+        {{ form_row(form.comments) }}
+        <div class="form-submit text-right">
+            <input type="hidden" id="current_user" value="{{ maker.user.firstname }}"/>
+            <button type="submit" id="btn_submit" class="btn btn-rounded">Envoyer</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.hideable').hide();
+            $('.show-technology').show();
+            $('select#appbundle_printer_ref_request_type').change(function(event) {
+                $('.hideable').hide();
+                $('.show-'+$(this).val()).show();
+            });
+            $("#btn_submit").click(function (e){
+                var currentUser = $("#current_user").val();
+                if ($('#appbundle_printer_ref_request_type').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+                if ($('#appbundle_printer_ref_request_name').length == 1){
+                    gtag_report_event(currentUser,'param.printer','field_error');
+                }
+            });
+        });
+    </script>
+{% endblock %}

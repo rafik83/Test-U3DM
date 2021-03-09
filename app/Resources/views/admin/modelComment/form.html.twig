@@ -1,0 +1,61 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% form_theme form with ['form/modelComments.html.twig']  %}
+
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'comment_list' %}
+
+{% if comment is defined %}
+    {% set title = 'admin.rating.edit.title' %}
+{% endif %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ title|trans }}
+                </div>
+                <div class="panel-body pl-sm-5">
+                    {{ form_start(form) }}
+                        {{ form_row(form.description) }}
+                        <div class="form-group">
+                                <label class="col-sm-2 control-label">{{ 'Joindre images'|trans }}</label>
+                                <div class="col-sm-10">
+                                    {{ form_widget(form.portfolioImages) }}
+                                </div>
+                            </div>
+                        
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9" align="right">
+                                {{ form_row(form.enabled) }}
+                                <button type="submit" id="form_submit" name="form[submit]" class="btn btn-space btn-primary"><i class="s7-diskette"></i> {{ 'form.save'|trans }}</button>
+                                <a class="btn btn-space btn-secondary" href="{{ path('admin_comment_list') }}">{{ 'form.cancel'|trans }}</a>
+                            </div>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('assets/front/template/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/template/lib/datatables/datatables.net/js/jquery.dataTables.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/front/js/jquery.collection.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready( function() {
+            $('.portfolio-collection').collection({
+                position_field_selector: '.image-position',
+                allow_duplicate: false,
+                allow_up: false,
+                allow_down: false,
+                add:  '<a href="#" class="btnCollection"><i class="s7-plus color-icon"></i></span></a>',
+                remove: '<a href="#" class="btnCollection"><i class="s7-trash color-icon" ></i></span></a>'
+            });
+        });
+    </script>
+{% endblock %}

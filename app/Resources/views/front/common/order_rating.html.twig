@@ -1,0 +1,48 @@
+<style>
+    .rating p { padding-bottom: 20px; border-bottom: 1px solid #cccccc; }
+    .rating em { font-size: 13px; }
+</style>
+
+ {% if ratingSave == 'Message.order.rating.wait'  or ratingSave == 'Message.order.rating.norate'  %} 
+    <h4>Votre avis sur la commande {{ order.reference }} du {{ order.createdAt|date('d/m/Y', 'Europe/Paris') }}</h4>
+    <p>Notez votre commande et laissez-nous un commentaire</p>
+    <!-- 
+    Vous pouvez mettre un nombre quelconque d'étoiles, veillez juste à mettre à jour la variable NbStar. 
+    Par défaut, les étoiles sont "éteintes" : si un utilisateur a désectivé JS il ne pourra pas voter mais le script ne plantera pas
+    -->
+    <div class="rating" align="center">
+        <img id="Star1" src="{{ asset('assets/front/images/StarOut.png') }}" />
+        <img id="Star2" src="{{ asset('assets/front/images/StarOut.png') }}" />
+        <img id="Star3" src="{{ asset('assets/front/images/StarOut.png') }}" />
+        <img id="Star4" src="{{ asset('assets/front/images/StarOut.png') }}" />
+        <img id="Star5" src="{{ asset('assets/front/images/StarOut.png') }}" />
+    </div>
+    <div class="rating">
+        {% if ratingForm is defined %}
+            {% if ratingForm is not null %}
+                
+                    {{ form_start(ratingForm) }}
+                    {{ form_label(ratingForm.comment) }}<br>
+                    {{ form_widget(ratingForm.comment) }}
+                    {{ form_errors(ratingForm) }}
+                     {% if ratingSave == 'Message.order.rating.norate'  %}
+                        <br><b><span style="color:#FF0000"> {{ ratingSave|trans }} </div>
+                     {% endif %}
+
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-rounded">{{ 'form.send'|trans }}</button>
+                    </div>
+                {{ form_end(ratingForm) }}
+            {% endif %}
+        {% endif %}
+        {% if order.rating is not null %}
+            <p>
+                Vous avez noté cette commande <strong>{{ ratingRate }}/5</strong><br>
+                Votre commentaire : <br> {{ ratingComment }}
+            </p>
+        {% endif %}
+    </div>
+{% else %}
+        <h4> {{ratingSave|trans}}</h4>
+{% endif %}
+

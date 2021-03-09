@@ -1,0 +1,70 @@
+security:
+
+    role_hierarchy:
+        ROLE_MAKER: ROLE_USER
+
+    encoders:
+        AppBundle\Entity\Administrator:
+            algorithm: bcrypt
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        admin_provider:
+            entity:
+                class: AppBundle:Administrator
+                property: email
+        user_provider:
+            entity:
+                class: AppBundle:User
+                property: email
+
+    firewalls:
+
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin:
+            pattern: ^/(%app.locales%)/%app.admin_directory%/
+            anonymous: ~
+            provider: admin_provider
+            form_login:
+                csrf_token_generator: security.csrf.token_manager
+                login_path: admin_login
+                check_path: admin_login
+                default_target_path: admin_dashboard
+            logout:
+                path: admin_logout
+                target: admin_login
+            logout_on_user_change: true
+
+        main:
+            pattern: ^/(%app.locales%)/
+            anonymous: ~
+            provider: user_provider
+            json_login:
+                check_path: api_user_login
+                username_path: security.credentials.login
+                password_path: security.credentials.password
+            form_login:
+                csrf_token_generator: security.csrf.token_manager
+                login_path: user_login
+                check_path: user_login
+                default_target_path: user_dashboard
+            logout:
+                path: user_logout
+                target: user_login
+            logout_on_user_change: true
+
+    access_control:
+        - { path: ^/(%app.locales%)/%app.admin_directory%/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.admin_directory%, roles: ROLE_ADMIN }
+        - { path: ^/(%app.locales%)/%app.user_directory%/inscription, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%/merci, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%/activation, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/api/user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%/mot-de-passe-oublie, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%/rating, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(%app.locales%)/%app.user_directory%, roles: ROLE_USER }

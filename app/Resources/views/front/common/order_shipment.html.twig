@@ -1,0 +1,20 @@
+<style>
+    .shipment p { padding-bottom: 10px; border-bottom: 1px solid #cccccc; }
+    .shipment em { font-size: 8px; }
+</style>
+<div class="shipment">
+    {% if shipmentForm is defined %}
+        {% if shipmentForm is not null %}
+            {{ form_start(shipmentForm) }}
+                {{ form_errors(shipmentForm) }}
+                
+                {{ form_widget(shipmentForm.parcelNumber) }}
+                
+                {{ form_widget(shipmentForm.trackingMakerUrl) }}
+                <div class="text-left">
+                    <button type="submit" class="btn btn-rounded">{{ 'form.save'|trans }}</button>
+                </div>
+            {{ form_end(shipmentForm) }}
+        {% endif %}
+    {% endif %}
+</div>

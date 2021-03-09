@@ -1,0 +1,202 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set activeTab = 'order' %}
+{% set activeMenu = 'order_list' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.management'|trans({'%ref%': order.reference, '%date%': order.createdAt|date('d/m/Y à H:i', app.user.timezone) }) }}
+                </div>
+                <div class="panel-body">
+                    <p>
+                        {{ 'admin.order.list.column.status'|trans }} : {{ order.adminReadableStatus }}<br>
+                        {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_AWAITING_SEPA') %}
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_NEW')}) }}">Confirmer le virement</a><br>
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_REFUSED_SEPA')}) }}">Indiquer que le virement a été refusé ou abandonné</a>
+                        {% elseif order.status == constant('\\AppBundle\\Entity\\Order::STATUS_PROCESSING') %}
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_CANCELED')}) }}">Annuler la commande</a>
+                        {% elseif order.status == constant('\\AppBundle\\Entity\\Order::STATUS_MODEL_BUY') %}
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_CANCELED')}) }}">Annuler la commande</a>
+                        {% elseif order.status == constant('\\AppBundle\\Entity\\Order::STATUS_LABELED') %}
+                            <br><span style="font-style:italic;">Forcer le workflow automatisé :</span><br>
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_TRANSIT')}) }}">Confirmer la prise en charge par le transporteur (et déclencher le virement au Maker)</a>
+                        {% elseif order.status == constant('\\AppBundle\\Entity\\Order::STATUS_TRANSIT') %}
+                            <br><span style="font-style:italic;">Forcer le workflow automatisé :</span><br>
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_PND')}) }}">Pli non distribué</a><br>
+                            <a href="{{ path('admin_order_status_update', {'reference': order.reference, 'newStatus': constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED')}) }}">Confirmer la livraison du colis</a>
+                        {% endif %}
+
+                        {% if order.type == constant('\\AppBundle\\Entity\\Order::TYPE_DESIGN')%}
+                            <a href="{{ path('admin_project_see', {'reference': order.quotation.project.reference}) }}">Voir le project</a>
+                          | 
+                            <a href="{{ path('admin_quotation_see', {'reference': order.quotation.reference}) }}">Voir le devis</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.customer'|trans }}
+                </div>
+                <div class="panel-body">
+                    <a href="{{ path('admin_user_see', { id: order.customer.id }) }}">{{ order.customer.fullname }}</a> -
+                    <a href="mailto:{{ order.customer.email }}">{{ order.customer.email }}</a>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.maker'|trans }}
+                </div>
+                <div class="panel-body">
+                    <a href="{{ path('admin_maker_see', { id: order.maker.id }) }}">{{ order.maker.fullname }}</a> -
+                    <a href="mailto:{{ order.maker.user.email }}">{{ order.maker.user.email }}</a><br>
+                    {{ 'admin.order.see.maker.commission_rate'|trans }} : {{ order.commissionRate }} %<br>
+                    {{ 'admin.order.see.maker.commission_amount'|trans }} : {{ (order.platformCutAmountTaxIncl / 100)|number_format(2) }} € TTC<br>
+                    {{ 'admin.order.see.maker.cut'|trans }} : {{ (order.makerCutAmountTaxIncl / 100)|number_format(2) }} € TTC {% if order.makerPaid %}: Payé{% elseif order.allowedToManuallyPayTheMaker %}: <a href="{{ path('admin_order_manual_maker_payment', { 'reference': order.reference }) }}">Non payé, faire le virement</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.shipping_address'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% include 'front/common/address.html.twig' with { address: order.shippingAddress } %}
+                    <hr><b>{{ 'Mode de livraison'|trans }}</b><br>
+                   
+                        {{ order.readableShippingType }}
+                        {% if order.file is not null %}
+                                {% if order.file.urlDownload is null %}
+                                    (<a href="{{ path('order_file_download', {'id': order.file.id}) }}">Télécharger le fichier</a>)   
+                                {% else %}
+                                    (<a href="{{ path('order_file_download', {'id': order.file.id}) }}" target="download">Lien de téléchargement</a>)  
+                                    
+                                {% endif %}
+                        {% endif %}
+                   
+                    <br>
+                    {% if order.shouldBeReadyAt is not null %}
+                        <small>
+                            {% if order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_NOT_SHIPPED') %}Doit être prête pour{% elseif order.shippingType == constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') %}À remettre au client au plus tard{% else %}À remettre au transporteur au plus tard{% endif %} le {{ order.shouldBeReadyAt|date('d/m/Y', 'Europe/Paris') }}{% if order.shippingType != constant('\\AppBundle\\Entity\\Shipping::TYPE_NOT_SHIPPED') and order.shippingType != constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP') %} avant 17h{% endif %}.<br>
+                            {% if order.expectedDeliveryDate is not null and order.shouldBeReadyAt != order.expectedDeliveryDate %}
+                                Livraison prévue le {{ order.expectedDeliveryDate|date('d/m/Y', 'Europe/Paris') }}.<br>
+                            {% endif %}
+                        </small>
+                    {% endif %}
+                    {% if 0 < order.shipments|length %}
+                        <hr><b>{{ 'admin.order.see.shipments'|trans }}</b><br>
+                        {% for shipment in order.shipments %}
+                            {{ shipment.readableType }} n°{{ shipment.parcelNumber }}{% if shipment.trackingUrl is not null %} : <a href="{{ shipment.trackingUrl }}" target="_blank">suivre le colis</a>{% endif %}<br>
+                        {% endfor %}
+                    {% endif %}
+                    {% if order.shippingType is not same as(constant('\\AppBundle\\Entity\\Shipping::TYPE_PICKUP')) %}
+                        {% if 0 < order.shipments|length %}
+                            <a href="{{ order.shipments.first.labelPdfUrl }}" target="_blank">Obtenir l'étiquette</a> -
+                        {% endif %}
+                        <a href="{{ path('admin_order_generate_label', { 'reference': order.reference }) }}">Générer une nouvelle étiquette</a><br>
+                    {% endif %}
+                    {% if order.instructions is not null %}
+                        <p>Instructions complémentaires : {{ order.instructions|nl2br }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.billing_address'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% include 'front/common/address.html.twig' with { address: order.billingAddress } %}
+                    {% if 0 < order.payments|length %}
+                        <hr><b>{{ 'Mode de paiement'|trans }}</b><br>
+                        {% if constant('\\AppBundle\\Entity\\Payment::TYPE_CARD') == order.payments.first.type %}Carte bancaire{% elseif constant('\\AppBundle\\Entity\\Payment::TYPE_SEPA') == order.payments.first.type %}SEPA{% elseif constant('\\AppBundle\\Entity\\Payment::TYPE_VIREMENT') == order.payments.first.type %}Virement{% else %}Inconnu{% endif %}
+                        <hr><b>{{ 'admin.order.see.payments'|trans }}</b><br>
+                        {% for payment in order.payments %}
+                            {{ payment.chargeId }} : {{ (payment.amount / 100)|number_format(2) }} €<br>
+                        {% endfor %}
+                    {% endif %}
+                    {% if 0 < order.refunds|length %}
+                        <hr><b>{{ 'admin.order.see.refunds'|trans }}</b><br>
+                        {% for refund in order.refunds %}
+                            {{ refund.refundId }} : {{ (refund.amount / 100)|number_format(2) }} €<br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.summary'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% include 'front/common/order_detail.html.twig' %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.messages'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% include 'front/common/order_messages.html.twig' with {'context': 'admin'} %}
+                </div>
+            </div>
+        </div>
+        {% if order.status == constant('\\AppBundle\\Entity\\Order::STATUS_DELIVERED') or order.status == constant('\\AppBundle\\Entity\\Order::STATUS_CLOSED') %}
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.rating'|trans }}
+                </div>
+                <div class="panel-body">
+                    {% if order.rating.rate is defined %}
+                    <div>
+                        <p>Note : {{order.rating.rate}}/5</p>
+                        <p>{{order.rating.comment}}</p>
+                        <p>
+                            Statut : 
+                            {% if order.rating.enabled %}
+                                Actif
+                            {% else %}
+                                En attente de modération 
+                                <a href="{{ path('admin_rating_enabled', { 'rating': order.rating.id }) }}" class="icon" style="margin-right:5px;" title="{{ 'admin.rating.action.validate'|trans }}">
+                                    <i class="s7-right-arrow"></i>
+                                </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% else %}
+                        <div>
+                            <p>{{ 'admin.order.see.rating.unknown'|trans }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-heading-divider">
+                    {{ 'admin.order.see.history'|trans }}
+                </div>
+                <div class="panel-body">
+                    <ul>
+                    {% for update in order.statusUpdates %}
+                        <li>{{ update.createdAt|date('d/m/Y H:i:s', app.user.timezone) }} : <b>{{ update.readableStatus }}</b> ({{ 'admin.order.see.history.by'|trans({'%origin%' : update.readableOrigin}) }})</li>
+                    {% endfor %}
+                        <li>{{ order.createdAt|date('d/m/Y H:i:s', app.user.timezone) }} : <b>{{ 'admin.order.see.history.creation'|trans }}</b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
